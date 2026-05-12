@@ -1,0 +1,166 @@
+﻿<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SecOps Academy • Alertes SOC</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/app.css">
+  <link rel="manifest" href="manifest.webmanifest">
+  <meta name="theme-color" content="#6366f1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="SecOps">
+  <link rel="apple-touch-icon" href="assets/icons/icon-192.png">
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="sidebar-header"><div class="logo"><i class="fas fa-shield-alt"></i><div><div>SecOps Academy</div><div class="tagline">Formation SOC/EDR/SOAR</div></div></div></div>
+      <nav class="sidebar-nav">
+        <div class="nav-section"><div class="nav-section-title">Dashboard</div>
+          <a class="nav-item" href="dashboard.html"><i class="fas fa-home"></i><span>Accueil</span></a>
+          <a class="nav-item" href="progress.html"><i class="fas fa-chart-line"></i><span>Progression</span></a>
+          <a class="nav-item" href="revision.html"><i class="fas fa-gamepad"></i><span>Hub Révision</span><span class="nav-badge">XP</span></a>
+        </div>
+        <div class="nav-section"><div class="nav-section-title">Formation</div>
+          <a class="nav-item active" href="soc-alerts.html"><i class="fas fa-bell"></i><span>Alertes SOC</span><span class="nav-badge">40+</span></a>
+          <a class="nav-item" href="soc-qa.html"><i class="fas fa-question-circle"></i><span>Q&A SOC</span></a>
+          <a class="nav-item" href="edr.html"><i class="fas fa-laptop"></i><span>EDR Investigation</span></a>
+          <a class="nav-item" href="soar.html"><i class="fas fa-robot"></i><span>SOAR Playbooks</span></a>
+          <a class="nav-item" href="pam.html"><i class="fas fa-key"></i><span>PAM</span></a>
+          <a class="nav-item" href="soc-l1-l2.html"><i class="fas fa-shield-virus"></i><span>SOC L1 & L2</span><span class="nav-badge">NEW</span></a>
+          <a class="nav-item" href="pentest.html"><i class="fas fa-user-secret"></i><span>Pentest Senior</span></a>
+        </div>
+        <div class="nav-section"><div class="nav-section-title">Outils & Techniques</div>
+          <a class="nav-item" href="splunk.html"><i class="fas fa-search"></i><span>Splunk SPL</span></a>
+          <a class="nav-item" href="events.html"><i class="fas fa-list"></i><span>Windows Events</span></a>
+          <a class="nav-item" href="linux.html"><i class="fab fa-linux"></i><span>Hardening Linux</span></a>
+          <a class="nav-item" href="apache.html"><i class="fas fa-server"></i><span>Apache & YAML</span></a>
+        </div>
+        <div class="nav-section"><div class="nav-section-title">Entretiens</div>
+          <a class="nav-item" href="star.html"><i class="fas fa-star"></i><span>Méthode STAR</span></a>
+          <a class="nav-item" href="interview.html"><i class="fas fa-microphone"></i><span>Simulation</span></a>
+          <a class="nav-item" href="soc-interview.html"><i class="fas fa-user-tie"></i><span>Questions SOC</span><span class="nav-badge">60+</span></a>
+        </div>
+      </nav>
+      <div class="sidebar-footer"><div class="user-card"><div class="user-avatar">AN</div><div><div class="user-name">Analyste SOC</div><div class="user-role">En formation</div></div></div></div>
+    </aside>
+
+    <main class="main">
+      <nav class="navbar">
+        <div class="search-container"><i class="fas fa-search search-icon"></i><input type="text" class="search-input" id="search" placeholder="Rechercher..." /></div>
+        <div class="navbar-actions">
+          <button class="icon-btn" onclick="toggleTheme()" title="Changer le thème"><i class="fas fa-moon"></i></button>
+          <button class="icon-btn" onclick="openSTAR()" title="Créer une note STAR"><i class="fas fa-plus"></i></button>
+          <button class="icon-btn" title="Notifications"><i class="fas fa-bell"></i><span class="badge-dot"></span></button>
+        </div>
+      </nav>
+      <div class="content">
+        <div class="page-header">
+          <h1 class="page-title">Alertes SOC & Traitement 🔔</h1>
+          <p class="page-subtitle">Types d'alertes fréquentes et comment les traiter. Ouvre les fiches pour détails + STAR.</p>
+        </div>
+
+        <div class="scenario-card" onclick="openScenario('spray')">
+          <div class="scenario-title">🔐 Multiples échecs d'authentification (4625) / Password Spray</div>
+          <div class="scenario-meta"><span class="badge badge-warning">Triage</span><span class="badge badge-info">MITRE TA0006</span><span class="badge badge-danger">Event 4625</span></div>
+          <p class="scenario-text">Détecte des tentatives infructueuses répétées depuis une IP/origine, potentiellement spray sur comptes. Vérifier logs auth, réputation IP, bloquer si nécessaire.</p>
+        </div>
+
+        <div class="scenario-card" onclick="openScenario('privesc')">
+          <div class="scenario-title">⚡ Ajout d'un compte admin / Élévation de privilèges</div>
+          <div class="scenario-meta"><span class="badge badge-danger">Critique</span><span class="badge badge-info">MITRE TA0004</span><span class="badge badge-danger">4672, 4720, 4728</span></div>
+          <p class="scenario-text">Création ou ajout d'utilisateur à un groupe privilégié. Vérifier légitimité, origine, change tracking. Corréler avec tickets change management.</p>
+        </div>
+
+        <div class="scenario-card" onclick="openScenario('lsass')">
+          <div class="scenario-title">🧠 Dump LSASS / Tentative Mimikatz</div>
+          <div class="scenario-meta"><span class="badge badge-danger">Critique</span><span class="badge badge-info">MITRE TA0006/TA0007</span><span class="badge badge-warning">Sysmon 10</span></div>
+          <p class="scenario-text">Processus suspect accédant à LSASS (MiniDumpWriteDump, SeDebugPrivilege), extraction mémoire credential. Isolation immédiate.</p>
+        </div>
+
+        <div class="scenario-card" onclick="openScenario('beacon')">
+          <div class="scenario-title">📡 Beaconing C2 / Activité périodique réseau</div>
+          <div class="scenario-meta"><span class="badge badge-warning">Triage</span><span class="badge badge-info">MITRE TA0011</span><span class="badge badge-danger">Netflow/Proxy</span></div>
+          <p class="scenario-text">Connexions sortantes régulières vers hôte inconnu, JA3/SNI suspects, tailles fixes. Indicateurs de commande et contrôle.</p>
+        </div>
+
+        <div class="scenario-card" onclick="openScenario('service')">
+          <div class="scenario-title">⚙️ Installation de service suspect (7045)</div>
+          <div class="scenario-meta"><span class="badge badge-warning">Triage</span><span class="badge badge-info">MITRE TA0003</span><span class="badge badge-danger">Event 7045</span></div>
+          <p class="scenario-text">Nouveau service créé avec binaire inconnu ou chemin user-profile/temp. Persistance potentielle, vérifier légitimité.</p>
+        </div>
+
+        <div class="scenario-card" onclick="openScenario('phishing-macro')">
+          <div class="scenario-title">📧 Phishing avec macro malveillante</div>
+          <div class="scenario-meta"><span class="badge badge-danger">Critique</span><span class="badge badge-info">MITRE TA0001</span></div>
+          <p class="scenario-text">Email avec pièce jointe Office contenant macro VBA. Sandbox détecte téléchargement externe, création processus PowerShell encodé.</p>
+        </div>
+
+        <div class="scenario-card" onclick="openScenario('ransomware')">
+          <div class="scenario-title">🔒 Indicateurs ransomware précoces</div>
+          <div class="scenario-meta"><span class="badge badge-danger">Critique</span><span class="badge badge-info">MITRE TA0040</span></div>
+          <p class="scenario-text">Désactivation AV, suppression shadow copies (vssadmin), scan réseau SMB, chiffrement fichiers. Isoler immédiatement.</p>
+        </div>
+
+        <div class="scenario-card" onclick="openScenario('lateral-smb')">
+          <div class="scenario-title">🔄 Mouvement latéral via SMB/PsExec</div>
+          <div class="scenario-meta"><span class="badge badge-danger">Critique</span><span class="badge badge-info">MITRE TA0008</span></div>
+          <p class="scenario-text">Connexions SMB multiples + création comptes admin + services distants. Pattern typique d'attaquant se déplaçant dans le réseau.</p>
+        </div>
+
+        <div class="scenario-card" onclick="openScenario('dns-tunneling')">
+          <div class="scenario-title">🌐 DNS Tunneling / Exfiltration DNS</div>
+          <div class="scenario-meta"><span class="badge badge-warning">Triage</span><span class="badge badge-info">MITRE TA0011</span></div>
+          <p class="scenario-text">Requêtes DNS avec FQDN très longs, fréquence élevée, domaine récent/inconnu. Indicateur d'exfiltration ou C2 via DNS.</p>
+        </div>
+
+        <div class="scenario-card" onclick="openScenario('web-shell')">
+          <div class="scenario-title">🕸️ Web Shell détecté sur serveur IIS/Apache</div>
+          <div class="scenario-meta"><span class="badge badge-danger">Critique</span><span class="badge badge-info">MITRE TA0003</span></div>
+          <p class="scenario-text">Fichier .aspx/.php suspect dans wwwroot, accès web avec commandes shell, création processus depuis w3wp.exe. Backdoor persistant.</p>
+        </div>
+
+        <div class="scenario-card" onclick="openScenario('kerberoasting')">
+          <div class="scenario-title">🎫 Kerberoasting / Ticket Requests massifs</div>
+          <div class="scenario-meta"><span class="badge badge-danger">Critique</span><span class="badge badge-info">MITRE TA0006</span></div>
+          <p class="scenario-text">Event 4769 avec RC4 encryption, multiples SPN requests, compte utilisateur standard. Tentative extraction hash Kerberos.</p>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <div class="modal-overlay" id="modal" onclick="closeModal(event)">
+    <div class="modal" onclick="event.stopPropagation()">
+      <div class="modal-header"><h2 class="modal-title">Détails</h2><button class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></button></div>
+      <div class="modal-body" id="modal-body">...</div>
+      <div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal()">Fermer</button></div>
+    </div>
+  </div>
+
+  <script src="assets/js/app.js"></script>
+  <script src="assets/js/quiz-data.js"></script>
+  <script src="assets/js/quiz-engine.js"></script>
+  <script src="assets/js/star.js"></script>
+  <script src="assets/js/scenarios.js"></script>
+  <script>
+    // Inject SOC scenarios subset
+    Object.assign(scenarios, {
+      spray: { title: 'Password Spray / Brute Force 4625', content: `<h3 style="margin-bottom:16px;">🔍 Triage</h3><ul class="feature-list"><li><i class="fas fa-check-circle"></i>Volume/rythme par IP/source</li><li><i class="fas fa-check-circle"></i>Heures inhabituelles, géo, ASN</li><li><i class="fas fa-check-circle"></i>Vérifier MFA/verrous</li></ul><h3 style="margin:24px 0 16px;">🧪 Analyse</h3><ul class="feature-list"><li><i class="fas fa-check-circle"></i>Corréler 4625 → 4624</li><li><i class="fas fa-check-circle"></i>Exclure scanners internes</li><li><i class="fas fa-check-circle"></i>IOC: bloc IP/ASN</li></ul><h3 style="margin:24px 0 16px;">⚡ Actions</h3><ul class="feature-list"><li><i class="fas fa-check-circle"></i>Bloc réseau, MFA</li><li><i class="fas fa-check-circle"></i>Reset PW</li></ul>` },
+      privesc: { title: 'Élévation de privilèges / Admin ajouté', content: `<h3 style="margin-bottom:16px;">🔍 Triage</h3><ul class="feature-list"><li><i class="fas fa-check-circle"></i>4720/4728/4672, initiateur</li><li><i class="fas fa-check-circle"></i>Heure, poste, ticket change</li></ul><h3 style="margin:24px 0 16px;">🧪 Analyse</h3><ul class="feature-list"><li><i class="fas fa-check-circle"></i>Corréler 4769/4776, 4688</li><li><i class="fas fa-check-circle"></i>Comparer CAB/ITSM</li></ul><h3 style="margin:24px 0 16px;">⚡ Actions</h3><ul class="feature-list"><li><i class="fas fa-check-circle"></i>Retirer du groupe/désactiver</li><li><i class="fas fa-check-circle"></i>Créer détection corrélée</li></ul>` },
+      lsass: { title: 'Dump LSASS / Mimikatz', content: `<h3 style="margin-bottom:16px;">🔍 Triage</h3><ul class="feature-list"><li><i class="fas fa-check-circle"></i>Sysmon 10 lsass.exe</li><li><i class="fas fa-check-circle"></i>Contexte admin/outil legit?</li></ul><h3 style="margin:24px 0 16px;">🧪 Analyse</h3><ul class="feature-list"><li><i class="fas fa-check-circle"></i>APIs MiniDumpWriteDump</li><li><i class="fas fa-check-circle"></i>Recherche latérale</li></ul><h3 style="margin:24px 0 16px;">⚡ Actions</h3><ul class="feature-list"><li><i class="fas fa-check-circle"></i>Isoler, révoquer tickets/NTLM</li><li><i class="fas fa-check-circle"></i>Bloc outils IOA</li></ul>` },
+      beacon: { title: 'Beaconing C2 / Activité périodique', content: `<h3 style="margin-bottom:16px;">🔍 Triage</h3><ul class="feature-list"><li><i class="fas fa-check-circle"></i>Période fixe, tailles constantes</li><li><i class="fas fa-check-circle"></i>SNI/JA3 suspects</li></ul><h3 style="margin:24px 0 16px;">🧪 Analyse</h3><ul class="feature-list"><li><i class="fas fa-check-circle"></i>DNS/WHOIS/TI</li><li><i class="fas fa-check-circle"></i>Exclure updates</li></ul><h3 style="margin:24px 0 16px;">⚡ Actions</h3><ul class="feature-list"><li><i class="fas fa-check-circle"></i>Bloc domaine/IP, isolement</li><li><i class="fas fa-check-circle"></i>YARA mémoire</li></ul>` },
+      service: { title: 'Service suspect 7045', content: `<h3 style="margin-bottom:16px;">🔍 Triage</h3><ul class="feature-list"><li><i class="fas fa-check-circle"></i>ImagePath Users/Temp, non signé</li><li><i class="fas fa-check-circle"></i>Qui a créé, heure</li></ul><h3 style="margin:24px 0 16px;">🧪 Analyse</h3><ul class="feature-list"><li><i class="fas fa-check-circle"></i>4688 parent, Sysmon 1/11</li><li><i class="fas fa-check-circle"></i>Hash VT, autoruns</li></ul><h3 style="margin:24px 0 16px;">⚡ Actions</h3><ul class="feature-list"><li><i class="fas fa-check-circle"></i>Arrêter/supprimer, quarantaine</li><li><i class="fas fa-check-circle"></i>Bloc hash, scan étendu</li></ul>` },
+      'phishing-macro': { title: 'Phishing avec macro malveillante', content: `<h3 style="margin-bottom:16px;">🔍 Triage</h3><ul class="feature-list"><li><i class="fas fa-check-circle"></i>Headers, SPF/DKIM/DMARC</li><li><i class="fas fa-check-circle"></i>Sandbox/IOC</li></ul><h3 style="margin:24px 0 16px;">🧪 Analyse</h3><ul class="feature-list"><li><i class="fas fa-check-circle"></i>Office → PowerShell 4688/4104</li><li><i class="fas fa-check-circle"></i>Réseau vers domaines jeunes</li></ul><h3 style="margin:24px 0 16px;">⚡ Actions</h3><ul class="feature-list"><li><i class="fas fa-check-circle"></i>Quarantaine email/isoler</li><li><i class="fas fa-check-circle"></i>Bloc IOC, règle EDR</li></ul>` },
+      ransomware: { title: 'Indicateurs ransomware précoces', content: `<h3 style="margin-bottom:16px;">🔍 Triage</h3><ul class="feature-list"><li><i class="fas fa-check-circle"></i>vssadmin, wbadmin, bcdedit</li><li><i class="fas fa-check-circle"></i>Scan SMB/Créations massives</li></ul><h3 style="margin:24px 0 16px;">🧪 Analyse</h3><ul class="feature-list"><li><i class="fas fa-check-circle"></i>Patient zero, note de rançon</li><li><i class="fas fa-check-circle"></i>Chemins ciblés</li></ul><h3 style="margin:24px 0 16px;">⚡ Actions</h3><ul class="feature-list"><li><i class="fas fa-check-circle"></i>Isoler segments/couper SMB</li><li><i class="fas fa-check-circle"></i>IR/restauration</li></ul>` },
+      'lateral-smb': { title: 'Mouvement latéral via SMB/PsExec', content: `<h3 style="margin-bottom:16px;">🔍 Triage</h3><ul class="feature-list"><li><i class="fas fa-check-circle"></i>4624 Type 3, services distants</li><li><i class="fas fa-check-circle"></i>psexec usage</li></ul><h3 style="margin:24px 0 16px;">🧪 Analyse</h3><ul class="feature-list"><li><i class="fas fa-check-circle"></i>Origine compte, binaire déployé</li><li><i class="fas fa-check-circle"></i>Propagation multi‑hôtes</li></ul><h3 style="margin:24px 0 16px;">⚡ Actions</h3><ul class="feature-list"><li><i class="fas fa-check-circle"></i>Bloquer SMB/reset creds</li><li><i class="fas fa-check-circle"></i>Containment/hunt</li></ul>` },
+      'dns-tunneling': { title: 'DNS Tunneling / Exfiltration DNS', content: `<h3 style="margin-bottom:16px;">🔍 Triage</h3><ul class="feature-list"><li><i class="fas fa-check-circle"></i>FQDN longs/fréquence/NXDOMAIN</li><li><i class="fas fa-check-circle"></i>Domaine jeune</li></ul><h3 style="margin:24px 0 16px;">🧪 Analyse</h3><ul class="feature-list"><li><i class="fas fa-check-circle"></i>Corréler hôte/processus</li><li><i class="fas fa-check-circle"></i>Comparer updates légitimes</li></ul><h3 style="margin:24px 0 16px;">⚡ Actions</h3><ul class="feature-list"><li><i class="fas fa-check-circle"></i>Bloc domaine/isolement</li><li><i class="fas fa-check-circle"></i>Proxy DNS rule</li></ul>` },
+      'web-shell': { title: 'Web Shell sur serveur', content: `<h3 style="margin-bottom:16px;">🔍 Triage</h3><ul class="feature-list"><li><i class="fas fa-check-circle"></i>Fichiers .aspx/.php suspects</li><li><i class="fas fa-check-circle"></i>w3wp/apache -> cmd</li></ul><h3 style="margin:24px 0 16px;">🧪 Analyse</h3><ul class="feature-list"><li><i class="fas fa-check-circle"></i>Logs d'accès, user-agent</li><li><i class="fas fa-check-circle"></i>Backdoors</li></ul><h3 style="margin:24px 0 16px;">⚡ Actions</h3><ul class="feature-list"><li><i class="fas fa-check-circle"></i>Isoler serveur, retirer shell</li><li><i class="fas fa-check-circle"></i>WAF durcissement</li></ul>` },
+      kerberoasting: { title: 'Kerberoasting / SPN Tickets', content: `<h3 style="margin-bottom:16px;">🔍 Triage</h3><ul class="feature-list"><li><i class="fas fa-check-circle"></i>4769 RC4, SPN multiples</li><li><i class="fas fa-check-circle"></i>Compte standard</li></ul><h3 style="margin:24px 0 16px;">🧪 Analyse</h3><ul class="feature-list"><li><i class="fas fa-check-circle"></i>Origine/horaires, 4624/4634</li><li><i class="fas fa-check-circle"></i>Service accounts MFA</li></ul><h3 style="margin:24px 0 16px;">⚡ Actions</h3><ul class="feature-list"><li><i class="fas fa-check-circle"></i>Rotate PW service, AES only</li><li><i class="fas fa-check-circle"></i>Bloquer hôte source</li></ul>` }
+    });
+  </script>
+  <script src="assets/js/pwa-install.js"></script>
+</body>
+</html>

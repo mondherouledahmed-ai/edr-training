@@ -1,0 +1,23 @@
+{
+  "name": "SecOps Academy — Révision SOC/EDR/SOAR",
+  "short_name": "SecOps",
+  "description": "Préparation entretien SOC/EDR/SOAR avec quiz gamifiés, flashcards et défis quotidiens.",
+  "start_url": "dashboard.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0f0f23",
+  "theme_color": "#6366f1",
+  "lang": "fr",
+  "categories": ["education", "productivity"],
+  "icons": [
+    { "src": "assets/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "assets/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "assets/icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "Défi du jour", "short_name": "Défi", "url": "revision.html?action=daily", "icons": [{ "src": "assets/icons/icon-192.png", "sizes": "192x192" }] },
+    { "name": "Pop-up surprise", "short_name": "Surprise", "url": "revision.html?action=ambush", "icons": [{ "src": "assets/icons/icon-192.png", "sizes": "192x192" }] },
+    { "name": "Speed Run 60s", "short_name": "Speed", "url": "revision.html?action=speed", "icons": [{ "src": "assets/icons/icon-192.png", "sizes": "192x192" }] }
+  ]
+}

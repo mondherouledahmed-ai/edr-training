@@ -1,0 +1,182 @@
+﻿<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SecOps Academy • Simulation Entretien</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/app.css">
+  <link rel="manifest" href="manifest.webmanifest">
+  <meta name="theme-color" content="#6366f1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="SecOps">
+  <link rel="apple-touch-icon" href="assets/icons/icon-192.png">
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="sidebar-header"><div class="logo"><i class="fas fa-shield-alt"></i><div><div>SecOps Academy</div><div class="tagline">Formation SOC/EDR/SOAR</div></div></div></div>
+      <nav class="sidebar-nav">
+        <div class="nav-section"><div class="nav-section-title">Dashboard</div>
+          <a class="nav-item" href="dashboard.html"><i class="fas fa-home"></i><span>Accueil</span></a>
+          <a class="nav-item" href="progress.html"><i class="fas fa-chart-line"></i><span>Progression</span></a>
+          <a class="nav-item" href="revision.html"><i class="fas fa-gamepad"></i><span>Hub Révision</span><span class="nav-badge">XP</span></a>
+        </div>
+        <div class="nav-section"><div class="nav-section-title">Formation</div>
+          <a class="nav-item" href="soc-alerts.html"><i class="fas fa-bell"></i><span>Alertes SOC</span><span class="nav-badge">40+</span></a>
+          <a class="nav-item" href="soc-qa.html"><i class="fas fa-question-circle"></i><span>Q&A SOC</span></a>
+          <a class="nav-item" href="edr.html"><i class="fas fa-laptop"></i><span>EDR Investigation</span></a>
+          <a class="nav-item" href="soar.html"><i class="fas fa-robot"></i><span>SOAR Playbooks</span></a>
+          <a class="nav-item" href="pam.html"><i class="fas fa-key"></i><span>PAM</span></a>
+          <a class="nav-item" href="soc-l1-l2.html"><i class="fas fa-shield-virus"></i><span>SOC L1 & L2</span><span class="nav-badge">NEW</span></a>
+          <a class="nav-item" href="pentest.html"><i class="fas fa-user-secret"></i><span>Pentest Senior</span></a>
+        </div>
+        <div class="nav-section"><div class="nav-section-title">Outils & Techniques</div>
+          <a class="nav-item" href="splunk.html"><i class="fas fa-search"></i><span>Splunk SPL</span></a>
+          <a class="nav-item" href="events.html"><i class="fas fa-list"></i><span>Windows Events</span></a>
+          <a class="nav-item" href="linux.html"><i class="fab fa-linux"></i><span>Hardening Linux</span></a>
+          <a class="nav-item" href="apache.html"><i class="fas fa-server"></i><span>Apache & YAML</span></a>
+        </div>
+        <div class="nav-section"><div class="nav-section-title">Entretiens</div>
+          <a class="nav-item" href="star.html"><i class="fas fa-star"></i><span>Méthode STAR</span></a>
+          <a class="nav-item active" href="interview.html"><i class="fas fa-microphone"></i><span>Simulation</span></a>
+          <a class="nav-item" href="soc-interview.html"><i class="fas fa-user-tie"></i><span>Questions SOC</span><span class="nav-badge">60+</span></a>
+        </div>
+      </nav>
+      <div class="sidebar-footer"><div class="user-card"><div class="user-avatar">AN</div><div><div class="user-name">Analyste SOC</div><div class="user-role">En formation</div></div></div></div>
+    </aside>
+
+    <main class="main">
+      <nav class="navbar">
+        <div class="search-container"><i class="fas fa-search search-icon"></i><input type="text" class="search-input" id="search" placeholder="Rechercher..." /></div>
+        <div class="navbar-actions">
+          <button class="icon-btn" onclick="toggleTheme()" title="Changer le thème"><i class="fas fa-moon"></i></button>
+          <button class="icon-btn" onclick="openSTAR()" title="Créer une note STAR"><i class="fas fa-plus"></i></button>
+          <button class="icon-btn" title="Notifications"><i class="fas fa-bell"></i><span class="badge-dot"></span></button>
+        </div>
+      </nav>
+      <div class="content">
+        <div class="page-header">
+          <h1 class="page-title">Simulation d'entretien 🎤</h1>
+          <p class="page-subtitle">Questions techniques + comportementales, réponses STAR.</p>
+        </div>
+
+        <div class="scenario-card qna-card" onclick="openScenario('int-soc-priority')"><div class="scenario-title">Prioriser alertes multiples</div><div class="scenario-meta"><span class="badge badge-info">Comportemental</span></div><p class="scenario-text">Impact, urgences, communication.</p></div>
+        <div class="scenario-card qna-card" onclick="openScenario('int-incident-report')"><div class="scenario-title">Rapport incident</div><div class="scenario-meta"><span class="badge badge-info">Technique</span></div><p class="scenario-text">Cause racine, leçons.</p></div>
+
+        <!-- Questions d'entretien SOC Niveau 1 -->
+        <h2 style="margin-top: 2rem; margin-bottom: 1rem; color: var(--text-primary);">📚 Questions de révision SOC Niveau 1</h2>
+
+        <h3 style="margin-top: 1.5rem; margin-bottom: 0.75rem; color: var(--accent);">SECTION 1 : Bases générales de la cybersécurité</h3>
+        <div class="scenario-card qna-card" onclick="openScenario('soc1-q1')"><div class="scenario-title">Q1. Rôle d'un analyste SOC Tier 1</div><div class="scenario-meta"><span class="badge badge-success">Fondamentaux</span></div><p class="scenario-text">Première ligne de défense, triage, escalade.</p></div>
+        <div class="scenario-card qna-card" onclick="openScenario('soc1-q2')"><div class="scenario-title">Q2. Incident de cybersécurité</div><div class="scenario-meta"><span class="badge badge-success">Fondamentaux</span></div><p class="scenario-text">Définition et critères.</p></div>
+        <div class="scenario-card qna-card" onclick="openScenario('soc1-q3')"><div class="scenario-title">Q3. Événement vs Alerte</div><div class="scenario-meta"><span class="badge badge-success">Fondamentaux</span></div><p class="scenario-text">Différence clé entre les deux concepts.</p></div>
+        <div class="scenario-card qna-card" onclick="openScenario('soc1-q4')"><div class="scenario-title">Q4. Faux positif</div><div class="scenario-meta"><span class="badge badge-success">Fondamentaux</span></div><p class="scenario-text">Définition et importance du tuning.</p></div>
+        <div class="scenario-card qna-card" onclick="openScenario('soc1-q5')"><div class="scenario-title">Q5. Triade CIA</div><div class="scenario-meta"><span class="badge badge-success">Fondamentaux</span></div><p class="scenario-text">Confidentialité, Intégrité, Disponibilité.</p></div>
+
+        <h3 style="margin-top: 1.5rem; margin-bottom: 0.75rem; color: var(--accent);">SECTION 2 : Sources de logs & SIEM</h3>
+        <div class="scenario-card qna-card" onclick="openScenario('soc1-q6')"><div class="scenario-title">Q6. Qu'est-ce qu'un SIEM ?</div><div class="scenario-meta"><span class="badge badge-warning">SIEM</span></div><p class="scenario-text">Plateforme de gestion des événements de sécurité.</p></div>
+        <div class="scenario-card qna-card" onclick="openScenario('soc1-q7')"><div class="scenario-title">Q7. Types de logs SIEM</div><div class="scenario-meta"><span class="badge badge-warning">SIEM</span></div><p class="scenario-text">Windows, Linux, Firewall, IDS/IPS, etc.</p></div>
+        <div class="scenario-card qna-card" onclick="openScenario('soc1-q8')"><div class="scenario-title">Q8. Use case SIEM</div><div class="scenario-meta"><span class="badge badge-warning">SIEM</span></div><p class="scenario-text">Scénario de détection avec règles de corrélation.</p></div>
+
+        <h3 style="margin-top: 1.5rem; margin-bottom: 0.75rem; color: var(--accent);">SECTION 3 : Triage & Surveillance</h3>
+        <div class="scenario-card qna-card" onclick="openScenario('soc1-q9')"><div class="scenario-title">Q9. Investiguer une alerte</div><div class="scenario-meta"><span class="badge badge-danger">Triage</span></div><p class="scenario-text">Méthodologie d'investigation étape par étape.</p></div>
+        <div class="scenario-card qna-card" onclick="openScenario('soc1-q10')"><div class="scenario-title">Q10. Alerte malware</div><div class="scenario-meta"><span class="badge badge-danger">Triage</span></div><p class="scenario-text">Procédure de réponse aux alertes malware.</p></div>
+        <div class="scenario-card qna-card" onclick="openScenario('soc1-q11')"><div class="scenario-title">Q11. Alerte phishing</div><div class="scenario-meta"><span class="badge badge-danger">Triage</span></div><p class="scenario-text">Analyse et gestion des emails suspects.</p></div>
+        <div class="scenario-card qna-card" onclick="openScenario('soc1-q12')"><div class="scenario-title">Q12. IDS vs IPS</div><div class="scenario-meta"><span class="badge badge-danger">Triage</span></div><p class="scenario-text">Détection passive vs active.</p></div>
+        <div class="scenario-card qna-card" onclick="openScenario('soc1-q13')"><div class="scenario-title">Q13. Catégories d'alertes</div><div class="scenario-meta"><span class="badge badge-danger">Triage</span></div><p class="scenario-text">Types courants d'alertes de sécurité.</p></div>
+
+        <h3 style="margin-top: 1.5rem; margin-bottom: 0.75rem; color: var(--accent);">SECTION 4 : Réseaux & OS – notions de base</h3>
+        <div class="scenario-card qna-card" onclick="openScenario('soc1-q14')"><div class="scenario-title">Q14. Ports réseaux courants</div><div class="scenario-meta"><span class="badge badge-info">Réseaux</span></div><p class="scenario-text">SSH, HTTP, HTTPS, DNS, RDP, SMB.</p></div>
+        <div class="scenario-card qna-card" onclick="openScenario('soc1-q15')"><div class="scenario-title">Q15. TCP vs UDP</div><div class="scenario-meta"><span class="badge badge-info">Réseaux</span></div><p class="scenario-text">Protocoles orienté connexion vs sans connexion.</p></div>
+        <div class="scenario-card qna-card" onclick="openScenario('soc1-q16')"><div class="scenario-title">Q16. DNS et abus</div><div class="scenario-meta"><span class="badge badge-info">Réseaux</span></div><p class="scenario-text">Tunneling, C2, exfiltration via DNS.</p></div>
+        <div class="scenario-card qna-card" onclick="openScenario('soc1-q17')"><div class="scenario-title">Q17. Identifier IP suspecte</div><div class="scenario-meta"><span class="badge badge-info">Réseaux</span></div><p class="scenario-text">Whois, Threat Intel, géolocalisation.</p></div>
+
+        <h3 style="margin-top: 1.5rem; margin-bottom: 0.75rem; color: var(--accent);">SECTION 5 : OS & Logs</h3>
+        <div class="scenario-card qna-card" onclick="openScenario('soc1-q18')"><div class="scenario-title">Q18. Logs Linux</div><div class="scenario-meta"><span class="badge badge-purple">OS</span></div><p class="scenario-text">Emplacement /var/log/ et outils.</p></div>
+        <div class="scenario-card qna-card" onclick="openScenario('soc1-q19')"><div class="scenario-title">Q19. Logs Windows</div><div class="scenario-meta"><span class="badge badge-purple">OS</span></div><p class="scenario-text">Event Viewer et catégories .evtx.</p></div>
+        <div class="scenario-card qna-card" onclick="openScenario('soc1-q20')"><div class="scenario-title">Q20. Event ID 4625</div><div class="scenario-meta"><span class="badge badge-purple">OS</span></div><p class="scenario-text">Tentative de connexion échouée Windows.</p></div>
+
+        <h3 style="margin-top: 1.5rem; margin-bottom: 0.75rem; color: var(--accent);">SECTION 6 : Threat Intelligence</h3>
+        <div class="scenario-card qna-card" onclick="openScenario('soc1-q21')"><div class="scenario-title">Q21. IOC (Indicator of Compromise)</div><div class="scenario-meta"><span class="badge badge-secondary">Threat Intel</span></div><p class="scenario-text">Preuves de compromission possibles.</p></div>
+        <div class="scenario-card qna-card" onclick="openScenario('soc1-q22')"><div class="scenario-title">Q22. Hash de fichier</div><div class="scenario-meta"><span class="badge badge-secondary">Threat Intel</span></div><p class="scenario-text">Valeur unique pour intégrité et identification.</p></div>
+        <div class="scenario-card qna-card" onclick="openScenario('soc1-q23')"><div class="scenario-title">Q23. Sources Threat Intelligence</div><div class="scenario-meta"><span class="badge badge-secondary">Threat Intel</span></div><p class="scenario-text">VirusTotal, AbuseIPDB, AlienVault OTX...</p></div>
+
+        <h3 style="margin-top: 1.5rem; margin-bottom: 0.75rem; color: var(--accent);">SECTION 7 : Ticketing & Soft Skills</h3>
+        <div class="scenario-card qna-card" onclick="openScenario('soc1-q24')"><div class="scenario-title">Q24. Contenu d'un ticket</div><div class="scenario-meta"><span class="badge badge-info">Ticketing</span></div><p class="scenario-text">Éléments essentiels d'un ticket d'incident.</p></div>
+        <div class="scenario-card qna-card" onclick="openScenario('soc1-q25')"><div class="scenario-title">Q25. Priorisation des alertes</div><div class="scenario-meta"><span class="badge badge-info">Ticketing</span></div><p class="scenario-text">Critères de priorité dans un SOC.</p></div>
+
+        <h3 style="margin-top: 1.5rem; margin-bottom: 0.75rem; color: var(--accent);">BONUS : Questions RH</h3>
+        <div class="scenario-card qna-card" onclick="openScenario('soc1-q26')"><div class="scenario-title">Q26. Pourquoi analyste SOC ?</div><div class="scenario-meta"><span class="badge badge-success">RH</span></div><p class="scenario-text">Motivation et passion pour la cybersécurité.</p></div>
+        <div class="scenario-card qna-card" onclick="openScenario('soc1-q27')"><div class="scenario-title">Q27. Gestion de la pression</div><div class="scenario-meta"><span class="badge badge-success">RH</span></div><p class="scenario-text">Calme, priorisation, documentation.</p></div>
+      </div>
+    </main>
+  </div>
+
+  <div class="modal-overlay" id="modal" onclick="closeModal(event)">
+    <div class="modal" onclick="event.stopPropagation()">
+      <div class="modal-header"><h2 class="modal-title">Entretien</h2><button class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></button></div>
+      <div class="modal-body" id="modal-body">...</div>
+      <div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal()">Fermer</button></div>
+    </div>
+  </div>
+
+  <script src="assets/js/app.js"></script>
+  <script src="assets/js/quiz-data.js"></script>
+  <script src="assets/js/quiz-engine.js"></script>
+  <script src="assets/js/star.js"></script>
+  <script src="assets/js/scenarios.js"></script>
+  <script>
+    Object.assign(scenarios, {
+      'int-soc-priority': { title: 'Entretien — Priorisation des alertes', content: `<h3>Réponse STAR</h3><p>S: multiples alertes, EDR + proxy. T: prioriser selon impact utilisateur/serveur, données sensibles, propagation. A: triage rapide, corrélation IOC, isoler hôte critique, informer stakeholders. R: incident contenu, rapport clair, amélioration de seuils.</p>` },
+      'int-incident-report': { title: 'Entretien — Rapport incident', content: `<h3>Structure</h3><ul><li>Résumé exécutif</li><li>Chronologie</li><li>Cause racine</li><li>Impact</li><li>Actions</li><li>Leçons et suivis</li></ul>` },
+
+      // SECTION 1 : Bases générales de la cybersécurité
+      'soc1-q1': { title: 'Q1. Quel est le rôle d\'un analyste SOC Tier 1 ?', content: `<p>Un analyste SOC Tier 1 est la <strong>première ligne de défense</strong>. Ses responsabilités incluent :</p><ul><li>La surveillance des alertes issues du SIEM</li><li>La réalisation du triage initial</li><li>L'escalade des incidents confirmés vers le Tier 2</li><li>La création de tickets d'incident</li><li>La documentation des activités quotidiennes</li></ul>` },
+      'soc1-q2': { title: 'Q2. Qu\'est-ce qu\'un incident de cybersécurité ?', content: `<p>Tout événement qui :</p><ul><li>Compromet la <strong>confidentialité</strong>, l'<strong>intégrité</strong> ou la <strong>disponibilité</strong> d'un système d'information</li><li>Indique une défaillance des contrôles de sécurité</li></ul>` },
+      'soc1-q3': { title: 'Q3. Différence entre un événement et une alerte ?', content: `<ul><li><strong>Événement</strong> : toute activité ou log enregistré (normal ou anormal)</li><li><strong>Alerte</strong> : événement signalé comme suspect ou malveillant selon des règles de détection</li></ul>` },
+      'soc1-q4': { title: 'Q4. Qu\'est-ce qu\'un faux positif ?', content: `<p>Une alerte déclenchée par une activité normale qui ne représente pas une menace réelle.</p><p>Le rôle du SOC est de <strong>réduire les faux positifs</strong> via l'optimisation (tuning) des règles.</p>` },
+      'soc1-q5': { title: 'Q5. Définissez la triade CIA', content: `<ul><li><strong>Confidentialité</strong> : empêcher les accès non autorisés aux données</li><li><strong>Intégrité</strong> : garantir que les données ne sont pas modifiées</li><li><strong>Disponibilité</strong> : assurer l'accès aux données et services quand nécessaire</li></ul>` },
+
+      // SECTION 2 : Sources de logs & SIEM
+      'soc1-q6': { title: 'Q6. Qu\'est-ce qu\'un SIEM ?', content: `<p>Le <strong>SIEM</strong> (Security Information and Event Management) est une plateforme qui permet de :</p><ul><li>Collecter et normaliser les logs de plusieurs sources</li><li>Corréler et détecter des événements</li><li>Générer des alertes basées sur des règles</li></ul><p><strong>Exemples</strong> : Wazuh, Splunk, QRadar, Elastic SIEM</p>` },
+      'soc1-q7': { title: 'Q7. Quels types de logs un SIEM collecte-t-il ?', content: `<ul><li>Logs Windows (Event Logs)</li><li>Logs Linux (Syslog)</li><li>Logs Firewall</li><li>Alertes IDS/IPS (Suricata, Snort)</li><li>Logs antivirus</li><li>Logs VPN et proxy</li><li>Logs d'authentification (SSH, RDP)</li></ul>` },
+      'soc1-q8': { title: 'Q8. Qu\'est-ce qu\'un use case SIEM ?', content: `<p>Un <strong>scénario décrivant comment une menace est détectée</strong> via des règles de corrélation.</p><p><strong>Exemple</strong> : détection de plusieurs tentatives de connexion échouées depuis la même IP.</p>` },
+
+      // SECTION 3 : Triage & Surveillance
+      'soc1-q9': { title: 'Q9. Comment investiguer une alerte ?', content: `<ol><li>Identifier la règle et sa source</li><li>Examiner les logs associés (utilisateur, IP, fichier…)</li><li>Vérifier le contexte (comportement normal ou non ?)</li><li>Corréler avec d'autres logs si nécessaire</li><li>Escalader ou clôturer l'alerte selon les résultats</li></ol>` },
+      'soc1-q10': { title: 'Q10. Que faire en cas d\'alerte malware ?', content: `<ol><li>Identifier l'hôte et l'utilisateur</li><li>Vérifier si le fichier a été mis en quarantaine</li><li>Examiner l'activité de l'endpoint</li><li>Vérifier si d'autres alertes similaires existent</li><li>Escalader au Tier 2 pour analyse forensique</li></ol>` },
+      'soc1-q11': { title: 'Q11. Comment gérer une alerte phishing ?', content: `<ol><li>Analyser l'adresse de l'expéditeur et les en-têtes</li><li>Vérifier si des utilisateurs ont cliqué</li><li>Examiner les logs de navigation web</li><li>Mettre l'email en quarantaine si nécessaire</li><li>Escalader avec toutes les preuves au Tier 2</li></ol>` },
+      'soc1-q12': { title: 'Q12. Différence entre IDS et IPS', content: `<ul><li><strong>IDS</strong> (Intrusion Detection System) : détecte mais <strong>ne bloque pas</strong> le trafic</li><li><strong>IPS</strong> (Intrusion Prevention System) : détecte et <strong>bloque activement</strong> le trafic malveillant</li></ul>` },
+      'soc1-q13': { title: 'Q13. Catégories courantes d\'alertes de sécurité', content: `<ul><li>Attaques par force brute</li><li>Détection de malware</li><li>Exfiltration de données</li><li>Connexions suspectes</li><li>Reconnaissance interne</li></ul>` },
+
+      // SECTION 4 : Réseaux & OS
+      'soc1-q14': { title: 'Q14. Ports réseaux courants', content: `<table style="width:100%; border-collapse: collapse;"><tr style="background: var(--bg-tertiary);"><th style="padding: 8px; text-align: left;">Service</th><th style="padding: 8px; text-align: left;">Port</th></tr><tr><td style="padding: 8px;">SSH</td><td style="padding: 8px;"><strong>22</strong></td></tr><tr><td style="padding: 8px;">HTTP</td><td style="padding: 8px;"><strong>80</strong></td></tr><tr><td style="padding: 8px;">HTTPS</td><td style="padding: 8px;"><strong>443</strong></td></tr><tr><td style="padding: 8px;">DNS</td><td style="padding: 8px;"><strong>53</strong></td></tr><tr><td style="padding: 8px;">RDP</td><td style="padding: 8px;"><strong>3389</strong></td></tr><tr><td style="padding: 8px;">SMB</td><td style="padding: 8px;"><strong>445</strong></td></tr></table>` },
+      'soc1-q15': { title: 'Q15. Différence entre TCP et UDP', content: `<ul><li><strong>TCP</strong> : orienté connexion, fiable (garantit la livraison)</li><li><strong>UDP</strong> : sans connexion, plus rapide mais moins fiable</li></ul>` },
+      'soc1-q16': { title: 'Q16. Qu\'est-ce que le DNS et comment peut-il être abusé ?', content: `<p>Le <strong>DNS</strong> (Domain Name System) traduit les noms de domaine en adresses IP.</p><p>Il peut être utilisé pour :</p><ul><li><strong>Tunneling DNS</strong> : encapsulation de données dans des requêtes DNS</li><li><strong>C2 via DNS</strong> : commande et contrôle</li><li><strong>Exfiltration de données</strong></li></ul><p>⚠️ Dangereux car le trafic DNS est souvent <strong>peu inspecté</strong>.</p>` },
+      'soc1-q17': { title: 'Q17. Comment identifier une IP suspecte ?', content: `<ul><li>Whois / Reverse DNS</li><li>Sources de Threat Intelligence (<strong>VirusTotal</strong>, <strong>AbuseIPDB</strong>)</li><li>Géolocalisation</li><li>Vérification sur blocklists connues</li></ul>` },
+
+      // SECTION 5 : OS & Logs
+      'soc1-q18': { title: 'Q18. Où sont stockés les logs sous Linux ?', content: `<p>Dans le répertoire <code>/var/log/</code> :</p><ul><li><code>/var/log/auth.log</code> - authentification</li><li><code>/var/log/syslog</code> - messages système</li><li><code>/var/log/messages</code> - messages généraux</li></ul><p><strong>Outils utiles</strong> : less, tail, grep</p>` },
+      'soc1-q19': { title: 'Q19. Où sont stockés les logs sous Windows ?', content: `<p>Via <strong>Event Viewer</strong>, basé sur des fichiers <code>.evtx</code></p><p><strong>Catégories principales :</strong></p><ul><li>Application</li><li>System</li><li>Security</li><li>Setup</li><li>Forwarded Events</li></ul>` },
+      'soc1-q20': { title: 'Q20. Qu\'est-ce que l\'Event ID 4625 ?', content: `<p>ID du journal de sécurité Windows indiquant une <strong>tentative de connexion échouée</strong>.</p><p>Très important pour détecter les <strong>attaques par force brute</strong>.</p>` },
+
+      // SECTION 6 : Threat Intelligence
+      'soc1-q21': { title: 'Q21. Qu\'est-ce qu\'un IOC ?', content: `<p>Un <strong>Indicator of Compromise</strong> est une preuve d'une possible compromission.</p><p><strong>Exemples :</strong></p><ul><li>Adresse IP malveillante</li><li>Hash de fichier</li><li>Domaine malveillant</li><li>Clé registre</li><li>Processus suspect</li></ul><p>Les IOCs sont les <strong>empreintes numériques</strong> laissées par les attaquants.</p>` },
+      'soc1-q22': { title: 'Q22. Qu\'est-ce qu\'un hash ?', content: `<p>Valeur unique représentant le contenu d'un fichier.</p><p>Utilisée pour :</p><ul><li>Vérifier l'<strong>intégrité</strong> d'un fichier</li><li>Identifier des <strong>malwares connus</strong></li></ul><p><strong>Algorithmes courants</strong> : MD5, SHA-1, SHA-256</p>` },
+      'soc1-q23': { title: 'Q23. Sources gratuites de Threat Intelligence', content: `<ul><li><strong>VirusTotal</strong> - analyse de fichiers et URLs</li><li><strong>AbuseIPDB</strong> - réputation des IPs</li><li><strong>AlienVault OTX</strong> - partage de menaces</li><li><strong>IBM X-Force Exchange</strong> - base de données de menaces</li><li><strong>MalwareBazaar</strong> - échantillons de malwares</li></ul>` },
+
+      // SECTION 7 : Ticketing & Soft Skills
+      'soc1-q24': { title: 'Q24. Que mettre dans un ticket d\'incident ?', content: `<ul><li>ID de l'alerte et règle</li><li>Horodatage</li><li>IP source et destination</li><li>Utilisateur concerné</li><li>Résumé de l'analyse</li><li>Verdict (FP, TP, escalade)</li></ul>` },
+      'soc1-q25': { title: 'Q25. Comment prioriser les alertes dans un SOC ?', content: `<ul><li><strong>Criticité de l'actif</strong> - serveur critique vs poste utilisateur</li><li><strong>Sévérité de l'alerte</strong> - high, medium, low</li><li><strong>Type de menace</strong> - ransomware vs adware</li><li><strong>Historique des alertes</strong> - récurrence, patterns</li></ul>` },
+
+      // BONUS : Questions RH
+      'soc1-q26': { title: 'Q26. Pourquoi vouloir être analyste SOC ?', content: `<p>« Je suis passionné par la cybersécurité et je souhaite contribuer à la défense opérationnelle.</p><p>Le rôle SOC me permet d'apprendre les menaces réelles et de protéger les systèmes. »</p><p><strong>Conseils</strong> : Montrez votre passion, vos projets personnels, vos certifications.</p>` },
+      'soc1-q27': { title: 'Q27. Comment gérez-vous la pression ?', content: `<p>« Je reste calme, je priorise selon la sévérité, je documente clairement et je traite d'abord les alertes à fort impact métier. »</p><p><strong>Conseils</strong> : Donnez un exemple concret (méthode STAR).</p>` }
+    });
+  </script>
+  <script src="assets/js/pwa-install.js"></script>
+</body>
+</html>

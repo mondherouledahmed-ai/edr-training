@@ -1,0 +1,145 @@
+﻿<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SecOps Academy • Q&A SOC</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/app.css">
+  <link rel="manifest" href="manifest.webmanifest">
+  <meta name="theme-color" content="#6366f1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="SecOps">
+  <link rel="apple-touch-icon" href="assets/icons/icon-192.png">
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="sidebar-header"><div class="logo"><i class="fas fa-shield-alt"></i><div><div>SecOps Academy</div><div class="tagline">Formation SOC/EDR/SOAR</div></div></div></div>
+      <nav class="sidebar-nav">
+        <div class="nav-section"><div class="nav-section-title">Dashboard</div>
+          <a class="nav-item" href="dashboard.html"><i class="fas fa-home"></i><span>Accueil</span></a>
+          <a class="nav-item" href="progress.html"><i class="fas fa-chart-line"></i><span>Progression</span></a>
+          <a class="nav-item" href="revision.html"><i class="fas fa-gamepad"></i><span>Hub Révision</span><span class="nav-badge">XP</span></a>
+        </div>
+        <div class="nav-section"><div class="nav-section-title">Formation</div>
+          <a class="nav-item" href="soc-alerts.html"><i class="fas fa-bell"></i><span>Alertes SOC</span><span class="nav-badge">40+</span></a>
+          <a class="nav-item active" href="soc-qa.html"><i class="fas fa-question-circle"></i><span>Q&A SOC</span></a>
+          <a class="nav-item" href="edr.html"><i class="fas fa-laptop"></i><span>EDR Investigation</span></a>
+          <a class="nav-item" href="soar.html"><i class="fas fa-robot"></i><span>SOAR Playbooks</span></a>
+          <a class="nav-item" href="pam.html"><i class="fas fa-key"></i><span>PAM</span></a>
+          <a class="nav-item" href="soc-l1-l2.html"><i class="fas fa-shield-virus"></i><span>SOC L1 & L2</span><span class="nav-badge">NEW</span></a>
+          <a class="nav-item" href="pentest.html"><i class="fas fa-user-secret"></i><span>Pentest Senior</span></a>
+        </div>
+        <div class="nav-section"><div class="nav-section-title">Outils & Techniques</div>
+          <a class="nav-item" href="splunk.html"><i class="fas fa-search"></i><span>Splunk SPL</span></a>
+          <a class="nav-item" href="events.html"><i class="fas fa-list"></i><span>Windows Events</span></a>
+          <a class="nav-item" href="linux.html"><i class="fab fa-linux"></i><span>Hardening Linux</span></a>
+          <a class="nav-item" href="apache.html"><i class="fas fa-server"></i><span>Apache & YAML</span></a>
+        </div>
+        <div class="nav-section"><div class="nav-section-title">Entretiens</div>
+          <a class="nav-item" href="star.html"><i class="fas fa-star"></i><span>Méthode STAR</span></a>
+          <a class="nav-item" href="interview.html"><i class="fas fa-microphone"></i><span>Simulation</span></a>
+          <a class="nav-item" href="soc-interview.html"><i class="fas fa-user-tie"></i><span>Questions SOC</span><span class="nav-badge">60+</span></a>
+        </div>
+      </nav>
+      <div class="sidebar-footer"><div class="user-card"><div class="user-avatar">AN</div><div><div class="user-name">Analyste SOC</div><div class="user-role">En formation</div></div></div></div>
+    </aside>
+
+    <main class="main">
+      <nav class="navbar">
+        <div class="search-container"><i class="fas fa-search search-icon"></i><input type="text" class="search-input" id="search" placeholder="Rechercher..." /></div>
+        <div class="navbar-actions">
+          <button class="icon-btn" onclick="toggleTheme()" title="Changer le thème"><i class="fas fa-moon"></i></button>
+          <button class="icon-btn" onclick="openSTAR()" title="Créer une note STAR"><i class="fas fa-plus"></i></button>
+          <button class="icon-btn" title="Notifications"><i class="fas fa-bell"></i><span class="badge-dot"></span></button>
+        </div>
+      </nav>
+      <div class="content">
+        <div class="page-header">
+          <h1 class="page-title">Q&A SOC Professionnel 💬</h1>
+          <p class="page-subtitle"><strong>Méthodologie:</strong> Détection → Qualification → Corrélation → Analyse comportementale (UEBA) → Réponse → Reporting</p>
+        </div>
+
+        <div class="card">
+          <h3 style="margin-bottom:20px; font-size:22px; font-weight:800;">Questions d'entretien essentielles</h3>
+          <ul class="feature-list">
+            <li><i class="fas fa-check-circle"></i><strong>L1 vs L2:</strong> L1 qualifie/faux positifs; L2 investigue/corrèle/répond</li>
+            <li><i class="fas fa-check-circle"></i><strong>Faux positif:</strong> Alerte valide techniquement mais activité légitime</li>
+            <li><i class="fas fa-check-circle"></i><strong>Qualifier une alerte:</strong> Logs + contexte + comportement + corrélation</li>
+            <li><i class="fas fa-check-circle"></i><strong>MITRE ATT&CK:</strong> Mapper tactiques/techniques pour détection & réponses</li>
+            <li><i class="fas fa-check-circle"></i><strong>SIEM saturé:</strong> Réduire faux positifs via corrélation, contexte, UEBA</li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <h3 style="margin-bottom:16px; font-size:20px; font-weight:700;">🎯 Question RH Piège</h3>
+          <p style="color:#64748b; font-style:italic; margin-bottom:12px;">« Comment êtes-vous opérationnel sans expérience SOC dédiée ? »</p>
+          <p style="color:#0f172a; line-height:1.7;"><strong>Réponse PRO:</strong> J'ai travaillé sur des environnements managés SOC avec logs réels (WAF, firewalls, SIEM). J'ai l'habitude de qualifier les alertes, faire de la corrélation multi-logs et distinguer faux positifs des incidents réels. Je travaille toujours avec une méthodologie SOC claire: détection, qualification, corrélation, analyse comportementale et reporting.</p>
+        </div>
+
+        <div class="card">
+          <h3 style="margin-bottom:16px; font-size:20px; font-weight:700;">💡 Question Technique L1/L2</h3>
+          <p style="color:#64748b; font-style:italic; margin-bottom:12px;">« Une alerte SIEM arrive, que faites-vous en premier ? »</p>
+          <p style="color:#0f172a; line-height:1.7;"><strong>Réponse PRO:</strong> Je commence toujours par qualifier l'alerte: je vérifie la source, le contexte, puis je corrèle avec d'autres logs avant toute action. Je ne bloque jamais sans comprendre si c'est un vrai incident ou un faux positif.</p>
+        </div>
+
+        <h3 style="margin:32px 0 20px; font-size:26px; font-weight:800;">Scénarios d’entretien — Réponses parfaites</h3>
+        <div class="scenario-grid">
+          <div class="scenario-card qna-card" onclick="openScenario('soc-int-vpn-3am')"><div class="scenario-title">Connexion VPN à 03h12 (faux positif potentiel)</div><div class="scenario-meta"><span class="badge badge-info">Q&A</span></div><p class="scenario-text">Connexion VPN réussie à 03h12. Que faire ?</p></div>
+          <div class="scenario-card qna-card" onclick="openScenario('soc-int-exfil')"><div class="scenario-title">Exfiltration de données suspecte</div><div class="scenario-meta"><span class="badge badge-info">Q&A</span></div><p class="scenario-text">Volume sortant important vers IP inconnue.</p></div>
+          <div class="scenario-card qna-card" onclick="openScenario('soc-int-auth-fail-then-success')"><div class="scenario-title">Multiples échecs suivis d’un succès</div><div class="scenario-meta"><span class="badge badge-info">Q&A</span></div><p class="scenario-text">Brute force vs password spraying.</p></div>
+          <div class="scenario-card qna-card" onclick="openScenario('soc-int-admin-account-created')"><div class="scenario-title">Création d’un compte admin hors procédure</div><div class="scenario-meta"><span class="badge badge-info">Q&A</span></div><p class="scenario-text">Compte admin créé sans ticket de changement.</p></div>
+          <div class="scenario-card qna-card" onclick="openScenario('soc-int-server-mass-download')"><div class="scenario-title">Téléchargement massif depuis un serveur</div><div class="scenario-meta"><span class="badge badge-info">Q&A</span></div><p class="scenario-text">Serveur télécharge un volume inhabituel.</p></div>
+          <div class="scenario-card qna-card" onclick="openScenario('soc-int-offhours-sensitive-files')"><div class="scenario-title">Accès fichiers sensibles hors heures</div><div class="scenario-meta"><span class="badge badge-info">Q&A</span></div><p class="scenario-text">Accès RH à 02h du matin.</p></div>
+          <div class="scenario-card qna-card" onclick="openScenario('soc-int-dlp-email')"><div class="scenario-title">DLP: envoi vers Gmail</div><div class="scenario-meta"><span class="badge badge-info">Q&A</span></div><p class="scenario-text">Envoi de données sensibles par email externe.</p></div>
+          <div class="scenario-card qna-card" onclick="openScenario('soc-int-psexec-user-host')"><div class="scenario-title">PsExec depuis poste utilisateur</div><div class="scenario-meta"><span class="badge badge-info">Q&A</span></div><p class="scenario-text">Exécution PsExec hors contexte IT.</p></div>
+          <div class="scenario-card qna-card" onclick="openScenario('soc-int-dns-new-domain')"><div class="scenario-title">DNS vers domaine récent</div><div class="scenario-meta"><span class="badge badge-info">Q&A</span></div><p class="scenario-text">Requêtes DNS vers domaine créé il y a 2 jours.</p></div>
+          <div class="scenario-card qna-card" onclick="openScenario('soc-int-edr-agents-offline')"><div class="scenario-title">Déconnexion massive d’agents EDR</div><div class="scenario-meta"><span class="badge badge-info">Q&A</span></div><p class="scenario-text">Plusieurs agents hors ligne simultanément.</p></div>
+          <div class="scenario-card qna-card" onclick="openScenario('soc-int-firewall-rule-change')"><div class="scenario-title">Modification règles firewall</div><div class="scenario-meta"><span class="badge badge-info">Q&A</span></div><p class="scenario-text">Ajout flux large sans validation.</p></div>
+          <div class="scenario-card qna-card" onclick="openScenario('soc-int-cloud-upload')"><div class="scenario-title">Upload vers cloud non approuvé</div><div class="scenario-meta"><span class="badge badge-info">Q&A</span></div><p class="scenario-text">Transferts vers service cloud externe.</p></div>
+          <div class="scenario-card qna-card" onclick="openScenario('soc-int-api-abnormal')"><div class="scenario-title">Accès API anormal</div><div class="scenario-meta"><span class="badge badge-info">Q&A</span></div><p class="scenario-text">Appels massifs depuis IP interne.</p></div>
+          <div class="scenario-card qna-card" onclick="openScenario('soc-int-password-changes')"><div class="scenario-title">Changements de mot de passe fréquents</div><div class="scenario-meta"><span class="badge badge-info">Q&A</span></div><p class="scenario-text">Plusieurs changements en peu de temps.</p></div>
+          <div class="scenario-card qna-card" onclick="openScenario('soc-int-logs-disabled')"><div class="scenario-title">Désactivation des logs</div><div class="scenario-meta"><span class="badge badge-info">Q&A</span></div><p class="scenario-text">Arrêt brutal de journaux systèmes.</p></div>
+          <div class="scenario-card qna-card" onclick="openScenario('soc-int-impossible-travel')"><div class="scenario-title">Connexion depuis deux pays</div><div class="scenario-meta"><span class="badge badge-info">Q&A</span></div><p class="scenario-text">Improbable travel en 30 minutes.</p></div>
+          <div class="scenario-card qna-card" onclick="openScenario('soc-int-service-account-misuse')"><div class="scenario-title">Abus compte de service</div><div class="scenario-meta"><span class="badge badge-info">Q&A</span></div><p class="scenario-text">Connexion interactive avec compte service.</p></div>
+          <div class="scenario-card qna-card" onclick="openScenario('soc-int-internal-scan')"><div class="scenario-title">Scan réseau interne par poste</div><div class="scenario-meta"><span class="badge badge-info">Q&A</span></div><p class="scenario-text">Reconnaissance post-compromission.</p></div>
+          <div class="scenario-card qna-card" onclick="openScenario('soc-int-exe-download')"><div class="scenario-title">Téléchargement d’un exécutable</div><div class="scenario-meta"><span class="badge badge-info">Q&A</span></div><p class="scenario-text">Depuis un site non référencé.</p></div>
+          <div class="scenario-card qna-card" onclick="openScenario('soc-int-low-signal-correlation')"><div class="scenario-title">Corrélation de signaux faibles</div><div class="scenario-meta"><span class="badge badge-info">Q&A</span></div><p class="scenario-text">Alertes faibles répétées sur même hôte.</p></div>
+          <div class="scenario-card qna-card" onclick="openScenario('soc-int-l1-to-l2')"><div class="scenario-title">L1 → L2 : préparation</div><div class="scenario-meta"><span class="badge badge-info">Q&A</span></div><p class="scenario-text">Expérience L1 préparant responsabilités L2.</p></div>
+          <div class="scenario-card qna-card" onclick="openScenario('soc-int-l1-daily-prep')"><div class="scenario-title">Tâches L1 quotidiennes</div><div class="scenario-meta"><span class="badge badge-info">Q&A</span></div><p class="scenario-text">Préparation aux responsabilités L2.</p></div>
+          <div class="scenario-card qna-card" onclick="openScenario('soc-int-l2-role')"><div class="scenario-title">Rôle L2 et contribution</div><div class="scenario-meta"><span class="badge badge-info">Q&A</span></div><p class="scenario-text">Point d’escalade, amélioration détection.</p></div>
+          <div class="scenario-card qna-card" onclick="openScenario('soc-int-critical-incident')"><div class="scenario-title">Incident critique : gestion</div><div class="scenario-meta"><span class="badge badge-info">Q&A</span></div><p class="scenario-text">Étapes et résultats concrets.</p></div>
+          <div class="scenario-card qna-card" onclick="openScenario('soc-int-server-alert-steps')"><div class="scenario-title">Alerte critique serveur</div><div class="scenario-meta"><span class="badge badge-info">Q&A</span></div><p class="scenario-text">Actions immédiates d’enquête.</p></div>
+          <div class="scenario-card qna-card" onclick="openScenario('soc-int-siem-fp')"><div class="scenario-title">SIEM saturé de faux positifs</div><div class="scenario-meta"><span class="badge badge-info">Q&A</span></div><p class="scenario-text">Stratégie de réduction du bruit.</p></div>
+          <div class="scenario-card qna-card" onclick="openScenario('soc-int-brute-force-investigation')"><div class="scenario-title">Attaque brute force: investigation</div><div class="scenario-meta"><span class="badge badge-info">Q&A</span></div><p class="scenario-text">Étapes d’analyse et réponse.</p></div>
+          <div class="scenario-card qna-card" onclick="openScenario('soc-int-ransomware-response')"><div class="scenario-title">Attaque ransomware: confinement</div><div class="scenario-meta"><span class="badge badge-info">Q&A</span></div><p class="scenario-text">Réaction et restaurations.</p></div>
+          <div class="scenario-card qna-card" onclick="openScenario('soc-int-forensic-server')"><div class="scenario-title">Forensic serveur compromis</div><div class="scenario-meta"><span class="badge badge-info">Q&A</span></div><p class="scenario-text">Étapes clés de l’analyse.</p></div>
+          <div class="scenario-card qna-card" onclick="openScenario('soc-int-ddos-response')"><div class="scenario-title">Attaque DDoS: actions</div><div class="scenario-meta"><span class="badge badge-info">Q&A</span></div><p class="scenario-text">Filtrage et continuité.</p></div>
+          <div class="scenario-card qna-card" onclick="openScenario('soc-int-complex-incident')"><div class="scenario-title">Incident complexe: résolution</div><div class="scenario-meta"><span class="badge badge-info">Q&A</span></div><p class="scenario-text">Coordination, chasse, documentation.</p></div>
+          <div class="scenario-card qna-card" onclick="openScenario('soc-int-insider-threat')"><div class="scenario-title">Menace interne: enquête</div><div class="scenario-meta"><span class="badge badge-info">Q&A</span></div><p class="scenario-text">Preuves, RH/juridique, atténuation.</p></div>
+          <div class="scenario-card qna-card" onclick="openScenario('soc-int-siem-challenges')"><div class="scenario-title">Défis SIEM & logs</div><div class="scenario-meta"><span class="badge badge-info">Q&A</span></div><p class="scenario-text">Solutions et bonnes pratiques.</p></div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <div class="modal-overlay" id="modal" onclick="closeModal(event)">
+    <div class="modal" onclick="event.stopPropagation()">
+      <div class="modal-header"><h2 class="modal-title">Question d’entretien</h2><button class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></button></div>
+      <div class="modal-body" id="modal-body">...</div>
+      <div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal()">Fermer</button></div>
+    </div>
+  </div>
+
+  <script src="assets/js/app.js"></script>
+  <script src="assets/js/quiz-data.js"></script>
+  <script src="assets/js/quiz-engine.js"></script>
+  <script src="assets/js/star.js"></script>
+  <script src="assets/js/scenarios.js"></script>
+  <!-- Scénarios SOC Q&A centralisés via assets/js/scenarios.js -->
+  <script src="assets/js/pwa-install.js"></script>
+</body>
+</html>

@@ -1,0 +1,673 @@
+﻿<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SecOps Academy • PAM - Privileged Access Management</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/app.css">
+  <link rel="manifest" href="manifest.webmanifest">
+  <meta name="theme-color" content="#6366f1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="SecOps">
+  <link rel="apple-touch-icon" href="assets/icons/icon-192.png">
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="logo">
+          <i class="fas fa-shield-alt"></i>
+          <div>
+            <div>SecOps Academy</div>
+            <div class="tagline">Formation SOC/EDR/SOAR</div>
+          </div>
+        </div>
+      </div>
+      <nav class="sidebar-nav">
+        <div class="nav-section">
+          <div class="nav-section-title">Dashboard</div>
+          <a class="nav-item" href="dashboard.html">
+            <i class="fas fa-home"></i>
+            <span>Accueil</span>
+          </a>
+          <a class="nav-item" href="progress.html">
+            <i class="fas fa-chart-line"></i>
+            <span>Progression</span>
+          </a>
+          <a class="nav-item" href="revision.html">
+            <i class="fas fa-gamepad"></i>
+            <span>Hub Révision</span>
+            <span class="nav-badge">XP</span>
+          </a>
+        </div>
+        <div class="nav-section">
+          <div class="nav-section-title">Formation</div>
+          <a class="nav-item" href="soc-alerts.html">
+            <i class="fas fa-bell"></i>
+            <span>Alertes SOC</span>
+            <span class="nav-badge">40+</span>
+          </a>
+          <a class="nav-item" href="soc-qa.html">
+            <i class="fas fa-question-circle"></i>
+            <span>Q&A SOC</span>
+          </a>
+          <a class="nav-item" href="edr.html">
+            <i class="fas fa-laptop"></i>
+            <span>EDR Investigation</span>
+          </a>
+          <a class="nav-item" href="soar.html">
+            <i class="fas fa-robot"></i>
+            <span>SOAR Playbooks</span>
+          </a>
+          <a class="nav-item active" href="pam.html">
+            <i class="fas fa-key"></i>
+            <span>PAM</span>
+            <span class="nav-badge">NEW</span>
+          </a>
+        </div>
+        <div class="nav-section">
+          <div class="nav-section-title">Outils & Techniques</div>
+          <a class="nav-item" href="splunk.html">
+            <i class="fas fa-search"></i>
+            <span>Splunk SPL</span>
+          </a>
+          <a class="nav-item" href="events.html">
+            <i class="fas fa-list"></i>
+            <span>Windows Events</span>
+          </a>
+          <a class="nav-item" href="linux.html">
+            <i class="fab fa-linux"></i>
+            <span>Hardening Linux</span>
+          </a>
+          <a class="nav-item" href="apache.html">
+            <i class="fas fa-server"></i>
+            <span>Apache & YAML</span>
+          </a>
+        </div>
+        <div class="nav-section">
+          <div class="nav-section-title">Entretiens</div>
+          <a class="nav-item" href="star.html">
+            <i class="fas fa-star"></i>
+            <span>Méthode STAR</span>
+          </a>
+          <a class="nav-item" href="interview.html">
+            <i class="fas fa-microphone"></i>
+            <span>Simulation</span>
+          </a>
+          <a class="nav-item" href="soc-interview.html">
+            <i class="fas fa-user-tie"></i>
+            <span>Questions SOC</span>
+            <span class="nav-badge">60+</span>
+          </a>
+        </div>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="user-card">
+          <div class="user-avatar">AN</div>
+          <div>
+            <div class="user-name">Analyste SOC</div>
+            <div class="user-role">En formation</div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <main class="main">
+      <nav class="navbar">
+        <div class="search-container">
+          <i class="fas fa-search search-icon"></i>
+          <input type="text" class="search-input" id="search" placeholder="Rechercher..." />
+        </div>
+        <div class="navbar-actions">
+          <button class="icon-btn" onclick="toggleTheme()" title="Changer le thème"><i class="fas fa-moon"></i></button>
+          <button class="icon-btn" title="Notifications"><i class="fas fa-bell"></i><span class="badge-dot"></span></button>
+        </div>
+      </nav>
+      <div class="content">
+        <div class="page-header">
+          <h1 class="page-title">PAM - Privileged Access Management 🔐</h1>
+          <p class="page-subtitle">Gestion des accès privilégiés - Sécurisation des comptes à hauts privilèges</p>
+        </div>
+
+        <!-- Jour 3 -->
+        <h2 style="margin-top: 2rem; margin-bottom: 1rem;">📅 Jour 3 : Fondamentaux PAM</h2>
+
+        <div class="scenario-card" onclick="openScenario('pam-intro')">
+          <div class="scenario-title">Introduction au PAM</div>
+          <div class="scenario-meta">
+            <span class="badge badge-info">Concepts</span>
+            <span class="badge badge-success">Jour 3</span>
+          </div>
+          <p class="scenario-text">Définition, objectifs et importance du PAM dans la cybersécurité.</p>
+        </div>
+
+        <div class="scenario-card" onclick="openScenario('pam-risques')">
+          <div class="scenario-title">Risques des accès privilégiés</div>
+          <div class="scenario-meta">
+            <span class="badge badge-danger">Risques</span>
+            <span class="badge badge-success">Jour 3</span>
+          </div>
+          <p class="scenario-text">Menaces internes, compromission de comptes, mouvement latéral.</p>
+        </div>
+
+        <div class="scenario-card" onclick="openScenario('pam-composants')">
+          <div class="scenario-title">Composants d'une solution PAM</div>
+          <div class="scenario-meta">
+            <span class="badge badge-info">Architecture</span>
+            <span class="badge badge-success">Jour 3</span>
+          </div>
+          <p class="scenario-text">Coffre-fort, rotation des mots de passe, enregistrement de sessions.</p>
+        </div>
+
+        <div class="scenario-card" onclick="openScenario('pam-principes')">
+          <div class="scenario-title">Principes clés du PAM</div>
+          <div class="scenario-meta">
+            <span class="badge badge-warning">Bonnes pratiques</span>
+            <span class="badge badge-success">Jour 3</span>
+          </div>
+          <p class="scenario-text">Least privilege, JIT access, séparation des privilèges, Zero Standing Privileges.</p>
+        </div>
+
+        <div class="scenario-card" onclick="openScenario('pam-solutions')">
+          <div class="scenario-title">Solutions PAM du marché</div>
+          <div class="scenario-meta">
+            <span class="badge badge-purple">Outils</span>
+            <span class="badge badge-success">Jour 3</span>
+          </div>
+          <p class="scenario-text">CyberArk, BeyondTrust, Delinea, HashiCorp Vault, Azure PIM.</p>
+        </div>
+
+        <!-- Jour 4 -->
+        <h2 style="margin-top: 2rem; margin-bottom: 1rem;">📅 Jour 4 : PAM Avancé & Intégration SOC</h2>
+
+        <div class="scenario-card" onclick="openScenario('pam-workflows')">
+          <div class="scenario-title">Workflows PAM</div>
+          <div class="scenario-meta">
+            <span class="badge badge-info">Processus</span>
+            <span class="badge badge-warning">Jour 4</span>
+          </div>
+          <p class="scenario-text">Demande d'accès, approbation, checkout, utilisation, checkin.</p>
+        </div>
+
+        <div class="scenario-card" onclick="openScenario('pam-siem')">
+          <div class="scenario-title">Intégration PAM & SIEM</div>
+          <div class="scenario-meta">
+            <span class="badge badge-danger">Détection</span>
+            <span class="badge badge-warning">Jour 4</span>
+          </div>
+          <p class="scenario-text">Alertes sur utilisation anormale, corrélation avec d'autres événements.</p>
+        </div>
+
+        <div class="scenario-card" onclick="openScenario('pam-incidents')">
+          <div class="scenario-title">Incidents liés aux comptes privilégiés</div>
+          <div class="scenario-meta">
+            <span class="badge badge-danger">Réponse</span>
+            <span class="badge badge-warning">Jour 4</span>
+          </div>
+          <p class="scenario-text">Investigation, révocation d'accès, forensics sur sessions enregistrées.</p>
+        </div>
+
+        <div class="scenario-card" onclick="openScenario('pam-compliance')">
+          <div class="scenario-title">PAM & Conformité</div>
+          <div class="scenario-meta">
+            <span class="badge badge-info">Réglementaire</span>
+            <span class="badge badge-warning">Jour 4</span>
+          </div>
+          <p class="scenario-text">ISO 27001, SOC 2, GDPR, PCI-DSS et exigences PAM.</p>
+        </div>
+
+        <div class="scenario-card" onclick="openScenario('pam-cloud')">
+          <div class="scenario-title">PAM dans le Cloud</div>
+          <div class="scenario-meta">
+            <span class="badge badge-purple">Cloud</span>
+            <span class="badge badge-warning">Jour 4</span>
+          </div>
+          <p class="scenario-text">Azure PIM, AWS IAM, GCP IAM, gestion des secrets cloud.</p>
+        </div>
+
+        <div class="scenario-card qna-card" onclick="openScenario('pam-quiz')">
+          <div class="scenario-title">Quiz PAM - Questions d'entretien</div>
+          <div class="scenario-meta">
+            <span class="badge badge-new">Révision</span>
+          </div>
+          <p class="scenario-text">Testez vos connaissances sur le PAM avec des questions typiques d'entretien.</p>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <div class="modal-overlay" id="modal" onclick="closeModal(event)">
+    <div class="modal" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <h2 class="modal-title">PAM</h2>
+        <button class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="modal-body" id="modal-body">...</div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal()">Fermer</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="assets/js/app.js"></script>
+  <script src="assets/js/quiz-data.js"></script>
+  <script src="assets/js/quiz-engine.js"></script>
+  <script src="assets/js/scenarios.js"></script>
+  <script>
+    Object.assign(scenarios, {
+      'pam-intro': {
+        title: 'Introduction au PAM',
+        content: `
+          <h3>Qu'est-ce que le PAM ?</h3>
+          <p><strong>PAM (Privileged Access Management)</strong> est l'ensemble des stratégies et technologies utilisées pour contrôler, surveiller et sécuriser les accès des comptes à privilèges élevés.</p>
+          
+          <h3>Pourquoi le PAM est critique ?</h3>
+          <ul>
+            <li>Les comptes privilégiés sont les <strong>cibles principales</strong> des attaquants</li>
+            <li>80% des violations impliquent des <strong>credentials compromis</strong></li>
+            <li>Les comptes admin ont un accès <strong>illimité</strong> aux systèmes critiques</li>
+            <li>Risque de <strong>mouvement latéral</strong> en cas de compromission</li>
+          </ul>
+
+          <h3>Types de comptes privilégiés</h3>
+          <ul>
+            <li><strong>Comptes admin locaux</strong> : Administrator, root</li>
+            <li><strong>Comptes de domaine</strong> : Domain Admins, Enterprise Admins</li>
+            <li><strong>Comptes de service</strong> : SQL, Oracle, applications</li>
+            <li><strong>Comptes d'urgence</strong> : Break-glass accounts</li>
+            <li><strong>Comptes cloud</strong> : AWS root, Azure Global Admin</li>
+          </ul>
+        `
+      },
+
+      'pam-risques': {
+        title: 'Risques des accès privilégiés',
+        content: `
+          <h3>Menaces principales</h3>
+          <ul>
+            <li><strong>Menaces internes</strong> : Employés malveillants ou négligents</li>
+            <li><strong>Compromission de credentials</strong> : Phishing, brute force, credential stuffing</li>
+            <li><strong>Mouvement latéral</strong> : Pass-the-Hash, Pass-the-Ticket</li>
+            <li><strong>Élévation de privilèges</strong> : Exploitation de vulnérabilités</li>
+            <li><strong>Supply chain attacks</strong> : Via des fournisseurs avec accès privilégié</li>
+          </ul>
+
+          <h3>Techniques d'attaque courantes</h3>
+          <ul>
+            <li><strong>Kerberoasting</strong> : Extraction de tickets de service</li>
+            <li><strong>Golden Ticket</strong> : Compromission du compte KRBTGT</li>
+            <li><strong>DCSync</strong> : Réplication d'annuaire AD</li>
+            <li><strong>Password spraying</strong> : Test de mots de passe communs</li>
+          </ul>
+
+          <h3>Impact d'une compromission</h3>
+          <ul>
+            <li>Accès à <strong>toutes les données</strong> sensibles</li>
+            <li>Installation de <strong>backdoors</strong> persistantes</li>
+            <li>Déploiement de <strong>ransomware</strong> à grande échelle</li>
+            <li><strong>Exfiltration</strong> de données massives</li>
+          </ul>
+        `
+      },
+
+      'pam-composants': {
+        title: 'Composants d\'une solution PAM',
+        content: `
+          <h3>Composants essentiels</h3>
+          
+          <p><strong>1. Coffre-fort de mots de passe (Vault)</strong></p>
+          <ul>
+            <li>Stockage sécurisé et chiffré des credentials</li>
+            <li>Contrôle d'accès granulaire</li>
+            <li>API pour intégration</li>
+          </ul>
+
+          <p><strong>2. Rotation automatique des mots de passe</strong></p>
+          <ul>
+            <li>Changement régulier des credentials</li>
+            <li>Après chaque utilisation (single-use passwords)</li>
+            <li>Mise à jour automatique sur les systèmes cibles</li>
+          </ul>
+
+          <p><strong>3. Session Management</strong></p>
+          <ul>
+            <li>Proxy des connexions privilégiées</li>
+            <li>Enregistrement vidéo des sessions</li>
+            <li>Journalisation des commandes</li>
+          </ul>
+
+          <p><strong>4. Privileged Threat Analytics (PTA)</strong></p>
+          <ul>
+            <li>Détection d'anomalies comportementales</li>
+            <li>Alertes en temps réel</li>
+            <li>Machine learning pour baseline</li>
+          </ul>
+        `
+      },
+
+      'pam-principes': {
+        title: 'Principes clés du PAM',
+        content: `
+          <h3>Least Privilege (Moindre privilège)</h3>
+          <p>Accorder uniquement les <strong>permissions minimales</strong> nécessaires pour accomplir une tâche.</p>
+
+          <h3>Just-In-Time (JIT) Access</h3>
+          <p>Fournir l'accès privilégié <strong>uniquement quand nécessaire</strong>, pour une durée limitée.</p>
+          <ul>
+            <li>Réduction de la fenêtre d'attaque</li>
+            <li>Workflow d'approbation</li>
+            <li>Révocation automatique</li>
+          </ul>
+
+          <h3>Zero Standing Privileges (ZSP)</h3>
+          <p>Aucun utilisateur ne possède de privilèges <strong>permanents</strong>. Tous les accès sont temporaires et justifiés.</p>
+
+          <h3>Séparation des privilèges</h3>
+          <ul>
+            <li>Séparer les comptes admin des comptes quotidiens</li>
+            <li>Pas de navigation web avec un compte admin</li>
+            <li>Workstations d'administration dédiées (PAW)</li>
+          </ul>
+
+          <h3>Defense in Depth</h3>
+          <p>Plusieurs couches de sécurité : MFA, réseau segmenté, monitoring, etc.</p>
+        `
+      },
+
+      'pam-solutions': {
+        title: 'Solutions PAM du marché',
+        content: `
+          <h3>Leaders du marché</h3>
+          
+          <p><strong>CyberArk</strong></p>
+          <ul>
+            <li>Leader historique du PAM</li>
+            <li>Digital Vault, PSM, CPM</li>
+            <li>Privileged Threat Analytics</li>
+          </ul>
+
+          <p><strong>BeyondTrust</strong></p>
+          <ul>
+            <li>Endpoint Privilege Management</li>
+            <li>Remote Support intégré</li>
+            <li>Cloud Security</li>
+          </ul>
+
+          <p><strong>Delinea (ex-Thycotic + Centrify)</strong></p>
+          <ul>
+            <li>Secret Server</li>
+            <li>Privilege Manager</li>
+            <li>Server Suite</li>
+          </ul>
+
+          <p><strong>HashiCorp Vault</strong></p>
+          <ul>
+            <li>Gestion des secrets pour DevOps</li>
+            <li>Dynamic secrets</li>
+            <li>Cloud-native</li>
+          </ul>
+
+          <p><strong>Solutions Cloud-Native</strong></p>
+          <ul>
+            <li><strong>Azure PIM</strong> : Privileged Identity Management</li>
+            <li><strong>AWS IAM</strong> : Roles et policies</li>
+            <li><strong>GCP IAM</strong> : Identity and Access Management</li>
+          </ul>
+        `
+      },
+
+      'pam-workflows': {
+        title: 'Workflows PAM',
+        content: `
+          <h3>Workflow d'accès privilégié</h3>
+          
+          <p><strong>1. Demande d'accès</strong></p>
+          <ul>
+            <li>Utilisateur soumet une demande via portail</li>
+            <li>Justification business requise</li>
+            <li>Durée demandée spécifiée</li>
+          </ul>
+
+          <p><strong>2. Approbation</strong></p>
+          <ul>
+            <li>Manager ou security team valide</li>
+            <li>Approbation automatique selon règles</li>
+            <li>Multi-niveau pour accès critiques</li>
+          </ul>
+
+          <p><strong>3. Checkout (Récupération)</strong></p>
+          <ul>
+            <li>Credentials délivrés temporairement</li>
+            <li>Session proxy initiée</li>
+            <li>Timer démarré</li>
+          </ul>
+
+          <p><strong>4. Utilisation</strong></p>
+          <ul>
+            <li>Session enregistrée</li>
+            <li>Commandes loggées</li>
+            <li>Monitoring en temps réel</li>
+          </ul>
+
+          <p><strong>5. Checkin (Retour)</strong></p>
+          <ul>
+            <li>Credentials révoqués</li>
+            <li>Mot de passe changé automatiquement</li>
+            <li>Rapport généré</li>
+          </ul>
+        `
+      },
+
+      'pam-siem': {
+        title: 'Intégration PAM & SIEM',
+        content: `
+          <h3>Logs PAM importants</h3>
+          <ul>
+            <li>Connexions au vault</li>
+            <li>Checkout/Checkin de credentials</li>
+            <li>Sessions privilégiées</li>
+            <li>Échecs d'authentification</li>
+            <li>Modifications de configuration</li>
+          </ul>
+
+          <h3>Use Cases SIEM pour PAM</h3>
+          <ul>
+            <li><strong>Checkout sans approbation</strong> : Alerte critique</li>
+            <li><strong>Session hors heures</strong> : Activité suspecte</li>
+            <li><strong>Échecs multiples</strong> : Brute force potentiel</li>
+            <li><strong>Durée excessive</strong> : Session anormalement longue</li>
+            <li><strong>Commandes sensibles</strong> : DCSync, mimikatz détectés</li>
+          </ul>
+
+          <h3>Corrélation d'événements</h3>
+          <pre><code>PAM checkout + Failed logins + New admin = Compromission potentielle</code></pre>
+          <pre><code>Session admin + Data exfil + Off-hours = Investigation urgente</code></pre>
+
+          <h3>Dashboards SOC</h3>
+          <ul>
+            <li>Sessions actives en temps réel</li>
+            <li>Top utilisateurs privilégiés</li>
+            <li>Alertes PAM par sévérité</li>
+            <li>Tendances d'utilisation</li>
+          </ul>
+        `
+      },
+
+      'pam-incidents': {
+        title: 'Incidents liés aux comptes privilégiés',
+        content: `
+          <h3>Types d'incidents PAM</h3>
+          <ul>
+            <li>Compte privilégié compromis</li>
+            <li>Utilisation non autorisée</li>
+            <li>Bypass des contrôles PAM</li>
+            <li>Abus de privilèges par insider</li>
+          </ul>
+
+          <h3>Procédure d'investigation</h3>
+          <ol>
+            <li><strong>Identifier</strong> le compte et les systèmes impactés</li>
+            <li><strong>Révoquer</strong> immédiatement les accès</li>
+            <li><strong>Analyser</strong> les sessions enregistrées</li>
+            <li><strong>Corréler</strong> avec les logs SIEM</li>
+            <li><strong>Évaluer</strong> l'étendue de la compromission</li>
+            <li><strong>Remédier</strong> : reset credentials, patch vulnérabilités</li>
+          </ol>
+
+          <h3>Forensics sur sessions PAM</h3>
+          <ul>
+            <li>Replay des sessions vidéo</li>
+            <li>Analyse des commandes exécutées</li>
+            <li>Timeline des actions</li>
+            <li>Export pour preuves légales</li>
+          </ul>
+
+          <h3>Actions de remédiation</h3>
+          <ul>
+            <li>Rotation de tous les credentials exposés</li>
+            <li>Révocation des Golden/Silver Tickets</li>
+            <li>Reset du compte KRBTGT (2x)</li>
+            <li>Vérification des backdoors</li>
+          </ul>
+        `
+      },
+
+      'pam-compliance': {
+        title: 'PAM & Conformité',
+        content: `
+          <h3>Exigences réglementaires</h3>
+
+          <p><strong>ISO 27001</strong></p>
+          <ul>
+            <li>A.9.2 : Gestion des accès utilisateurs</li>
+            <li>A.9.4 : Contrôle d'accès aux systèmes</li>
+            <li>A.12.4 : Logging et monitoring</li>
+          </ul>
+
+          <p><strong>SOC 2</strong></p>
+          <ul>
+            <li>CC6.1 : Logical access security</li>
+            <li>CC6.2 : Autorisation avant accès</li>
+            <li>CC6.3 : Suppression des accès</li>
+          </ul>
+
+          <p><strong>PCI-DSS</strong></p>
+          <ul>
+            <li>Req 7 : Restrict access to cardholder data</li>
+            <li>Req 8 : Identify and authenticate access</li>
+            <li>Req 10 : Track and monitor access</li>
+          </ul>
+
+          <p><strong>GDPR</strong></p>
+          <ul>
+            <li>Article 32 : Sécurité du traitement</li>
+            <li>Obligation de protection des données personnelles</li>
+            <li>Traçabilité des accès aux données</li>
+          </ul>
+
+          <h3>Rapports de conformité PAM</h3>
+          <ul>
+            <li>Inventaire des comptes privilégiés</li>
+            <li>Attestation des accès</li>
+            <li>Historique des sessions</li>
+            <li>Audit trail complet</li>
+          </ul>
+        `
+      },
+
+      'pam-cloud': {
+        title: 'PAM dans le Cloud',
+        content: `
+          <h3>Azure Privileged Identity Management (PIM)</h3>
+          <ul>
+            <li>JIT access pour rôles Azure AD</li>
+            <li>Workflow d'approbation intégré</li>
+            <li>Access reviews automatiques</li>
+            <li>Alertes sur activités suspectes</li>
+          </ul>
+
+          <h3>AWS IAM Best Practices</h3>
+          <ul>
+            <li>Ne jamais utiliser le compte <strong>root</strong></li>
+            <li>MFA obligatoire sur tous les comptes privilégiés</li>
+            <li>Utiliser AWS Organizations et SCPs</li>
+            <li>AWS Secrets Manager pour les credentials</li>
+            <li>IAM Access Analyzer pour audit</li>
+          </ul>
+
+          <h3>GCP IAM</h3>
+          <ul>
+            <li>Principe du moindre privilège</li>
+            <li>Service accounts sécurisés</li>
+            <li>Conditional IAM policies</li>
+            <li>Cloud Asset Inventory</li>
+          </ul>
+
+          <h3>Gestion des secrets Cloud</h3>
+          <ul>
+            <li><strong>HashiCorp Vault</strong> : Multi-cloud</li>
+            <li><strong>AWS Secrets Manager</strong> : Rotation automatique</li>
+            <li><strong>Azure Key Vault</strong> : HSM intégré</li>
+            <li><strong>GCP Secret Manager</strong> : IAM natif</li>
+          </ul>
+
+          <h3>Défis spécifiques au Cloud</h3>
+          <ul>
+            <li>Prolifération des identités</li>
+            <li>API keys et tokens</li>
+            <li>Multi-cloud complexity</li>
+            <li>Ephemeral workloads</li>
+          </ul>
+        `
+      },
+
+      'pam-quiz': {
+        title: 'Quiz PAM - Questions d\'entretien',
+        content: `
+          <h3>Q1. Qu'est-ce que le PAM ?</h3>
+          <p>PAM (Privileged Access Management) gère et sécurise les accès des comptes à privilèges élevés via coffre-fort, rotation de mots de passe, et enregistrement de sessions.</p>
+
+          <h3>Q2. Différence entre PAM et IAM ?</h3>
+          <ul>
+            <li><strong>IAM</strong> : Gestion des identités et accès pour tous les utilisateurs</li>
+            <li><strong>PAM</strong> : Focus spécifique sur les comptes privilégiés</li>
+          </ul>
+
+          <h3>Q3. Que signifie JIT Access ?</h3>
+          <p><strong>Just-In-Time Access</strong> : Accès privilégié accordé uniquement au moment nécessaire, pour une durée limitée, puis automatiquement révoqué.</p>
+
+          <h3>Q4. Qu'est-ce qu'un coffre-fort PAM ?</h3>
+          <p>Un vault chiffré qui stocke les credentials privilégiés avec contrôle d'accès, audit trail, et rotation automatique.</p>
+
+          <h3>Q5. Pourquoi enregistrer les sessions privilégiées ?</h3>
+          <ul>
+            <li>Forensics et investigations</li>
+            <li>Conformité et audit</li>
+            <li>Dissuasion des abus</li>
+            <li>Analyse post-incident</li>
+          </ul>
+
+          <h3>Q6. Qu'est-ce que Zero Standing Privileges ?</h3>
+          <p>Aucun utilisateur ne possède de privilèges permanents. Tous les accès sont temporaires, justifiés et approuvés.</p>
+
+          <h3>Q7. Comment le PAM aide-t-il contre le mouvement latéral ?</h3>
+          <ul>
+            <li>Rotation des credentials après usage</li>
+            <li>Isolation des sessions</li>
+            <li>Détection d'anomalies</li>
+            <li>Réduction de la surface d'attaque</li>
+          </ul>
+
+          <h3>Q8. Citez 3 solutions PAM</h3>
+          <p>CyberArk, BeyondTrust, Delinea, HashiCorp Vault, Azure PIM</p>
+        `
+      }
+    });
+  </script>
+  <script src="assets/js/pwa-install.js"></script>
+</body>
+</html>

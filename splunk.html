@@ -1,0 +1,107 @@
+﻿<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SecOps Academy • Splunk SPL</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/app.css">
+  <link rel="manifest" href="manifest.webmanifest">
+  <meta name="theme-color" content="#6366f1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="SecOps">
+  <link rel="apple-touch-icon" href="assets/icons/icon-192.png">
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="sidebar-header"><div class="logo"><i class="fas fa-shield-alt"></i><div><div>SecOps Academy</div><div class="tagline">Formation SOC/EDR/SOAR</div></div></div></div>
+      <nav class="sidebar-nav">
+        <div class="nav-section"><div class="nav-section-title">Dashboard</div>
+          <a class="nav-item" href="dashboard.html"><i class="fas fa-home"></i><span>Accueil</span></a>
+          <a class="nav-item" href="progress.html"><i class="fas fa-chart-line"></i><span>Progression</span></a>
+          <a class="nav-item" href="revision.html"><i class="fas fa-gamepad"></i><span>Hub Révision</span><span class="nav-badge">XP</span></a>
+        </div>
+        <div class="nav-section"><div class="nav-section-title">Formation</div>
+          <a class="nav-item" href="soc-alerts.html"><i class="fas fa-bell"></i><span>Alertes SOC</span><span class="nav-badge">40+</span></a>
+          <a class="nav-item" href="soc-qa.html"><i class="fas fa-question-circle"></i><span>Q&A SOC</span></a>
+          <a class="nav-item" href="edr.html"><i class="fas fa-laptop"></i><span>EDR Investigation</span></a>
+          <a class="nav-item" href="soar.html"><i class="fas fa-robot"></i><span>SOAR Playbooks</span></a>
+          <a class="nav-item" href="pam.html"><i class="fas fa-key"></i><span>PAM</span></a>
+          <a class="nav-item" href="soc-l1-l2.html"><i class="fas fa-shield-virus"></i><span>SOC L1 & L2</span><span class="nav-badge">NEW</span></a>
+          <a class="nav-item" href="pentest.html"><i class="fas fa-user-secret"></i><span>Pentest Senior</span></a>
+        </div>
+        <div class="nav-section"><div class="nav-section-title">Outils & Techniques</div>
+          <a class="nav-item active" href="splunk.html"><i class="fas fa-search"></i><span>Splunk SPL</span></a>
+          <a class="nav-item" href="events.html"><i class="fas fa-list"></i><span>Windows Events</span></a>
+          <a class="nav-item" href="linux.html"><i class="fab fa-linux"></i><span>Hardening Linux</span></a>
+          <a class="nav-item" href="apache.html"><i class="fas fa-server"></i><span>Apache & YAML</span></a>
+        </div>
+        <div class="nav-section"><div class="nav-section-title">Entretiens</div>
+          <a class="nav-item" href="star.html"><i class="fas fa-star"></i><span>Méthode STAR</span></a>
+          <a class="nav-item" href="interview.html"><i class="fas fa-microphone"></i><span>Simulation</span></a>
+          <a class="nav-item" href="soc-interview.html"><i class="fas fa-user-tie"></i><span>Questions SOC</span><span class="nav-badge">60+</span></a>
+        </div>
+      </nav>
+      <div class="sidebar-footer"><div class="user-card"><div class="user-avatar">AN</div><div><div class="user-name">Analyste SOC</div><div class="user-role">En formation</div></div></div></div>
+    </aside>
+
+    <main class="main">
+      <nav class="navbar">
+        <div class="search-container"><i class="fas fa-search search-icon"></i><input type="text" class="search-input" id="search" placeholder="Rechercher..." /></div>
+        <div class="navbar-actions">
+          <button class="icon-btn" onclick="toggleTheme()" title="Changer le thème"><i class="fas fa-moon"></i></button>
+          <button class="icon-btn" onclick="openSTAR()" title="Créer une note STAR"><i class="fas fa-plus"></i></button>
+          <button class="icon-btn" title="Notifications"><i class="fas fa-bell"></i><span class="badge-dot"></span></button>
+        </div>
+      </nav>
+      <div class="content">
+        <div class="page-header">
+          <h1 class="page-title">Splunk SPL 🔎</h1>
+          <p class="page-subtitle">Requêtes utiles: triage, correlation, détection, chasse.</p>
+        </div>
+
+        <div class="card"><h3 class="card-title">Snippets</h3>
+          <div class="code-block"><pre><code>index=edr sourcetype=process command_line="*powershell*"
+| stats count by host, user, parent_process, process
+| sort - count desc</code></pre><button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copier</button></div>
+          <div class="code-block"><pre><code>index=network sourcetype=proxy status=blocked
+| stats count by url, src_ip
+| where count &gt; 10</code></pre><button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copier</button></div>
+        </div>
+
+        <h3 style="margin:24px 0; font-size:22px; font-weight:800;">Scénarios Splunk</h3>
+        <div class="scenario-card" onclick="openScenario('splunk-powershell')"><div class="scenario-title">Détecter PowerShell suspect</div><div class="scenario-meta"><span class="badge badge-info">SPL</span></div><p class="scenario-text">Exécution encodée, downloadstring, AMSI bypass.</p></div>
+        <div class="scenario-card" onclick="openScenario('splunk-c2')"><div class="scenario-title">C2 via HTTP(S)</div><div class="scenario-meta"><span class="badge badge-info">SPL</span></div><p class="scenario-text">JA3/JA3S, user-agent, beaconing.</p></div>
+      </div>
+    </main>
+  </div>
+
+  <div class="modal-overlay" id="modal" onclick="closeModal(event)">
+    <div class="modal" onclick="event.stopPropagation()">
+      <div class="modal-header"><h2 class="modal-title">Splunk Scénario</h2><button class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></button></div>
+      <div class="modal-body" id="modal-body">...</div>
+      <div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal()">Fermer</button></div>
+    </div>
+  </div>
+
+  <script src="assets/js/app.js"></script>
+  <script src="assets/js/quiz-data.js"></script>
+  <script src="assets/js/quiz-engine.js"></script>
+  <script src="assets/js/star.js"></script>
+  <script src="assets/js/scenarios.js"></script>
+  <script>
+    Object.assign(scenarios, {
+      'splunk-powershell': { title: 'SPL — PowerShell suspect', content: `<h3>Requête</h3><pre><code>index=edr command_line="*powershell*"
+| rex field=command_line "(?&lt;enc&gt;-enc[od]*\s+\w+)"
+| stats count by host,user,process,enc</code></pre>` },
+      'splunk-c2': { title: 'SPL — C2 HTTP(S)', content: `<h3>Requête</h3><pre><code>index=network (user_agent="*curl*" OR user_agent="*python*")
+| stats count by src_ip,dst_ip,user_agent
+| where count&gt;20</code></pre>` }
+    });
+  </script>
+  <script src="assets/js/pwa-install.js"></script>
+</body>
+</html>

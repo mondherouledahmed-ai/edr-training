@@ -1,0 +1,1670 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <script>window.location.href='dashboard.html';</script>
+  <noscript><meta http-equiv="refresh" content="0; url=dashboard.html"></noscript>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Préparation Entretien EDR — HarfangLab</title>
+  <meta name="description" content="EDR: concepts, HarfangLab, YARA, investigation, réponse, intégration SOC, scénarios, Q&A, plan 30 jours." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
+          colors: {
+            brand: {
+              50: '#f0f7ff', 100: '#dcebff', 200: '#b9d7ff', 300: '#8bbdff',
+              400: '#5fa6ff', 500: '#2a89ff', 600: '#1e6fdb', 700: '#1a5cb3',
+              800: '#154a8f', 900: '#123e77'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    html, body { scroll-behavior: smooth; }
+    .prose pre { white-space: pre-wrap; }
+    .code-tag { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-900 font-sans">
+  <!-- Header -->
+  <header class="sticky top-0 z-40 bg-white/80 backdrop-blur border-b border-slate-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="h-8 w-8 rounded-lg bg-brand-600 shadow-sm flex items-center justify-center text-white font-bold">HL</div>
+        <div>
+          <h1 class="text-lg sm:text-xl font-bold">Préparation Entretien EDR — HarfangLab</h1>
+          <p class="text-xs text-slate-600">Détection • Investigation • YARA • Réponse • SOC</p>
+        </div>
+      </div>
+      <nav class="hidden md:flex items-center gap-4 text-sm">
+        <a href="#objectif" class="hover:text-brand-700">Objectif</a>
+        <a href="#concepts" class="hover:text-brand-700">EDR</a>
+        <a href="#harfanglab" class="hover:text-brand-700">HarfangLab</a>
+        <a href="#investigation" class="hover:text-brand-700">Investigation</a>
+        <a href="#yara" class="hover:text-brand-700">YARA</a>
+        <a href="#response" class="hover:text-brand-700">Réponse</a>
+        <a href="#soc" class="hover:text-brand-700">SOC</a>
+        <a href="#plan30" class="hover:text-brand-700">Plan 30j</a>
+        <a href="#scenarios" class="hover:text-brand-700">Scénarios</a>
+        <a href="#qa" class="hover:text-brand-700">Q&A</a>
+      </nav>
+    </div>
+  </header>
+
+  <!doctype html>
+  <html lang="fr">
+    <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1" />
+      <title>Prep SOC/EDR/SOAR • Scénarios, SPL, Hardening</title>
+      <meta name="description" content="Support de préparation complet pour entretiens SOC/EDR/SOAR: scénarios, méthode STAR, Splunk SPL, Event IDs, sourcetypes, hardening Linux & Apache, playbooks, modals et fiches mémo." />
+      <style>
+        /* Theme palettes */
+        :root {
+          /* Light theme (par défaut) */
+          --bg: #f6f7fb;
+          --panel: #ffffff;
+          --panel-2: #f1f3f9;
+          --text: #0f1221;
+          --muted: #4b556d;
+          --primary: #2957ff;
+          --success: #2b8a3e;
+          --warning: #b98900;
+          --danger: #c0392b;
+          --accent: #6c38ff;
+          --border: #dbe1ea;
+          --code: #0b0d12;
+          --shadow: rgba(17, 24, 39, 0.08);
+        }
+        :root[data-theme="dark"] {
+          --bg: #0f1115;
+          --panel: #151823;
+          --panel-2: #1c2130;
+          --text: #e6e8ee;
+          --muted: #a9afc3;
+          --primary: #6ea8fe;
+          --success: #6ecb63;
+          --warning: #ffcf5c;
+          --danger: #ff7b7b;
+          --accent: #b487ff;
+          --border: #2a3246;
+          --code: #0b0d12;
+          --shadow: rgba(0, 0, 0, 0.25);
+        }
+        * { box-sizing: border-box; }
+        html, body { height: 100%; }
+        body {
+          margin: 0;
+          font-family: Inter, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+          background: var(--bg);
+          color: var(--text);
+        }
+        header {
+          position: sticky; top: 0; z-index: 10;
+          background: rgba(255,255,255,0.85);
+          backdrop-filter: blur(8px);
+          border-bottom: 1px solid var(--border);
+        }
+        .container { max-width: 1200px; margin: 0 auto; padding: 16px; }
+        .row { display: flex; gap: 16px; align-items: center; }
+        .grow { flex: 1; }
+        .brand { font-weight: 700; letter-spacing: .2px; font-size: 18px; }
+        .brand .tag { color: var(--muted); font-weight: 500; margin-left: 8px; }
+        .search {
+          position: relative; display: flex; gap: 8px; align-items: center;
+          background: var(--panel); border: 1px solid var(--border);
+          border-radius: 10px; padding: 10px 12px; color: var(--muted);
+          box-shadow: 0 6px 20px var(--shadow);
+        }
+        .search input { flex: 1; background: transparent; border: 0; outline: 0; color: var(--text); }
+        .pill { padding: 6px 10px; border: 1px solid var(--border); border-radius: 999px; color: var(--muted); background: var(--panel); font-size: 12px; }
+        .content { display: grid; grid-template-columns: 280px 1fr; gap: 20px; max-width: 1200px; margin: 16px auto; padding: 0 16px 64px; }
+        nav.toc { position: sticky; top: 72px; align-self: start; }
+        nav.toc .card { padding: 12px; }
+        .card {
+          background: var(--panel);
+          border: 1px solid var(--border);
+          border-radius: 14px; padding: 18px; box-shadow: 0 10px 24px var(--shadow);
+        }
+        .card + .card { margin-top: 12px; }
+        .toc a { display: block; color: var(--muted); text-decoration: none; padding: 8px 10px; border-radius: 8px; }
+        .toc a:hover, .toc a.active { background: var(--panel-2); color: var(--text); }
+        h1 { font-size: 30px; margin: 0; }
+        h2 { font-size: 24px; margin: 8px 0 16px; }
+        h3 { font-size: 18px; margin: 16px 0 8px; color: var(--primary); }
+        p { color: var(--muted); line-height: 1.6; }
+        .grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 16px; }
+        .col-12 { grid-column: span 12; }
+        .col-6 { grid-column: span 6; }
+        .col-4 { grid-column: span 4; }
+        .badge { font-size: 11px; padding: 2px 8px; border-radius: 999px; border: 1px solid var(--border); color: var(--muted); }
+        .badge.success { color: #aef1a7; border-color: #2c5c34; background: #17331c; }
+        .badge.warn { color: #ffe39a; border-color: #5a4a1d; background: #2d2410; }
+        .badge.danger { color: #ffb3b3; border-color: #5c2c2c; background: #311616; }
+        .btn { appearance: none; border: 1px solid var(--border); background: var(--panel-2); color: var(--text); border-radius: 10px; padding: 8px 12px; cursor: pointer; }
+        .btn.primary { background: #2957ff; border-color: #2957ff; color: #fff; }
+        .btn.inline { padding: 4px 8px; font-size: 12px; }
+        .kbd { border: 1px solid var(--border); background: var(--panel-2); padding: 2px 6px; border-radius: 6px; font-size: 12px; color: var(--muted); }
+        pre { margin: 12px 0; padding: 12px; border: 1px solid var(--border); border-radius: 10px; background: var(--code); overflow: auto; }
+        code { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; color: #b7c9ff; }
+        .list-compact li { margin: 6px 0; color: var(--muted); }
+        .tag { display: inline-block; margin-right: 6px; margin-top: 6px; font-size: 12px; padding: 4px 8px; border-radius: 999px; border: 1px solid var(--border); color: var(--muted); }
+        .scenario { border-left: 3px solid #2e437a; padding-left: 12px; }
+        .scenario .meta { color: var(--muted); font-size: 12px; }
+        .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; }
+        .hide { display: none !important; }
+        /* Modal */
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.6); display: none; align-items: center; justify-content: center; z-index: 100; }
+        .modal { width: min(860px, 92vw); max-height: 86vh; overflow: auto; background: var(--panel-2); border: 1px solid var(--border); border-radius: 14px; box-shadow: 0 20px 60px rgba(0,0,0,.5); }
+        .modal header { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; background: #1a2030; border-bottom: 1px solid var(--border); position: sticky; top: 0; }
+        .modal .body { padding: 16px; }
+        .modal .footer { padding: 12px 16px; border-top: 1px solid var(--border); background: #121623; position: sticky; bottom: 0; }
+        .muted { color: var(--muted); }
+        .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        /* Floating top button */
+        #top-btn { position: fixed; right: 20px; bottom: 20px; display: none; padding: 10px 12px; border-radius: 999px; box-shadow: 0 8px 24px var(--shadow); }
+        @media (max-width: 980px) {
+          .content { grid-template-columns: 1fr; }
+          nav.toc { position: relative; top: 0; }
+          .two-col { grid-template-columns: 1fr; }
+        }
+      </style>
+    </head>
+    <body>
+      <header>
+        <div class="container row">
+          <div class="brand">Prep SecOps <span class="tag">EDR • SOC • SOAR • Splunk • Linux</span></div>
+          <div class="grow"></div>
+          <div class="search" style="min-width: 340px;">
+            <span class="muted">Rechercher</span>
+            <input id="q" placeholder="Ex: 4625, admin ajouté, beaconing, STAR..." />
+            <span class="kbd">/</span>
+          </div>
+          <button class="btn" onclick="openModal('star')">+ STAR</button>
+          <button class="btn" id="theme-toggle" title="Changer le thème">Thème</button>
+        </div>
+      </header>
+
+      <div class="content">
+        <nav class="toc">
+          <div class="card">
+            <strong>Sommaire</strong>
+            <a href="#intro">Introduction & conseils</a>
+            <a href="#soc">Alertes SOC & Traitement</a>
+            <a href="#soc-qa">Q&A SOC</a>
+            <a href="#edr">EDR: investigation</a>
+            <a href="#soar">SOAR: playbooks</a>
+            <a href="#splunk">Splunk: SPL & sourcetypes</a>
+            <a href="#events">Windows Event IDs</a>
+            <a href="#linux">Hardening Linux</a>
+            <a href="#apache">Apache & YAML</a>
+            <a href="#interview">Entretien: méthode STAR</a>
+            <a href="#refs">Fiches mémo</a>
+          </div>
+          <div class="card">
+            <div style="display:flex; gap:8px; flex-wrap:wrap">
+              <span class="badge">On-prem</span>
+              <span class="badge">Cloud</span>
+              <span class="badge">Threat Hunting</span>
+              <span class="badge">IR</span>
+              <span class="badge">MITRE ATT&CK</span>
+            </div>
+          </div>
+        </nav>
+
+        <main>
+          <section id="intro" class="card">
+            <h1>Préparation complète SOC/EDR/SOAR</h1>
+            <p>
+              Objectif: centraliser des scénarios d'entretien réalistes, des méthodes d'investigation,
+              des requêtes Splunk SPL, des Event IDs clés et des checklists de hardening. Utilise
+              la recherche, ouvre des modals de scénarios, et documente tes réponses via la méthode STAR.
+            </p>
+            <div class="grid">
+              <div class="col-6">
+                <h3>Comment s'entraîner</h3>
+                <ul class="list-compact">
+                  <li>Choisis un scénario d'alerte, déroule triage → analyse → remédiation.</li>
+                  <li>Rédige ta réponse en <strong>STAR</strong>: Situation, Tâche, Action, Résultat.</li>
+                  <li>Appuie avec des <strong>SPL</strong>, des <strong>Event IDs</strong>, et des <strong>artefacts</strong>.</li>
+                  <li>Clôture avec une amélioration durable (détection, hardening, SOAR).</li>
+                </ul>
+              </div>
+              <div class="col-6">
+                <h3>Raccourcis</h3>
+                <ul class="list-compact">
+                  <li><span class="kbd">/</span> Focus recherche</li>
+                  <li><span class="kbd">?</span> Ouvrir STAR</li>
+                  <li><span class="kbd">Esc</span> Fermer modal</li>
+                </ul>
+              </div>
+            </div>
+          </section>
+
+          <section id="soc-qa" class="card">
+            <h2>Q&A SOC: Questions d’entretien + Scénarios</h2>
+            <p>
+              Méthodologie à réciter: <strong>Détection → Qualification → Corrélation → Analyse comportementale (UEBA) → Réponse → Reporting</strong>.
+              Toujours qualifier via multi-logs avant action; documenter les faux positifs.
+            </p>
+
+            <div class="grid">
+              <div class="col-6">
+                <h3>Questions d’entretien (réponses courtes)</h3>
+                <ul class="list-compact">
+                  <li><strong>L1 vs L2</strong>: L1 qualifie/faux positifs; L2 investigue/corrèle/répond.</li>
+                  <li><strong>Faux positif</strong>: alerte valide techniquement mais activité légitime.</li>
+                  <li><strong>Qualifier une alerte</strong>: logs + contexte + comportement + corrélation.</li>
+                  <li><strong>MITRE ATT&CK</strong>: mapper tactiques/techniques pour détection & réponses.</li>
+                  <li><strong>SIEM saturé</strong>: réduire faux positifs via corrélation, contexte, UEBA.</li>
+                </ul>
+                <details>
+                  <summary>Question RH: « Comment êtes-vous opérationnel sans expérience SOC dédiée ? »</summary>
+                  <p>Réponse: Environnements managés SOC (logs réels, WAF, firewalls, SIEM). Qualification, corrélation multi-logs, faux positifs vs incidents, méthodologie claire.</p>
+                </details>
+                <details>
+                  <summary>Question technique L1/L2: « Que faites-vous en premier à réception d’une alerte SIEM ? »</summary>
+                  <p>Réponse: Qualification: source, contexte, corrélation multi-logs; jamais bloquer sans comprendre.</p>
+                </details>
+                <details>
+                  <summary>Question client: « Trop d’alertes SIEM, que proposez-vous ? »</summary>
+                  <p>Réponse: Corrélation, contexte métier, UEBA; objectif = pertinence des alertes, pas quantité.</p>
+                </details>
+              </div>
+              <div class="col-6">
+                <h3>Cas pratiques (corrélation/UEBA)</h3>
+                <details>
+                  <summary>Brute Force + Corrélation (IP interne, compte technique)</summary>
+                  <p>IP interne + compte <em>svc_backup</em> → faux positif probable. Corréler avec logs de backup/cron. Verdict: alerte valide mais légitime; documenter.</p>
+                </details>
+                <details>
+                  <summary>Phishing + UEBA (O365 login pays inhabituel)</summary>
+                  <p>Corrélation temporelle mail → login inhabituel; vérif MFA; reset mot de passe + investigation.</p>
+                </details>
+                <details>
+                  <summary>PowerShell encodé (utilisateur IT, heure ouvrée)</summary>
+                  <p>Vérifier signature/script SCCM/Intune; pas de connexions externes → faux positif maîtrisé.</p>
+                </details>
+              </div>
+            </div>
+
+            <h3>Scénarios réalistes (20+)</h3>
+            <p class="muted">Chaque scénario inclut: Contexte, Démarche, Actions, Checklist, et la logique faux-positif/corrélation/UEBA.</p>
+            <div class="cards">
+              <details class="card"><summary><strong>1) Brute Force SSH (Linux)</strong></summary>
+                <p><strong>Contexte</strong>: Échecs SSH multiples depuis IP externe. <strong>Logs</strong>: /var/log/auth.log ou /var/log/secure.</p>
+                <ul class="list-compact"><li>Rechercher <em>Failed password for</em> → IP, utilisateur.</li><li>Si >5–10 échecs rapides → alerte pertinente.</li><li>Origine: réputation TI, géo, ASN.</li><li>Action: blocage firewall/fail2ban; vérifier compte.</li><li>Investigation: connexions <em>Accepted password</em>, propagation sur autres hôtes.</li><li>Prévention: clés SSH, désactiver password login.</li></ul>
+                <p><strong>Checklist</strong>: collecter logs, identifier pattern, blocage si nécessaire, corrélation, ticket SOC.</p>
+              </details>
+              <details class="card"><summary><strong>2) Email Phishing</strong></summary>
+                <ul class="list-compact"><li>Collecte: expéditeur, headers, URL en sandbox; ne pas ouvrir sur poste réel.</li><li>Analyse SIEM/Proxy: voir si domaine/URL déjà observé.</li><li>Action: isoler poste si clic; quarantaine mail; informer utilisateur.</li><li>Suivi: ticket SOC, verdict (phishing/spam/faux positif).</li></ul>
+              </details>
+              <details class="card"><summary><strong>3) WAF: SQL Injection</strong></summary>
+                <ul class="list-compact"><li>Identifier URL, payload, IP; bloqué ou passé ?</li><li>Investigation: autres tentatives sur autres serveurs; logs applicatifs.</li><li>Action: bloc IP, mise à jour règle WAF.</li><li>Reporting: impact, mesures; escalade si données touchées.</li></ul>
+              </details>
+              <details class="card"><summary><strong>4) Endpoint Malware/Ransomware</strong></summary>
+                <ul class="list-compact"><li>Isolation immédiate.</li><li>EDR: nom, hash, comportements; autres postes ?</li><li>Investigation: exfiltration, vecteur (mail/USB/téléchargement).</li><li>Réponse: nettoyage ou restauration; bloc règles endpoints.</li><li>Reporting: ticket détaillé, alerte SOC manager.</li></ul>
+              </details>
+              <details class="card"><summary><strong>5) Trafic SMB suspect (vers extérieur)</strong></summary>
+                <ul class="list-compact"><li>Logs firewall/IDS: src/dst/port/heure.</li><li>Politique: autorisé ? compte compromis ?</li><li>Action: bloc IP externe; investiguer poste source.</li><li>Corrélation: endpoint/internes; ticket SOC.</li></ul>
+              </details>
+              <details class="card"><summary><strong>6) Investigation Splunk</strong></summary>
+                <ul class="list-compact"><li>Définir index/sourcetype/time range.</li><li>Rechercher patterns: "Failed password", modsec_debug.</li><li>Corrélation: IP/utilisateur/serveur.</li><li>Dashboards/queries avancées.</li><li>Documentation exhaustive dans ticket.</li></ul>
+              </details>
+              <details class="card"><summary><strong>7) Compte AD compromis</strong></summary>
+                <ul class="list-compact"><li>Logs DC: 4720/4728/4729/4732.</li><li>Identifier initiateur (SubjectUserName).</li><li>Corréler avec change management.</li><li>Revert si non autorisé; notifier sécurité.</li></ul>
+              </details>
+              <details class="card"><summary><strong>8) Exfiltration de données</strong></summary>
+                <ul class="list-compact"><li>DLP/proxy: type de données, poste source, utilisateur.</li><li>Bloc destination suspecte.</li><li>Analyser légitimité vs règles métier.</li><li>Ticket avec verdict/actions.</li></ul>
+              </details>
+              <details class="card"><summary><strong>9) Force brute FTP</strong></summary>
+                <ul class="list-compact"><li>Logs FTP: IP, compte.</li><li>Bloc IP suspecte.</li><li>Corrélation avec règles métier (transferts autorisés ?).</li><li>Reporting + recommandations.</li></ul>
+              </details>
+              <details class="card"><summary><strong>10) RCE via JSP (ModSecurity)</strong></summary>
+                <ul class="list-compact"><li>Logs WAF + applicatifs; payload & IP.</li><li>Bloc IP; corrélation patterns similaires.</li><li>Ticket détaillé.</li></ul>
+              </details>
+              <details class="card"><summary><strong>11) Déni de service (DoS)</strong></summary>
+                <ul class="list-compact"><li>Firewall/IDS/WAF: sources, volume, durée.</li><li>Mitigation: rate limit, blocage IP.</li><li>Vérifier impact; rapport détaillé.</li></ul>
+              </details>
+              <details class="card"><summary><strong>12) Accès privilégié hors horaire</strong></summary>
+                <ul class="list-compact"><li>Logs: serveur, AD, VPN.</li><li>Confirmer via ticket change.</li><li>Doute → alerter sécurité; ticket.</li></ul>
+              </details>
+              <details class="card"><summary><strong>13) Injection via API (JWT)</strong></summary>
+                <ul class="list-compact"><li>Vérifier headers/JWT; IP, endpoint.</li><li>Pattern répété/automatisé ?</li><li>Bloc IP/jeton; documentation.</li></ul>
+              </details>
+              <details class="card"><summary><strong>14) Faux positif brute force SSH (interne)</strong></summary>
+                <ul class="list-compact"><li>Logs SSH; utilisateur concerné.</li><li>Corréler: déploiements, scripts automation.</li><li>IP interne légitime (Ansible/Bastion/Supervision) → faux positif.</li><li>Checklist: IP interne, compte technique, horaire, activité récurrente, documenter SIEM.</li></ul>
+              </details>
+              <details class="card"><summary><strong>15) Corrélation Phishing → EDR</strong></summary>
+                <ul class="list-compact"><li>Vérifier clic utilisateur; corréler mail/proxy/EDR.</li><li>Process suspects, connexions sortantes.</li><li>Décision: clic + exécution → incident; pas de clic → faux positif EDR possible.</li></ul>
+              </details>
+              <details class="card"><summary><strong>16) UEBA: connexion AD anormale</strong></summary>
+                <ul class="list-compact"><li>Comparer habitudes: heures, pays, serveurs.</li><li>Vérifier VPN/astreinte.</li><li>Corréler: logs VPN/AD/serveur.</li><li>Anomalie confirmée → reset PW + investigation.</li></ul>
+              </details>
+              <details class="card"><summary><strong>17) PowerShell encodé (faux positif possible)</strong></summary>
+                <ul class="list-compact"><li>Identifier utilisateur; script Base64; téléchargement externe ?</li><li>Corréler: tâche planifiée, SCCM/Intune.</li><li>Script IT → faux positif; C2 → incident critique.</li></ul>
+              </details>
+              <details class="card"><summary><strong>18) SMB interne vs mouvement latéral</strong></summary>
+                <ul class="list-compact"><li>Heure, type de fichiers.</li><li>Backup/synchro ?</li><li>Corréler: création comptes, tentatives admin.</li><li>Indice attaque: SMB + création comptes → latéralisation.</li></ul>
+              </details>
+              <details class="card"><summary><strong>19) SQLi faux positif WAF</strong></summary>
+                <ul class="list-compact"><li>Requête avec ' OR 1=1; paramètre utilisateur ? test interne ?</li><li>Préprod → souvent faux positif.</li><li>Faux positif → exception WAF documentée; attaque → bloc IP + alerte.</li></ul>
+              </details>
+              <details class="card"><summary><strong>20) Exfiltration lente (Low & Slow)</strong></summary>
+                <ul class="list-compact"><li>Petit volume sortant chaque nuit.</li><li>Corrélation: proxy/DNS/firewall; domaines récents.</li><li>Conclusion: APT-like, incident avancé.</li></ul>
+              </details>
+              <details class="card"><summary><strong>21) DNS tunneling</strong></summary>
+                <ul class="list-compact"><li>FQDN très longs, fréquence élevée, domaine inconnu.</li><li>Action: bloc domaine, investiguer poste, corréler EDR.</li></ul>
+              </details>
+              <details class="card"><summary><strong>22) Ransomware (signaux précoces)</strong></summary>
+                <ul class="list-compact"><li>Désactivation AV, suppression shadow copies, scan réseau.</li><li>Action: isolation réseau, bloc comptes, escalade critique.</li></ul>
+              </details>
+            </div>
+
+            <h3>Template Reporting SOC</h3>
+            <pre><code>Incident: type, date, périmètre
+  Analyse: sources/logs, corrélations, UEBA
+  Impact: Faible / Moyen / Critique
+  Actions: blocage, isolation, nettoyage
+  Verdict: Incident confirmé / Faux positif
+  Recommandations: prévention, détection, durcissement</code></pre>
+
+            <p class="muted">Phrase clé entretien: « Je commence toujours par qualifier l’alerte via la corrélation multi-logs avant toute action ».</p>
+            <div class="row" style="gap:8px; flex-wrap:wrap; margin-top:8px">
+              <button class="btn inline" onclick="toggleDetails('#soc-qa', true)">Tout déplier</button>
+              <button class="btn inline" onclick="toggleDetails('#soc-qa', false)">Tout replier</button>
+            </div>
+          </section>
+
+          <section id="soc" class="card">
+            <h2>Alertes SOC & Traitement</h2>
+            <p>Types d'alertes fréquentes et comment les traiter. Ouvre les fiches pour les détails et exemples STAR.</p>
+            <div class="cards" id="soc-cards">
+              <div class="card scenario" data-tags="auth admin 4625 brute force rdp local logon password spray">
+                <div class="row" style="justify-content:space-between">
+                  <strong>Multiples échecs d'authentification (4625) / Password Spray</strong>
+                  <span class="badge warn">Triage</span>
+                </div>
+                <div class="meta">MITRE TA0006 | Windows Security 4625</div>
+                <p>
+                  Détecte des tentatives infructueuses répétées depuis une IP/origine, potentiellement spray sur comptes.
+                </p>
+                <div class="row" style="gap:8px; flex-wrap:wrap">
+                  <button class="btn inline" onclick="openScenario('spray')">Ouvrir</button>
+                  <button class="btn inline" onclick="copySPL('spray')">Copier SPL</button>
+                  <span class="tag">Auth</span><span class="tag">4625</span><span class="tag">RDP</span>
+                </div>
+              </div>
+
+              <div class="card scenario" data-tags="admin added privilege escalation 4672 4728 4720 group domain admins">
+                <div class="row" style="justify-content:space-between">
+                  <strong>Ajout d'un compte admin / Élévation de privilèges</strong>
+                  <span class="badge danger">Critique</span>
+                </div>
+                <div class="meta">MITRE TA0004 | Event 4672, 4720, 4728</div>
+                <p>
+                  Création ou ajout d'utilisateur à un groupe privilégié, élévation potentielle. Vérifier légitimité, origine, change tracking.
+                </p>
+                <div class="row" style="gap:8px; flex-wrap:wrap">
+                  <button class="btn inline" onclick="openScenario('privEsc')">Ouvrir</button>
+                  <button class="btn inline" onclick="copySPL('privEsc')">Copier SPL</button>
+                  <span class="tag">4672</span><span class="tag">4728</span><span class="tag">AD</span>
+                </div>
+              </div>
+
+              <div class="card scenario" data-tags="mimikatz lsass dump 4688 sysmon 10 credential access edr tamper">
+                <div class="row" style="justify-content:space-between">
+                  <strong>Dump LSASS / Tentative Mimikatz</strong>
+                  <span class="badge danger">Critique</span>
+                </div>
+                <div class="meta">MITRE TA0006/TA0007 | Sysmon 10/1</div>
+                <p>
+                  Processus suspect accédant à LSASS (MiniDumpWriteDump, SeDebugPrivilege), mémoire crédentiel.
+                </p>
+                <div class="row" style="gap:8px; flex-wrap:wrap">
+                  <button class="btn inline" onclick="openScenario('lsass')">Ouvrir</button>
+                  <button class="btn inline" onclick="copySPL('lsass')">Copier SPL</button>
+                  <span class="tag">4688</span><span class="tag">Sysmon</span><span class="tag">EDR</span>
+                </div>
+              </div>
+
+              <div class="card scenario" data-tags="beaconing c2 dns http periodic proxy firewall edr tamper">
+                <div class="row" style="justify-content:space-between">
+                  <strong>Beaconing C2 / Activité périodique réseau</strong>
+                  <span class="badge warn">Triage</span>
+                </div>
+                <div class="meta">MITRE TA0011 | Netflow/Proxy</div>
+                <p>
+                  Connexions sortantes régulières vers hôte inconnu, JA3/SNI suspects, tailles fixes.
+                </p>
+                <div class="row" style="gap:8px; flex-wrap:wrap">
+                  <button class="btn inline" onclick="openScenario('beacon')">Ouvrir</button>
+                  <button class="btn inline" onclick="copySPL('beacon')">Copier SPL</button>
+                  <span class="tag">Proxy</span><span class="tag">DNS</span><span class="tag">JA3</span>
+                </div>
+              </div>
+
+              <div class="card scenario" data-tags="service install 7045 persistence autorun registry 4688 sysmon 13">
+                <div class="row" style="justify-content:space-between">
+                  <strong>Installation de service suspect (7045)</strong>
+                  <span class="badge warn">Triage</span>
+                </div>
+                <div class="meta">MITRE TA0003 | Event 7045</div>
+                <p>
+                  Nouveau service créé avec binaire inconnu ou chemin user-profile/temp.
+                </p>
+                <div class="row" style="gap:8px; flex-wrap:wrap">
+                  <button class="btn inline" onclick="openScenario('svc7045')">Ouvrir</button>
+                  <button class="btn inline" onclick="copySPL('svc7045')">Copier SPL</button>
+                  <span class="tag">7045</span><span class="tag">Persistence</span>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section id="edr" class="card">
+            <h2>EDR: Investigation pratique</h2>
+            <div class="grid">
+              <div class="col-6">
+                <h3>Checklist investigation</h3>
+                <ul class="list-compact">
+                  <li>Contexte: utilisateur, machine, sensibilité, exposition réseau.</li>
+                  <li>Processus: arbre, parents, horodatage, modules, signature/code-sign.</li>
+                  <li>Fichiers: hash, réputation VT, persistance (RunKeys, services, tâches).</li>
+                  <li>Réseau: destinations, ports, fréquence, JA3/SNI, proxy logs.</li>
+                  <li>Mémoire: handles LSASS, injections, ETW patching.</li>
+                  <li>EDR: politiques, tamper, exclusions abusives.</li>
+                </ul>
+              </div>
+              <div class="col-6">
+                <h3>Actions</h3>
+                <ul class="list-compact">
+                  <li>Isoler l'hôte, bloquer hachage/domaines/IOC.</li>
+                  <li>Collecte: triage bundle (proc, reg, services, network, autoruns).</li>
+                  <li>Recherche latérale: events voisins, mêmes IOC, même user.</li>
+                  <li>Remédiation: supprimer persistance, patch, réinitialiser secrets.</li>
+                  <li>Améliorer détection: règle EDR, corrélations SIEM, playbook SOAR.</li>
+                </ul>
+              </div>
+            </div>
+          </section>
+
+          <section id="soar" class="card">
+            <h2>SOAR: Playbooks type</h2>
+            <div class="grid">
+              <div class="col-6">
+                <h3>Modèle playbook</h3>
+                <ol class="list-compact">
+                  <li>Ingestion alerte → enrichissement (CMDB, Threat Intel, GeoIP).</li>
+                  <li>Vérifications automatiques (user risk, asset criticality, priorités).</li>
+                  <li>Décisions: faux positif, suspicion, confirmé.</li>
+                  <li>Actions: bloc IOC, disable user, isoler endpoint.</li>
+                  <li>Évidence & ticketing: attacher artefacts, notifier, SLA.</li>
+                </ol>
+              </div>
+              <div class="col-6">
+                <h3>Bonnes pratiques</h3>
+                <ul class="list-compact">
+                  <li>Idempotence, journalisation claire, timeouts et reprises.</li>
+                  <li>Variables secrètes en vault, RBAC précis, audit.</li>
+                  <li>Tests unitaires de playbooks, mocks d'API, sandbox.</li>
+                </ul>
+              </div>
+            </div>
+          </section>
+
+          <section id="splunk" class="card">
+            <h2>Splunk: SPL & Sourcetypes</h2>
+            <div class="two-col">
+              <div>
+                <h3>SPL utiles</h3>
+                <pre><code id="spl-spray">index=wineventlog sourcetype=WinEventLog:Security EventCode=4625
+          <p class="mt-3 text-xs text-slate-500">Sources synthétisées (YARA docs, règles publiques) et votre contenu.</p>
+        </div>
+        <div class="md:justify-self-end">
+                <pre><code id="spl-privEsc">index=wineventlog sourcetype=WinEventLog:Security (EventCode=4720 OR EventCode=4728 OR EventCode=4672)
+          <div class="rounded-xl border border-slate-200 bg-white shadow-sm p-6">
+            <ul class="grid grid-cols-2 gap-4 text-sm">
+              <li class="flex items-start gap-3"><span class="h-6 w-6 rounded-md bg-brand-100 text-brand-700 flex items-center justify-center">1</span><div><span class="font-semibold">EDR vs EPP vs XDR</span><br><span class="text-slate-600">Concepts clés</span></div></li>
+                <pre><code id="spl-lsass">index=sysmon sourcetype=XmlWinEventLog:Microsoft-Windows-Sysmon/Operational EventCode=10
+              <li class="flex items-start gap-3"><span class="h-6 w-6 rounded-md bg-brand-100 text-brand-700 flex items-center justify-center">2</span><div><span class="font-semibold">Cycle EDR</span><br><span class="text-slate-600">Collecte → Détection → Réponse</span></div></li>
+              <li class="flex items-start gap-3"><span class="h-6 w-6 rounded-md bg-brand-100 text-brand-700 flex items-center justify-center">3</span><div><span class="font-semibold">Investigation</span><br><span class="text-slate-600">Process tree & Timeline</span></div></li>
+              <li class="flex items-start gap-3"><span class="h-6 w-6 rounded-md bg-brand-100 text-brand-700 flex items-center justify-center">4</span><div><span class="font-semibold">YARA rules</span><br><span class="text-slate-600">Création, test, tuning</span></div></li>
+                <pre><code id="spl-beacon">index=proxy sourcetype=bluecoat:proxysg OR sourcetype=zscaler:weblog
+              <li class="flex items-start gap-3"><span class="h-6 w-6 rounded-md bg-brand-100 text-brand-700 flex items-center justify-center">5</span><div><span class="font-semibold">Réponse</span><br><span class="text-slate-600">Kill, Quarantine, Isolation</span></div></li>
+              <li class="flex items-start gap-3"><span class="h-6 w-6 rounded-md bg-brand-100 text-brand-700 flex items-center justify-center">6</span><div><span class="font-semibold">Intégration SOC</span><br><span class="text-slate-600">SIEM, corrélation</span></div></li>
+            </ul>
+          </div>
+                <pre><code id="spl-7045">index=wineventlog sourcetype=WinEventLog:System EventCode=7045
+        </div>
+      </div>
+              </div>
+              <div>
+                <h3>Sourcetypes et index</h3>
+                <ul class="list-compact">
+                  <li><strong>WinEventLog:Security</strong>: 4624/4625/4672/4720/4728...</li>
+                  <li><strong>XmlWinEventLog:Microsoft-Windows-Sysmon/Operational</strong>: Sysmon 1/3/7/10/11/13...</li>
+                  <li><strong>WinEventLog:System</strong>: 7045 services.</li>
+                  <li><strong>proxy</strong> (Bluecoat/Zscaler): domaines/SNI/JA3.</li>
+                  <li><strong>edr:events</strong> (vendor): tamper, isolate, detections.</li>
+                </ul>
+                <h3>Astuce</h3>
+                <p>Index dédiés par source et accélération de rapports pour tableaux de bord d'entretien (réactivité).</p>
+              </div>
+            </div>
+          </section>
+
+          <section id="events" class="card">
+            <h2>Windows Event IDs essentiels</h2>
+            <div class="grid">
+              <div class="col-4"><strong>Auth</strong><ul class="list-compact"><li>4624: Logon réussi (type)</li><li>4625: Échec logon</li><li>4672: Privilèges spéciaux attribués</li></ul></div>
+              <div class="col-4"><strong>Comptes/Groupes</strong><ul class="list-compact"><li>4720: Création de compte</li><li>4728: Ajout à groupe global</li><li>4732: Ajout à groupe local</li></ul></div>
+              <div class="col-4"><strong>Système/Process</strong><ul class="list-compact"><li>4688: Nouveau processus</li><li>7045: Nouveau service</li><li>Sysmon 1/3/7/10/11/13</li></ul></div>
+            </div>
+          </section>
+
+          <section id="linux" class="card">
+            <h2>Hardening Linux (opérationnel)</h2>
+            <div class="two-col">
+              <div>
+                <h3>SSH</h3>
+                <pre><code>sudoedit /etc/ssh/sshd_config
+    </div>
+  </section>
+
+  <!-- Objectif -->
+  <section id="objectif" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+                <h3>Auditd</h3>
+                <pre><code>apt install auditd -y
+              </div>
+              <div>
+                <h3>Réseau & services</h3>
+                <ul class="list-compact">
+                  <li>Activer firewall (nftables/ufw), fermer tout par défaut.</li>
+                  <li>Fail2ban sur SSH, journald persistant, logs centralisés (SIEM).</li>
+                  <li>Packages minimaux, MAJ auto sécurité, AppArmor/SELinux enforcing.</li>
+                  <li>Comptes: sudo wheel, MFA, rotation clés SSH, no shell comptes de service.</li>
+                </ul>
+              </div>
+            </div>
+          </section>
+
+          <section id="apache" class="card">
+            <h2>Apache & Playbook YAML (fixes)</h2>
+            <p>Ton extrait ne "marchait pas" probablement à cause de noms de variables incohérents et de légères erreurs. Voici l'extrait tel que fourni, puis une version corrigée + remarques:</p>
+            <h3>Extrait fourni</h3>
+            <pre><code># nom du domaine (liste)
+  nom_domaines:
+    - ppr-payonline.soprahr.partenaires.group.gca
+
+  # ProxyTimeout
+  ProxyTimeout: 480
+
+  # composants installés
+  composant_hra: true
+  composant_foryou: false
+  composant_edsn: true
+  composant_edsn_admin: true
+  composant_evmedia: false
+  composant_m2m: false
+  composant_api4you: false
+  composant_api4you_designer: false
+  composant_GP4You: false
+  composant_codepromo: false
+
+  # Si définie, la cible vers laquelle "/" doit redigriger
+  #redirect_racine: /app/foryou/
+
+  # Partie HRA
+
+  # liste des tomcats:ports
+  liste_tomweb:
+    - "frsopslapp058-vip:10505"
+  liste_tomtools:
+    - "frsopslapp058-vip:11505"
+  liste_tombatch:
+    - "frsopslapp058-vip:11005"
+  liste_tomGP4You:
+    - "frsopslappxx:xxxx"
+
+  # liste des proxypass vers les tomweb
+  liste_proxypasstomweb:
+    - hra-space
+    - hr-business-services-rest
+    - hr-dms
+    - hr-portlets
+    - hr-rich-client
+    - hr-self-service
+    - hr-outbound-center-web
+    - hr-configuration-tool-web
+    - hr-configuration-tool-web-smartgwt
+    - hr-gta-planning-web
+    - ta-projects
+    - hr-digiposte-web
+    - MySmartPerspective
+    - job-admin-console-1.0.1
+
+  # optionnel
+    - HRJFT-TEMPUS
+    - hr-password-reset
+    - hr-audit-console
+
+  # liste des proxypass vers les tombatch
+  liste_proxypasstombatch:
+    - hr-online-query
+    - hr-ws
+  # liste des proxypass vers les tomtools
+  liste_proxypasstomtools:
+    - hr-admin-console
+
+  # liste des proxypass de GP4You. Surcharge la liste par défaut.
+  #liste_proxypass_GP4You:
+  #  - GP4You
+  #  - hr-business-services-rest
+  #
+
+  # pour API 4you
+  liste_proxpass_api4you:
+   - swagger-ui
+   - swagger
+   - hr-business-services-rest
+   - 1.0
+   - 1.1
+   - swagger-config
+   - hr-api
+
+  liste_proxpass_api4you_designer:
+    - api4you-designer
+
+  liste_servers_api4you:
+    - frsopslapp103-vip:16005
+
+  liste_servers_api4you_designer:
+    - frsopslapp103-vip:16105
+
+  # activer à true pour configurer en fail-over les serveurs api4you
+  #api4you_failover: false
+
+  # Partie 4you
+  # liste des karafs
+  liste_karafs:
+    - "frsopslapp0XX-vip:XXXX"
+
+  # partie eDSN
+  edsn_server: frsopslapp058-vip:13105
+  edsnadmin_server: frsopslapp058-vip:13105
+
+  # EVMedia
+  evmedia_server: frsopslapp0XX-vip:XXXXX
+
+  # M2M2
+  m2m_server: frsopslapp0XX-vip:XXXX
+
+  # liste proxpass specifique
+  #liste_proxypass_specifique:
+  # - "ProxyPass /xxxx http://frsopslapp0XX-vip:XXXXX/xxx"
+
+  # CodePromo
+  liste_servers_codepromo :
+    - Frsopslxxxx :xxxxx
+
+  # Configuration SAML uniquement quand le SAML est porté par l'apache.
+  SAML:
+    IdPMetadataFile: federationMedatada.xml
+    endpoint: endpoint
+    # le nom des fichiers de paramétrage SAML c'est a dire
+    # la partie commune aux .key .cer .xml
+    config_file_name: https_pleiades.domaine.fr
+    PasswordProtectedTransport : false
+    # l'url du metadata IDP si il est publié
+    url_idp_metadata: ""
+    # le paramètre dans lequel récupéré l'identifiant utilisateur
+    #ID: "NAME_ID"
+    # location à protéger
+    #location_saml:
+    #  - "/pta"
+    # location à ne pas protéger . Chaine REGEXP pour LocationMatch
+    #location_saml_disable:
+    #  - "^/foo$"
+
+  # activer crs pour les clients SOC
+  crs: false
+
+  # Activer FullSSL: true pour le support du ssl de bout en bout.
+  #FullSSL: false
+  # Cas de nom de domaine en .soprahronline.com, ne pas remplir SSL.Certificate, SSL.key et SSL.chain
+  # SSL.Dossier représente le dossier dans le repertoire ssl. Mettre le nom du client en cas de plusieurs vhost partageant le meme certificat, sinon
+  # mettre le nom du vhost. Ne pas oublier de placer les certificats dans ce dossier.
+  #SSL:
+  #  Certificate: "client.com.pem"
+  #  Key: "client.com.key"
+  #  Chain: "client.com.chain"
+  #  Dossier: "CLIENT"
+
+  # Défini des directives spécifiques en cas de besoin
+  # Configuration de sécurité - Correction faille "Fuite d'informations techniques"
+  SpecifTop: |
+    # Masquer la version d'Apache et du système
+    ServerTokens Prod
+    ServerSignature Off
+  #SpecifBottom: |
+  #  Directives à inclure en fin du vhosts
+  #  plusieurs lignes possibles
+  </code></pre>
+
+            <h3>Version corrigée (cohérente et parsable)</h3>
+            <pre><code id="yaml-fixed">nom_domaines:
+    - ppr-payonline.soprahr.partenaires.group.gca
+
+  ProxyTimeout: 480
+
+  composant_hra: true
+  composant_foryou: false
+  composant_edsn: true
+  composant_edsn_admin: true
+  composant_evmedia: false
+  composant_m2m: false
+  composant_api4you: false
+  composant_api4you_designer: false
+  composant_GP4You: false
+  composant_codepromo: false
+
+  # redirect_racine: "/app/foryou/"
+
+  liste_tomweb:
+    - "frsopslapp058-vip:10505"
+  liste_tomtools:
+    - "frsopslapp058-vip:11505"
+  liste_tombatch:
+    - "frsopslapp058-vip:11005"
+  liste_tomGP4You:
+    - "frsopslappxx:xxxx"
+
+  liste_proxypass_tomweb:
+    - hra-space
+    - hr-business-services-rest
+    - hr-dms
+    - hr-portlets
+    - hr-rich-client
+    - hr-self-service
+    - hr-outbound-center-web
+    - hr-configuration-tool-web
+    - hr-configuration-tool-web-smartgwt
+    - hr-gta-planning-web
+    - ta-projects
+    - hr-digiposte-web
+    - MySmartPerspective
+    - job-admin-console-1.0.1
+    - HRJFT-TEMPUS
+    - hr-password-reset
+    - hr-audit-console
+
+  liste_proxypass_tombatch:
+    - hr-online-query
+    - hr-ws
+
+  liste_proxypass_tomtools:
+    - hr-admin-console
+
+  # liste_proxypass_GP4You:
+  #   - GP4You
+  #   - hr-business-services-rest
+
+  liste_proxypass_api4you:
+    - swagger-ui
+    - swagger
+    - hr-business-services-rest
+    - "1.0"
+    - "1.1"
+    - swagger-config
+    - hr-api
+
+  liste_proxypass_api4you_designer:
+    - api4you-designer
+
+  liste_servers_api4you:
+    - frsopslapp103-vip:16005
+
+  liste_servers_api4you_designer:
+    - frsopslapp103-vip:16105
+
+  # api4you_failover: false
+
+  liste_karafs:
+    - "frsopslapp0XX-vip:XXXX"
+
+  edsn_server: frsopslapp058-vip:13105
+  edsnadmin_server: frsopslapp058-vip:13105
+
+  evmedia_server: frsopslapp0XX-vip:XXXXX
+  m2m_server: frsopslapp0XX-vip:XXXX
+
+  # liste_proxypass_specifique:
+  #   - "ProxyPass /xxxx http://frsopslapp0XX-vip:XXXXX/xxx"
+
+  liste_servers_codepromo:
+    - "Frsopslxxxx:xxxxx"
+
+  SAML:
+    IdPMetadataFile: federationMedatada.xml
+    endpoint: endpoint
+    config_file_name: https_pleiades.domaine.fr
+    PasswordProtectedTransport: false
+    url_idp_metadata: ""
+    # ID: "NAME_ID"
+    # location_saml:
+    #   - "/pta"
+    # location_saml_disable:
+    #   - "^/foo$"
+
+  crs: false
+
+  # FullSSL: false
+  # SSL:
+  #   Certificate: "client.com.pem"
+  #   Key: "client.com.key"
+  #   Chain: "client.com.chain"
+  #   Dossier: "CLIENT"
+
+  SpecifTop: |
+    # Masquer la version d'Apache et du système
+    ServerTokens Prod
+    ServerSignature Off
+    Header unset X-Powered-By
+    FileETag None
+
+  # SpecifBottom: |
+  #   # Exemple: redirections custom
+  #   # RedirectMatch 404 \.git
+  </code></pre>
+            <p class="muted">Corrections faites: noms cohérents <em>liste_proxypass_*</em>, guillemets pour clés numériques, espaces/colonnes retirés, et ajout de directives d'hygiène HTTP dans <strong>SpecifTop</strong>. Pour que <strong>SpecifTop</strong> soit appliqué, le template Jinja du vhost doit inclure un bloc comme: <code>{{ SpecifTop | default("") }}</code>.</p>
+            <div class="row" style="gap:8px; flex-wrap:wrap">
+              <button class="btn inline" onclick="copyText('#yaml-fixed')">Copier YAML corrigé</button>
+            </div>
+          </section>
+
+          <section id="interview" class="card">
+            <h2>Entretien: méthode STAR</h2>
+            <div class="grid">
+              <div class="col-6">
+                <h3>Structure</h3>
+                <ul class="list-compact">
+                  <li><strong>Situation</strong>: le contexte, le système, l'alerte.</li>
+                  <li><strong>Tâche</strong>: ton rôle/responsabilité.</li>
+                  <li><strong>Action</strong>: ce que tu as fait, étapes concrètes.</li>
+                  <li><strong>Résultat</strong>: impact, métriques, leçons, durcissement.</li>
+                </ul>
+                <button class="btn primary" onclick="openModal('star')">Rédiger une réponse STAR</button>
+              </div>
+              <div class="col-6">
+                <h3>Exemples rapides</h3>
+                <details>
+                  <summary>Ajout admin inattendu (AD)</summary>
+                  <p><strong>S</strong>: Alerte 4728, ajout à Domain Admins hors CAB.<br/>
+                  <strong>T</strong>: Vérifier légitimité, contenir si abus.<br/>
+                  <strong>A</strong>: Corrélation 4672/4720/4769, vérif ticket change, disable compte, rollback groupe, IOC hunt, règle SIEM + SOAR disable user auto.<br/>
+                  <strong>R</strong>: MTTR 25 min, 4 hôtes affectés, ajout détection et revue hebdo des groupes.</p>
+                </details>
+                <details>
+                  <summary>Dump LSASS bloqué par EDR</summary>
+                  <p><strong>S</strong>: EDR signale accès LSASS par procdump.exe.<br/>
+                  <strong>T</strong>: Confirmer, contenir, collecter preuves.<br/>
+                  <strong>A</strong>: Isolement hôte, collecte volatile, KQL/SPL latéralisation, reset secrets, bloc hash, règle EDR custom.<br/>
+                  <strong>R</strong>: Aucun exfil constaté, renforcement GPO (CredentialGuard), playbook SOAR enrichi.</p>
+                </details>
+              </div>
+            </div>
+          </section>
+
+          <section id="refs" class="card">
+            <h2>Fiches mémo rapides</h2>
+            <ul class="list-compact">
+              <li><strong>Admin ajouté</strong>: 4720/4728/4672 + check change/ticket + désactivation si doute.</li>
+              <li><strong>Spray</strong>: 4625 bursts IP unique, verrouillage et MFA, bloc réseau.</li>
+              <li><strong>Service 7045</strong>: chemin utilisateur/Temp suspect → supprimer service, Quarantaine binaire.</li>
+              <li><strong>Beaconing</strong>: périodicité régulière + SNI générique → bloquer domaine + isoler.</li>
+              <li><strong>Linux SSH</strong>: PasswordAuth=no, Fail2ban, clés fortes, MFA.</li>
+            </ul>
+          </section>
+
+        </main>
+      </div>
+
+      <!-- Modal overlay -->
+      <div id="modal-root" class="modal-overlay" onclick="overlayClick(event)"></div>
+      <button id="top-btn" class="btn primary" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑ Haut</button>
+
+      <script>
+        // Theme init
+        (function initTheme(){
+          const saved = localStorage.getItem('theme');
+          if (saved) {
+            document.documentElement.setAttribute('data-theme', saved);
+          } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            document.documentElement.setAttribute('data-theme', 'dark');
+          }
+        })();
+        document.getElementById('theme-toggle').addEventListener('click', ()=>{
+          const current = document.documentElement.getAttribute('data-theme');
+          const next = current === 'dark' ? 'light' : 'dark';
+          document.documentElement.setAttribute('data-theme', next);
+          localStorage.setItem('theme', next);
+        });
+
+        // Simple search filter across scenario cards
+        const q = document.getElementById('q');
+        const cards = () => Array.from(document.querySelectorAll('#soc-cards .scenario'));
+        function applyFilter(value) {
+          const v = value.trim().toLowerCase();
+          cards().forEach(c => {
+            const tags = (c.getAttribute('data-tags') || '').toLowerCase();
+            const text = c.textContent.toLowerCase();
+            c.classList.toggle('hide', v && !(tags.includes(v) || text.includes(v)));
+          });
+        }
+        q.addEventListener('input', e => applyFilter(e.target.value));
+        window.addEventListener('keydown', e => {
+          if (e.key === '/') { e.preventDefault(); q.focus(); }
+          if (e.key === '?') { e.preventDefault(); openModal('star'); }
+          if (e.key === 'Escape') closeModal();
+        });
+
+        // SPL copier
+        const splMap = {
+          spray: '#spl-spray',
+          privEsc: '#spl-privEsc',
+          lsass: '#spl-lsass',
+          beacon: '#spl-beacon',
+          svc7045: '#spl-7045'
+        };
+        function copySPL(key) { copyText(splMap[key]); }
+        function copyText(sel) {
+          const node = document.querySelector(sel);
+          if (!node) return;
+          const text = node.innerText;
+          navigator.clipboard.writeText(text).then(()=>alert('Copié dans le presse-papiers')).catch(()=>{});
+        }
+
+        // Scénarios détaillés (modals)
+        const scenarioDetails = {
+          spray: {
+            title: 'Multiples échecs d\'authentification (4625) / Spray',
+            html: `
+              <div class="two-col">
+                <div>
+                  <h3>Triage</h3>
+                  <ul class="list-compact">
+                    <li>Volume/rythme par IP/source, comptes ciblés (VIP?).</li>
+                    <li>Heures inhabituelles, géo, ASN cloud, user agents.</li>
+                    <li>Vérifier MFA et verrous de compte.</li>
+                  </ul>
+                  <h3>Analyse</h3>
+                  <ul class="list-compact">
+                    <li>Corréler 4625 → 4624 rapproché = succès post-spray.</li>
+                    <li>Exclure scanners internes légitimes (monitoring).</li>
+                    <li>IOC: IP/domaine → bloc temporaire.</li>
+                  </ul>
+                  <h3>Actions</h3>
+                  <ul class="list-compact">
+                    <li>Bloc réseau IP/ASN, activer captcha/MFA, règles WAF/VPN.</li>
+                    <li>Reset mots de passe exposés, notifier utilisateurs.</li>
+                  </ul>
+                </div>
+                <div>
+                  <h3>Artefacts</h3>
+                  <ul class="list-compact">
+                    <li>Event 4625 fields: FailureReason, LogonType, IpAddress.</li>
+                    <li>Proxy/VPN logs: UA, session ID.</li>
+                    <li>SPL: voir requête fournie.</li>
+                  </ul>
+                  <h3>STAR</h3>
+                  <p><em>Situation</em>: pics 4625 IP unique; <em>Tâche</em>: contenir et vérifier succès; <em>Action</em>: bloc IP, MFA, hunt succès; <em>Résultat</em>: baisse 98% en 24h, règle SOAR d\'auto-blocage.</p>
+                </div>
+              </div>
+            `
+          },
+          privEsc: {
+            title: 'Ajout d\'un compte admin / Élévation de privilèges',
+            html: `
+              <div class="two-col">
+                <div>
+                  <h3>Triage</h3>
+                  <ul class="list-compact">
+                    <li>Événements 4720/4728/4672, qui a initié (SubjectUserName).</li>
+                    <li>Heure, poste d\'origine, ticket de changement.</li>
+                  </ul>
+                  <h3>Analyse</h3>
+                  <ul class="list-compact">
+                    <li>Corréler avec 4769/4776 (KDC), 4688 (outils admin).</li>
+                    <li>Comparer avec CAB/ITSM, vérifier comptes à privilèges.</li>
+                  </ul>
+                  <h3>Actions</h3>
+                  <ul class="list-compact">
+                    <li>Retirer du groupe, désactiver compte si doute, réinitialiser.</li>
+                    <li>Créer détection corrélée (4672 suivi de 4728).</li>
+                  </ul>
+                </div>
+                <div>
+                  <h3>Artefacts</h3>
+                  <ul class="list-compact">
+                    <li>Event fields: MemberName, TargetUserName, GroupName.</li>
+                    <li>EDR: outils AD (dsadd, net, powershell).</li>
+                  </ul>
+                  <h3>STAR</h3>
+                  <p><em>S</em>: ajout non planifié; <em>T</em>: confirmer et annuler; <em>A</em>: corrélation, rollback, règle SOAR disable; <em>R</em>: exposition réduite, audit renforcé.</p>
+                </div>
+              </div>
+            `
+          },
+          lsass: {
+            title: 'Dump LSASS / Tentative Mimikatz',
+            html: `
+              <div class="two-col">
+                <div>
+                  <h3>Triage</h3>
+                  <ul class="list-compact">
+                    <li>Sysmon 10 accès à lsass.exe, 4688 parents, signature.</li>
+                    <li>Contexte: admin local? outil legit (ProcDump)?</li>
+                  </ul>
+                  <h3>Analyse</h3>
+                  <ul class="list-compact">
+                    <li>CallTrace/APIs (MiniDumpWriteDump), handles LSASS.</li>
+                    <li>Recherche latérale, credentials exposés.</li>
+                  </ul>
+                  <h3>Actions</h3>
+                  <ul class="list-compact">
+                    <li>Isoler, révoquer tickets/NTLM, Credential Guard, patch.</li>
+                    <li>Bloc hash/outils, IOA EDR custom.</li>
+                  </ul>
+                </div>
+                <div>
+                  <h3>Artefacts</h3>
+                  <ul class="list-compact">
+                    <li>Sysmon 10/1, ETW logs, EDR telemetry.</li>
+                    <li>Prefetch, SRUM, shed tasks.</li>
+                  </ul>
+                  <h3>STAR</h3>
+                  <p><em>S</em>: alerte EDR IOA; <em>T</em>: contenir; <em>A</em>: isolement, collecte, resets; <em>R</em>: pas d\'exfil, renforcement GPO.</p>
+                </div>
+              </div>
+            `
+          },
+          beacon: {
+            title: 'Beaconing C2 / Activité périodique réseau',
+            html: `
+              <div class="two-col">
+                <div>
+                  <h3>Triage</h3>
+                  <ul class="list-compact">
+                    <li>Période fixe, tailles constantes, domaines jeunes.</li>
+                    <li>SNI/JA3, user-agent rare, codes retour.</li>
+                  </ul>
+                  <h3>Analyse</h3>
+                  <ul class="list-compact">
+                    <li>Résolution DNS, WHOIS, réputation TI.</li>
+                    <li>Vérifier si software entreprise (updates) exclus.</li>
+                  </ul>
+                  <h3>Actions</h3>
+                  <ul class="list-compact">
+                    <li>Bloc domaine/IP, isolement, scan EDR.</li>
+                    <li>YARA live, dump mémoire si nécessaire.</li>
+                  </ul>
+                </div>
+                <div>
+                  <h3>Artefacts</h3>
+                  <ul class="list-compact">
+                    <li>Proxy logs, EDR net telemetry.</li>
+                    <li>DNS logs, TLS JA3/JA3S.</li>
+                  </ul>
+                  <h3>STAR</h3>
+                  <p><em>S</em>: beacon détecté; <em>T</em>: valider et couper; <em>A</em>: bloc, isolement, hunt; <em>R</em>: containment &lt; 30 min, règles TI enrichies.</p>
+                </div>
+              </div>
+            `
+          },
+          svc7045: {
+            title: 'Installation de service suspect (7045)',
+            html: `
+              <div class="two-col">
+                <div>
+                  <h3>Triage</h3>
+                  <ul class="list-compact">
+                    <li>ImagePath dans Users/Temp, non signé.</li>
+                    <li>Qui a créé (Subject), heure, persistance associée.</li>
+                  </ul>
+                  <h3>Analyse</h3>
+                  <ul class="list-compact">
+                    <li>4688 parent, 1/11 Sysmon (création fichier).</li>
+                    <li>Hash VT, sandbox, autoruns.</li>
+                  </ul>
+                  <h3>Actions</h3>
+                  <ul class="list-compact">
+                    <li>Arrêter/supprimer service, quarantaine binaire.</li>
+                    <li>Bloquer hash, scan étendu, patch.</li>
+                  </ul>
+                </div>
+                <div>
+                  <h3>Artefacts</h3>
+                  <ul class="list-compact">
+                    <li>Event 7045 fields: ServiceName, ImagePath.</li>
+                    <li>Registre services, tasks planifiées.</li>
+                  </ul>
+                  <h3>STAR</h3>
+                  <p><em>S</em>: 7045; <em>T</em>: confirmer malice; <em>A</em>: suppression, blocage; <em>R</em>: pas de réapparition, règle détection ajoutée.</p>
+                </div>
+              </div>
+            `
+          }
+        };
+
+        function openScenario(key) { openCustomModal(scenarioDetails[key]?.title || 'Scénario', scenarioDetails[key]?.html || '<p>Détails indisponibles.</p>'); }
+
+        // STAR modal with localStorage
+        function openModal(kind) {
+          if (kind === 'star') {
+            const saved = JSON.parse(localStorage.getItem('star_notes') || '[]');
+            const list = saved.map((s,i)=>`<li><a href="#" onclick="loadStar(${i});return false;">${escapeHtml(s.title)} – ${escapeHtml(s.topic||'')}</a></li>`).join('') || '<li class="muted">Aucune note enregistrée</li>';
+            const html = `
+              <div class="two-col">
+                <form id="star-form">
+                  <label>Titre<br/><input name="title" style="width:100%" placeholder="Ex: Ajout admin non prévu" required /></label><br/><br/>
+                  <label>Thème<br/><input name="topic" style="width:100%" placeholder="Ex: AD, EDR, Spray" /></label><br/><br/>
+                  <label>Situation<br/><textarea name="s" rows="3" style="width:100%" placeholder="Contexte, impact, systèmes" required></textarea></label><br/>
+                  <label>Tâche<br/><textarea name="t" rows="2" style="width:100%" placeholder="Rôle, objectif" required></textarea></label><br/>
+                  <label>Action<br/><textarea name="a" rows="4" style="width:100%" placeholder="Étapes, outils, SPL, artefacts" required></textarea></label><br/>
+                  <label>Résultat<br/><textarea name="r" rows="3" style="width:100%" placeholder="Impact, métriques, améliorations" required></textarea></label>
+                </form>
+                <div>
+                  <h3>Notes enregistrées</h3>
+                  <ul id="star-list" class="list-compact">${list}</ul>
+                  <p class="muted">Conseil: quantifie le résultat (MTTR, hôtes, alertes évitées).</p>
+                </div>
+              </div>
+            `;
+            openCustomModal('Rédiger une réponse STAR', html, `
+              <button class="btn" onclick="saveStar()">Enregistrer</button>
+              <button class="btn" onclick="exportStar()">Exporter</button>
+              <button class="btn" onclick="closeModal()">Fermer</button>
+            `);
+          }
+        }
+
+        function saveStar() {
+          const f = document.getElementById('star-form');
+          const data = Object.fromEntries(new FormData(f).entries());
+          const entry = { title: data.title, topic: data.topic, s: data.s, t: data.t, a: data.a, r: data.r, ts: Date.now() };
+          const arr = JSON.parse(localStorage.getItem('star_notes') || '[]');
+          arr.unshift(entry);
+          localStorage.setItem('star_notes', JSON.stringify(arr));
+          alert('STAR enregistrée');
+          closeModal();
+        }
+        function exportStar() {
+          const arr = JSON.parse(localStorage.getItem('star_notes') || '[]');
+          const text = arr.map(x => `# ${x.title}\nThème: ${x.topic}\n\nSituation:\n${x.s}\n\nTâche:\n${x.t}\n\nAction:\n${x.a}\n\nRésultat:\n${x.r}\n`).join('\n---\n');
+          navigator.clipboard.writeText(text).then(()=>alert('Export copié')).catch(()=>{});
+        }
+        function loadStar(i) {
+          const arr = JSON.parse(localStorage.getItem('star_notes') || '[]');
+          const it = arr[i];
+          if (!it) return;
+          openModal('star');
+          setTimeout(()=>{
+            const f = document.getElementById('star-form');
+            f.title.value = it.title; f.topic.value = it.topic||''; f.s.value = it.s; f.t.value = it.t; f.a.value = it.a; f.r.value = it.r;
+          }, 50);
+        }
+
+        // Modal infra
+        function openCustomModal(title, html, footerHtml='') {
+          const root = document.getElementById('modal-root');
+          root.innerHTML = `
+            <div class="modal" role="dialog" aria-modal="true" onclick="event.stopPropagation()">
+              <header><strong>${escapeHtml(title)}</strong><button class="btn" onclick="closeModal()">✕</button></header>
+              <div class="body">${html}</div>
+              <div class="footer">${footerHtml}</div>
+            </div>
+          `;
+          root.style.display = 'flex';
+        }
+        function overlayClick(e) { if (e.currentTarget === e.target) closeModal(); }
+        function closeModal() { const root = document.getElementById('modal-root'); root.style.display='none'; root.innerHTML=''; }
+        function escapeHtml(s) { return (s||'').replace(/[&<>"']/g, m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[m])); }
+
+        // TOC active link
+        const anchors = Array.from(document.querySelectorAll('nav.toc a'));
+        const sections = anchors.map(a => document.querySelector(a.getAttribute('href'))).filter(Boolean);
+        const obs = new IntersectionObserver(entries => {
+          entries.forEach(e => {
+            if (e.isIntersecting) {
+              const id = '#' + e.target.id;
+              anchors.forEach(a => a.classList.toggle('active', a.getAttribute('href') === id));
+            }
+          });
+        }, { rootMargin: '-30% 0px -60% 0px' });
+        sections.forEach(s => obs.observe(s));
+
+        // Expand/collapse helper for Q&A
+        function toggleDetails(scopeSel, expand) {
+          const scope = document.querySelector(scopeSel);
+          if (!scope) return;
+          scope.querySelectorAll('details').forEach(d => d.open = !!expand);
+        }
+
+        // Show top button on scroll
+        const topBtn = document.getElementById('top-btn');
+        window.addEventListener('scroll', () => {
+          const show = window.scrollY > 400;
+          topBtn.style.display = show ? 'inline-block' : 'none';
+        });
+      </script>
+    </body>
+  </html>
+        <p class="mt-2 text-slate-700">Pouvoir dire (et démontrer) : « J’ai utilisé HarfangLab EDR en production : détection, investigation, règles YARA, réponse aux incidents, blocage/déblocage et intégration SOC. »</p>
+        <div class="mt-4 grid sm:grid-cols-2 gap-4">
+          <div class="rounded-lg border bg-white p-4">
+            <h4 class="font-semibold">Phrase clé</h4>
+            <p class="text-slate-700 mt-1">« J’utilise principalement la vue <span class="code-tag">Investigation</span> pour analyser la chaîne d’exécution. »</p>
+          </div>
+          <div class="rounded-lg border bg-white p-4">
+            <h4 class="font-semibold">Phrase clé</h4>
+            <p class="text-slate-700 mt-1">« Avant de bloquer, je valide toujours le contexte pour éviter un impact business. »</p>
+          </div>
+        </div>
+      </div>
+      <aside class="rounded-xl border bg-white p-5">
+        <h4 class="font-semibold">EDR souverain</h4>
+        <p class="text-slate-700 mt-1">HarfangLab = EDR souverain, point important en France (hébergement et conformité nationale).</p>
+      </aside>
+    </div>
+  </section>
+
+  <!-- Concepts EDR -->
+  <section id="concepts" class="bg-white border-t">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+      <h3 class="text-2xl font-bold">Ce que maîtriser sur l’EDR (obligatoire)</h3>
+      <div class="mt-6 grid md:grid-cols-2 gap-6">
+        <div class="rounded-xl border p-6">
+          <h4 class="font-semibold">EPP vs EDR vs XDR</h4>
+          <ul class="mt-2 text-slate-700 list-disc ml-5">
+            <li><span class="font-medium">EPP</span> : prévention (antivirus classique)</li>
+            <li><span class="font-medium">EDR</span> : détection + investigation + réponse</li>
+            <li><span class="font-medium">XDR</span> : corrélation multi-sources (EDR + SIEM + Cloud)</li>
+          </ul>
+        </div>
+        <div class="rounded-xl border p-6">
+          <h4 class="font-semibold">Cycle EDR</h4>
+          <ul class="mt-2 text-slate-700 grid grid-cols-2 gap-y-1 list-disc ml-5">
+            <li>Collecte: Process, File, Registry, Network, Memory</li>
+            <li>Détection: Signatures, Comportement, Règles (YARA)</li>
+            <li>Investigation: Process tree, Parent/Child, Timeline</li>
+            <li>Response: Kill, Quarantine, Block hash, Isolate</li>
+            <li>Remediation: Clean, Allowlist, Amélioration des règles</li>
+          </ul>
+        </div>
+      </div>
+      <div class="mt-6 grid md:grid-cols-3 gap-6">
+        <div class="rounded-xl border p-6">
+          <h4 class="font-semibold">IOC vs IOA</h4>
+          <p class="text-slate-700">IOC = indicateurs (hash, IP, domaine)
+            <br>IOA = comportements (macro, PowerShell, persistence)
+          </p>
+        </div>
+        <div class="rounded-xl border p-6">
+          <h4 class="font-semibold">Process tree</h4>
+          <p class="text-slate-700">Chaîne d’exécution complète parent → enfants pour comprendre le vecteur initial.</p>
+        </div>
+        <div class="rounded-xl border p-6">
+          <h4 class="font-semibold">Timeline</h4>
+          <p class="text-slate-700">Chronologie avant/pendant/après l’attaque pour analyser propagation et impact.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HarfangLab Console -->
+  <section id="harfanglab" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <h3 class="text-2xl font-bold">Console HarfangLab (indispensable)</h3>
+    <div class="mt-6 grid md:grid-cols-2 gap-6">
+      <div class="rounded-xl border bg-white p-6">
+        <h4 class="font-semibold">Architecture</h4>
+        <ul class="mt-2 list-disc ml-5 text-slate-700">
+          <li>Agent HarfangLab sur endpoint</li>
+          <li>Console centrale, communication sécurisée</li>
+          <li>Politiques par groupes de machines</li>
+        </ul>
+      </div>
+      <div class="rounded-xl border bg-white p-6">
+        <h4 class="font-semibold">Vues importantes</h4>
+        <ul class="mt-2 list-disc ml-5 text-slate-700">
+          <li>Alerts • Incidents • Endpoints • Rules • Investigations • Threat Intel</li>
+        </ul>
+        <p class="mt-2 text-slate-700">« J’utilise principalement la vue <span class="code-tag">Investigation</span> pour analyser la chaîne d’exécution. »</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Investigation -->
+  <section id="investigation" class="bg-white border-t">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+      <h3 class="text-2xl font-bold">Investigation (cœur du SOC)</h3>
+      <div class="mt-6 grid md:grid-cols-3 gap-6">
+        <div class="rounded-xl border p-6">
+          <h4 class="font-semibold">Analyse d’une alerte</h4>
+          <ul class="mt-2 list-disc ml-5 text-slate-700">
+            <li>Pourquoi l’alerte s’est déclenchée</li>
+            <li>Process / Parent / Utilisateur / Machine / Heure exacte</li>
+          </ul>
+        </div>
+        <div class="rounded-xl border p-6">
+          <h4 class="font-semibold">Process tree</h4>
+          <p class="text-slate-700">Identifier le process malveillant, parent (ex: winword.exe → powershell.exe), repérer les LOLBins.</p>
+        </div>
+        <div class="rounded-xl border p-6">
+          <h4 class="font-semibold">Timeline</h4>
+          <p class="text-slate-700">Comparer avant/pendant/après l’attaque. Phrase clé : « J’analyse toujours le <span class="font-semibold">parent process</span> pour confirmer. »</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- YARA Rules -->
+  <section id="yara" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <h3 class="text-2xl font-bold">Détection avancée : YARA rules</h3>
+    <p class="mt-2 text-slate-700">Structure : <span class="code-tag">meta</span>, <span class="code-tag">strings</span>, <span class="code-tag">condition</span>. Savoir créer, tester, activer, observer, désactiver (si faux positif).</p>
+    <div class="mt-6 grid lg:grid-cols-2 gap-6">
+      <div class="rounded-xl border bg-white p-6 prose">
+        <h4>Exemple — PowerShell suspect</h4>
+        <pre><code>rule Suspicious_PowerShell {
+  meta:
+    description = "Usage suspect de PowerShell"
+    author = "Candidate"
+  strings:
+    $invoke = "Invoke-Expression" nocase
+    $dlstr = "DownloadString" nocase
+  condition:
+    all of ($invoke, $dlstr)
+}
+</code></pre>
+        <p class="text-slate-700">Cible des loaders/scripting. À tester sur des échantillons contrôlés, activer en mode alerte.</p>
+      </div>
+      <div class="rounded-xl border bg-white p-6 prose">
+        <h4>Exemple — Indicateurs de fileless</h4>
+        <pre><code>rule PS_Fileless_Indicators {
+  meta:
+    description = "Arguments typiques de scripts fileless"
+  strings:
+    $nop = " -nop "
+    $hidden = " -w hidden"
+    $encoded = " -enc "
+    $iex = /\|\s*iex/i
+  condition:
+    any of ($nop, $hidden, $encoded) and $iex
+}
+</code></pre>
+        <p class="text-slate-700">Détecte mix d’arguments (-nop, -w hidden, -enc) et exécution via <span class="code-tag">iex</span>.</p>
+      </div>
+      <div class="rounded-xl border bg-white p-6 prose">
+        <h4>Exemple — Macro Office → PowerShell</h4>
+        <pre><code>rule Office_Macro_PowerShell_Chain {
+  meta:
+    description = "Doc Office déclenchant PowerShell"
+  strings:
+    $ps = "powershell.exe" nocase
+    $word = "winword.exe" nocase
+    $excel = "excel.exe" nocase
+  condition:
+    1 of ($word, $excel) and $ps
+}
+</code></pre>
+        <p class="text-slate-700">À utiliser avec contexte process/parent fourni par l’EDR.</p>
+      </div>
+      <div class="rounded-xl border bg-white p-6 prose">
+        <h4>Exemple — URL externe dans script</h4>
+        <pre><code>rule PS_Download_From_URL {
+  meta:
+    description = "Téléchargement depuis URL externe"
+  strings:
+    $webclient = "Net.WebClient" nocase
+    $download = "DownloadString" nocase
+    $http = /http:\/\// nocase
+    $https = /https:\/\// nocase
+  condition:
+    all of ($webclient, $download) and any of ($http, $https)
+}
+</code></pre>
+        <p class="text-slate-700">À corréler avec Threat Intel (domaine/IP) pour réduire faux positifs.</p>
+      </div>
+    </div>
+    <div class="mt-6 rounded-xl border bg-white p-6">
+      <h4 class="font-semibold">Bonnes pratiques de tuning</h4>
+      <ul class="mt-2 list-disc ml-5 text-slate-700">
+        <li>Commencer en mode détection (sans blocage), mesurer le bruit</li>
+        <li>Ajouter des conditions (contexte, taille, regex) pour réduire les faux positifs</li>
+        <li>Documenter les règles (meta: author, date, use-case)</li>
+      </ul>
+      <p class="mt-2 text-xs text-slate-500">Référence YARA: documentation officielle et règles publiques (exemples/structures). Utiliser en respectant les licences des sources externes.</p>
+    </div>
+  </section>
+
+  <!-- Response -->
+  <section id="response" class="bg-white border-t">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+      <h3 class="text-2xl font-bold">Response : bloquer / débloquer</h3>
+      <div class="mt-6 grid md:grid-cols-2 gap-6">
+        <div class="rounded-xl border p-6">
+          <h4 class="font-semibold">Actions</h4>
+          <ul class="mt-2 list-disc ml-5 text-slate-700">
+            <li>Kill process • Block hash • Quarantine file • Isolate endpoint • Allowlist</li>
+          </ul>
+          <p class="mt-2 text-slate-700">« Avant de bloquer, je valide toujours le contexte pour éviter un impact business. »</p>
+        </div>
+        <div class="rounded-xl border p-6">
+          <h4 class="font-semibold">Faux positifs</h4>
+          <ul class="mt-2 list-disc ml-5 text-slate-700">
+            <li>Analyser, justifier, ajouter exception, documenter</li>
+            <li>Corrélation SIEM (Windows Event, Firewall)</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SOC Integration -->
+  <section id="soc" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <h3 class="text-2xl font-bold">Intégration SOC</h3>
+    <p class="mt-2 text-slate-700">Envoi des alertes vers SIEM, corrélation avec logs AD/Firewall, usage en SOC.</p>
+    <div class="mt-4 rounded-xl border bg-white p-6">
+      <p class="text-slate-700">Phrase clé : « HarfangLab s’intègre dans une chaîne SOC avec un SIEM pour la corrélation. »</p>
+    </div>
+  </section>
+
+  <!-- Comment le prouver -->
+  <section id="prouver" class="bg-white border-t">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+      <h3 class="text-2xl font-bold">Comment le prouver en entretien</h3>
+      <div class="mt-6 grid md:grid-cols-2 gap-6">
+        <div class="rounded-xl border p-6">
+          <h4 class="font-semibold">Sur votre CV</h4>
+          <ul class="mt-2 list-disc ml-5 text-slate-700">
+            <li>Utilisation quotidienne de HarfangLab EDR</li>
+            <li>Investigation d’alertes et incidents</li>
+            <li>Création et tuning de règles YARA</li>
+            <li>Réponse aux incidents (blocage, isolation, allowlist)</li>
+          </ul>
+        </div>
+        <div class="rounded-xl border p-6">
+          <h4 class="font-semibold">Phrase « magique »</h4>
+          <p class="text-slate-700">« J’ai travaillé sur HarfangLab EDR en environnement entreprise : analyse d’alertes, investigation, règles YARA et réponse aux incidents. »</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Plan 30 jours -->
+  <section id="plan30" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <h3 class="text-2xl font-bold">Plan express 30 jours</h3>
+    <div class="mt-6 grid md:grid-cols-4 gap-6">
+      <div class="rounded-xl border bg-white p-6">
+        <h4 class="font-semibold">Semaine 1</h4>
+        <ul class="mt-2 list-disc ml-5 text-slate-700">
+          <li>Concepts EDR</li>
+          <li>Console HarfangLab</li>
+          <li>Alertes & Investigation</li>
+        </ul>
+      </div>
+      <div class="rounded-xl border bg-white p-6">
+        <h4 class="font-semibold">Semaine 2</h4>
+        <ul class="mt-2 list-disc ml-5 text-slate-700">
+          <li>Process tree</li>
+          <li>Timeline</li>
+          <li>Faux positifs</li>
+        </ul>
+      </div>
+      <div class="rounded-xl border bg-white p-6">
+        <h4 class="font-semibold">Semaine 3</h4>
+        <ul class="mt-2 list-disc ml-5 text-slate-700">
+          <li>YARA rules</li>
+          <li>Détection avancée</li>
+          <li>Tests</li>
+        </ul>
+      </div>
+      <div class="rounded-xl border bg-white p-6">
+        <h4 class="font-semibold">Semaine 4</h4>
+        <ul class="mt-2 list-disc ml-5 text-slate-700">
+          <li>Response</li>
+          <li>Isolation</li>
+          <li>Documentation & Préparation entretien</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Scénarios réels -->
+  <section id="scenarios" class="bg-white border-t">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+      <h3 class="text-2xl font-bold">Scénarios d’incident (réponses modèles)</h3>
+      <!-- Scenario 1 -->
+      <div class="mt-6 rounded-xl border p-6">
+        <h4 class="font-semibold">Scénario 1 — Suspicious PowerShell Download</h4>
+        <p class="text-slate-700">Contexte: PC-SALES-03, utilisateur tbernard, <span class="code-tag">powershell.exe</span> parent <span class="code-tag">winword.exe</span> avec commande de téléchargement externe.</p>
+        <ol class="mt-3 list-decimal ml-5 text-slate-700 space-y-1">
+          <li>Vérifier sévérité et type de détection (PowerShell anormal, téléchargement URL externe)</li>
+          <li>Valider utilisateur/rôle/privileges (impact potentiel)</li>
+          <li>Process tree: <span class="code-tag">winword.exe → powershell.exe</span> (macro malveillante probable)</li>
+          <li>Timeline: événements avant (fichier Office reçu/email), pendant, après</li>
+          <li>IOAs/IOCs: URL/script vus ailleurs (Threat Intel), règles YARA qui matchent</li>
+          <li>Réponse: stop <span class="code-tag">powershell.exe</span>, quarantine artefacts, isoler la machine</li>
+          <li>Artefacts: logs, enfants, exports (script, URL, réseau)</li>
+          <li>Rapport & recommandations: filtrage macro, scan complet, YARA adaptées</li>
+        </ol>
+      </div>
+      <!-- Scenario 2 -->
+      <div class="mt-6 rounded-xl border p-6">
+        <h4 class="font-semibold">Scénario 2 — Faux positif service système</h4>
+        <p class="text-slate-700">Contexte: <span class="code-tag">svchost.exe</span> signalé par heuristique comportementale.</p>
+        <ol class="mt-3 list-decimal ml-5 text-slate-700 space-y-1">
+          <li>Lire le détail d’alerte: quelles signatures/règles ont déclenché</li>
+          <li>Comparer avec légitime: chemin (<span class="code-tag">C:\\Windows\\System32\\svchost.exe</span>), hash, arguments</li>
+          <li>Autres indicateurs: réseau, enfants, registre</li>
+          <li>Corréler via SIEM: événements Windows/Firewall</li>
+          <li>Décision: documenter & allowlist si faux positif; sinon réponse (isolation/kill)</li>
+          <li>Reporting systématique (ticket SOC) avec justification</li>
+        </ol>
+      </div>
+      <!-- Scenario 3 -->
+      <div class="mt-6 rounded-xl border p-6">
+        <h4 class="font-semibold">Scénario 3 — Téléchargement MIME via email (macro Office)</h4>
+        <p class="text-slate-700">Chaîne: <span class="code-tag">OUTLOOK.EXE → excel.exe → PowerShell</span>.</p>
+        <ol class="mt-3 list-decimal ml-5 text-slate-700 space-y-1">
+          <li>Identifier vecteur: document Office reçu par email (expéditeur/objet/macro)</li>
+          <li>Analyser le document en sandbox interne</li>
+          <li>Tracer les commandes PowerShell et arguments</li>
+          <li>IOAs: téléchargements externes, cmdlets suspects</li>
+          <li>Réponse: bloquer URL, block hash du fichier, quarantine document</li>
+          <li>Communication: alerte interne + sensibilisation macro; filtrage email/sandboxing</li>
+          <li>Règles YARA spécifiques pour détecter ce comportement</li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <!-- Q&A -->
+  <section id="qa" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <h3 class="text-2xl font-bold">Questions d’entretien & réponses</h3>
+    <div class="mt-6 grid md:grid-cols-2 gap-6">
+      <div class="rounded-xl border bg-white p-6">
+        <h4 class="font-semibold">Q1 — EDR vs XDR</h4>
+        <p class="text-slate-700">EDR: endpoints (collecte, détection, investigation, réponse). XDR: étend à réseau/cloud/email/siem avec corrélation multi-sources.</p>
+      </div>
+      <div class="rounded-xl border bg-white p-6">
+        <h4 class="font-semibold">Q2 — Qu’est-ce qu’une règle YARA ?</h4>
+        <p class="text-slate-700">Détection basée sur motifs (strings/patterns/conditions) pour fichiers/scripts/comportements. <span class="text-xs text-slate-500">Réf: docs officielles YARA.</span></p>
+      </div>
+      <div class="rounded-xl border bg-white p-6">
+        <h4 class="font-semibold">Q3 — Analyse d’une alerte HarfangLab</h4>
+        <p class="text-slate-700">Contexte → Process tree → Timeline → Threat Intel → Réponse (kill/isolate/quarantine).</p>
+      </div>
+      <div class="rounded-xl border bg-white p-6">
+        <h4 class="font-semibold">Q4 — Gestion d’un faux positif</h4>
+        <p class="text-slate-700">Vérifier exécutable (chemin/signature/hash), corréler SIEM, décider (isoler/allowlist), documenter.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Actions maîtrisées -->
+  <section id="actions" class="bg-white border-t">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+      <h3 class="text-2xl font-bold">Liste des actions maîtrisées HarfangLab</h3>
+      <div class="mt-6 grid md:grid-cols-3 gap-6">
+        <div class="rounded-xl border p-6">
+          <h4 class="font-semibold">Analyse</h4>
+          <ul class="mt-2 list-disc ml-5 text-slate-700">
+            <li>Process Tree • Timeline • Threat Intel • Parent/children</li>
+          </ul>
+        </div>
+        <div class="rounded-xl border p-6">
+          <h4 class="font-semibold">Réponse</h4>
+          <ul class="mt-2 list-disc ml-5 text-slate-700">
+            <li>Isolate endpoint • Kill process • Quarantine • Block hash • Allowlist</li>
+          </ul>
+        </div>
+        <div class="rounded-xl border p-6">
+          <h4 class="font-semibold">Détection</h4>
+          <ul class="mt-2 list-disc ml-5 text-slate-700">
+            <li>YARA: création • test • tuning</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Références -->
+  <section id="refs" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <div class="rounded-xl border bg-white p-6">
+      <h3 class="text-2xl font-bold">Références</h3>
+      <ul class="mt-3 list-disc ml-5 text-slate-700">
+        <li>Documentation YARA (concepts, syntaxe, modules)</li>
+        <li>Règles publiques YARA (structures et catégories)</li>
+        <li>Votre expérience et notes internes HarfangLab</li>
+      </ul>
+      <p class="mt-2 text-xs text-slate-500">Contenu synthétisé et rédigé; évite toute violation de copyright en citant et en résumant les sources publiques, et en s’appuyant sur votre matériel.</p>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="border-t bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 text-sm text-slate-600">
+      <p>Préparation EDR • HarfangLab • SOC • © 2026</p>
+    </div>
+  </footer>
+</body>
+</html>

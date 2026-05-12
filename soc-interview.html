@@ -1,0 +1,1149 @@
+﻿<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SecOps Academy • Questions d'entretien SOC</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/app.css">
+  <style>
+    .question-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .question-card {
+      background: var(--bg-card);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 20px;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+    }
+    .question-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+      background: var(--gradient);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .question-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--border-hover);
+      box-shadow: var(--shadow-glow);
+    }
+    .question-card:hover::before {
+      opacity: 1;
+    }
+    .question-card.expanded {
+      grid-column: 1 / -1;
+    }
+    .question-number {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      background: var(--gradient);
+      color: #0f0f23;
+      border-radius: 8px;
+      font-weight: 800;
+      font-size: 12px;
+      margin-right: 12px;
+    }
+    .question-title {
+      font-weight: 700;
+      color: var(--text-primary);
+      font-size: 15px;
+      display: flex;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .question-answer {
+      color: var(--text-secondary);
+      font-size: 14px;
+      line-height: 1.7;
+      padding-left: 40px;
+    }
+    .question-answer ul {
+      margin: 8px 0;
+      padding-left: 20px;
+    }
+    .question-answer li {
+      margin: 6px 0;
+    }
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin: 32px 0 20px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+    .section-icon {
+      width: 48px;
+      height: 48px;
+      background: var(--gradient);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      color: #0f0f23;
+      box-shadow: 0 4px 20px rgba(0, 212, 255, 0.3);
+    }
+    .section-title {
+      font-size: 24px;
+      font-weight: 800;
+      background: var(--gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .section-count {
+      background: rgba(0, 212, 255, 0.15);
+      color: var(--accent);
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .intro-card {
+      background: linear-gradient(135deg, rgba(0, 212, 255, 0.1) 0%, rgba(168, 85, 247, 0.1) 100%);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 28px;
+      margin-bottom: 32px;
+    }
+    .intro-card h3 {
+      color: var(--accent);
+      margin-bottom: 16px;
+      font-size: 20px;
+    }
+    .intro-card p {
+      color: var(--text-secondary);
+      line-height: 1.8;
+      margin-bottom: 12px;
+    }
+    .component-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      margin: 20px 0;
+    }
+    @media (max-width: 768px) {
+      .component-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    .component-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 20px;
+    }
+    .component-card h4 {
+      color: var(--accent);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .component-card ul {
+      list-style: none;
+      padding: 0;
+    }
+    .component-card li {
+      color: var(--text-secondary);
+      padding: 6px 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .component-card li::before {
+      content: '→';
+      color: var(--accent);
+    }
+    .challenge-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 12px;
+      margin: 16px 0;
+    }
+    .challenge-item {
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.2);
+      border-radius: 10px;
+      padding: 14px 18px;
+      color: #f87171;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 14px;
+    }
+    .challenge-item i {
+      font-size: 16px;
+    }
+    .filter-tabs {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
+    }
+    .filter-tab {
+      padding: 10px 20px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.03);
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.3s;
+      font-weight: 600;
+      font-size: 14px;
+    }
+    .filter-tab:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+    .filter-tab.active {
+      background: var(--gradient);
+      color: #0f0f23;
+      border-color: transparent;
+    }
+    .summary-card {
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(34, 211, 238, 0.1) 100%);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      border-radius: 20px;
+      padding: 28px;
+      margin-top: 32px;
+    }
+    .summary-card h3 {
+      color: #34d399;
+      margin-bottom: 16px;
+    }
+    .summary-pillars {
+      display: flex;
+      gap: 16px;
+      margin: 20px 0;
+      flex-wrap: wrap;
+    }
+    .pillar {
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      border-radius: 12px;
+      padding: 16px 24px;
+      text-align: center;
+    }
+    .pillar i {
+      font-size: 28px;
+      color: #34d399;
+      margin-bottom: 8px;
+      display: block;
+    }
+    .pillar span {
+      color: var(--text-primary);
+      font-weight: 700;
+    }
+  </style>
+  <link rel="manifest" href="manifest.webmanifest">
+  <meta name="theme-color" content="#6366f1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="SecOps">
+  <link rel="apple-touch-icon" href="assets/icons/icon-192.png">
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="logo">
+          <i class="fas fa-shield-alt"></i>
+          <div>
+            <div>SecOps Academy</div>
+            <div class="tagline">Formation SOC/EDR/SOAR</div>
+          </div>
+        </div>
+      </div>
+      <nav class="sidebar-nav">
+        <div class="nav-section">
+          <div class="nav-section-title">Dashboard</div>
+          <a class="nav-item" href="dashboard.html"><i class="fas fa-home"></i><span>Accueil</span></a>
+          <a class="nav-item" href="progress.html"><i class="fas fa-chart-line"></i><span>Progression</span></a>
+          <a class="nav-item" href="revision.html"><i class="fas fa-gamepad"></i><span>Hub Révision</span><span class="nav-badge">XP</span></a>
+        </div>
+        <div class="nav-section">
+          <div class="nav-section-title">Formation</div>
+          <a class="nav-item" href="soc-alerts.html"><i class="fas fa-bell"></i><span>Alertes SOC</span><span class="nav-badge">40+</span></a>
+          <a class="nav-item" href="soc-qa.html"><i class="fas fa-question-circle"></i><span>Q&A SOC</span></a>
+          <a class="nav-item" href="edr.html"><i class="fas fa-laptop"></i><span>EDR Investigation</span></a>
+          <a class="nav-item" href="soar.html"><i class="fas fa-robot"></i><span>SOAR Playbooks</span></a>
+          <a class="nav-item" href="pam.html"><i class="fas fa-key"></i><span>PAM</span></a>
+          <a class="nav-item" href="soc-l1-l2.html"><i class="fas fa-shield-virus"></i><span>SOC L1 & L2</span><span class="nav-badge">NEW</span></a>
+          <a class="nav-item" href="pentest.html"><i class="fas fa-user-secret"></i><span>Pentest Senior</span></a>
+        </div>
+        <div class="nav-section">
+          <div class="nav-section-title">Outils & Techniques</div>
+          <a class="nav-item" href="splunk.html"><i class="fas fa-search"></i><span>Splunk SPL</span></a>
+          <a class="nav-item" href="events.html"><i class="fas fa-list"></i><span>Windows Events</span></a>
+          <a class="nav-item" href="linux.html"><i class="fab fa-linux"></i><span>Hardening Linux</span></a>
+          <a class="nav-item" href="apache.html"><i class="fas fa-server"></i><span>Apache & YAML</span></a>
+        </div>
+        <div class="nav-section">
+          <div class="nav-section-title">Entretiens</div>
+          <a class="nav-item" href="star.html"><i class="fas fa-star"></i><span>Méthode STAR</span></a>
+          <a class="nav-item" href="interview.html"><i class="fas fa-microphone"></i><span>Simulation</span></a>
+          <a class="nav-item active" href="soc-interview.html"><i class="fas fa-user-tie"></i><span>Questions SOC</span><span class="nav-badge">60+</span></a>
+        </div>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="user-card">
+          <div class="user-avatar">AN</div>
+          <div>
+            <div class="user-name">Analyste SOC</div>
+            <div class="user-role">En formation</div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <main class="main">
+      <nav class="navbar">
+        <div class="search-container">
+          <i class="fas fa-search search-icon"></i>
+          <input type="text" class="search-input" id="search" placeholder="Rechercher une question..." oninput="filterQuestions(this.value)" />
+        </div>
+        <div class="navbar-actions">
+          <button class="icon-btn" onclick="toggleTheme()" title="Changer le thème"><i class="fas fa-moon"></i></button>
+          <button class="icon-btn" title="Notifications"><i class="fas fa-bell"></i><span class="badge-dot"></span></button>
+        </div>
+      </nav>
+
+      <div class="content">
+        <div class="page-header">
+          <h1 class="page-title">Questions d'entretien SOC 🎯</h1>
+          <p class="page-subtitle">60+ questions avec réponses pour préparer vos entretiens d'analyste SOC</p>
+        </div>
+
+        <!-- Introduction SOC -->
+        <div class="intro-card">
+          <h3><i class="fas fa-building-shield"></i> Qu'est-ce qu'un SOC ?</h3>
+          <p>Un <strong>SOC (Security Operations Center)</strong> est une unité centralisée au sein d'une organisation, responsable de la surveillance continue et de l'analyse de l'état de sécurité des systèmes d'information, des réseaux, des applications et des endpoints.</p>
+          <p>La mission principale d'un SOC est de <strong>détecter, analyser, répondre et atténuer</strong> les incidents et menaces de cybersécurité en temps réel ou quasi temps réel.</p>
+        </div>
+
+        <!-- Fonctions principales -->
+        <div class="section-header">
+          <div class="section-icon"><i class="fas fa-cogs"></i></div>
+          <div>
+            <div class="section-title">Fonctions principales d'un SOC</div>
+          </div>
+        </div>
+
+        <div class="component-grid">
+          <div class="component-card">
+            <h4><i class="fas fa-eye"></i> Surveillance & Détection</h4>
+            <ul>
+              <li>Monitoring continu des alertes</li>
+              <li>Pare-feu, IDS/IPS, EDR</li>
+              <li>Plateformes SIEM</li>
+              <li>Threat Intelligence</li>
+            </ul>
+          </div>
+          <div class="component-card">
+            <h4><i class="fas fa-fire-extinguisher"></i> Réponse aux incidents</h4>
+            <ul>
+              <li>Analyse cause racine</li>
+              <li>Confinement</li>
+              <li>Atténuation</li>
+              <li>Rétablissement</li>
+            </ul>
+          </div>
+          <div class="component-card">
+            <h4><i class="fas fa-crosshairs"></i> Threat Hunting</h4>
+            <ul>
+              <li>Recherche proactive</li>
+              <li>Outils avancés</li>
+              <li>Détection APT</li>
+              <li>Analyse comportementale</li>
+            </ul>
+          </div>
+          <div class="component-card">
+            <h4><i class="fas fa-bug"></i> Gestion vulnérabilités</h4>
+            <ul>
+              <li>Scans de vulnérabilités</li>
+              <li>Tests d'intrusion</li>
+              <li>Patch management</li>
+              <li>Priorisation des risques</li>
+            </ul>
+          </div>
+          <div class="component-card">
+            <h4><i class="fas fa-microscope"></i> Forensique</h4>
+            <ul>
+              <li>Analyse numérique</li>
+              <li>Collecte de preuves</li>
+              <li>Identification attaquants</li>
+              <li>Timeline reconstruction</li>
+            </ul>
+          </div>
+          <div class="component-card">
+            <h4><i class="fas fa-brain"></i> Threat Intelligence</h4>
+            <ul>
+              <li>Menaces émergentes</li>
+              <li>Vulnérabilités 0-day</li>
+              <li>TTP documentation</li>
+              <li>IOC feeds</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Composants SOC -->
+        <div class="section-header">
+          <div class="section-icon"><i class="fas fa-puzzle-piece"></i></div>
+          <div>
+            <div class="section-title">Les 3 piliers d'un SOC</div>
+          </div>
+        </div>
+
+        <div class="component-grid">
+          <div class="component-card">
+            <h4><i class="fas fa-users"></i> Les Personnes</h4>
+            <ul>
+              <li>Analystes SOC (Tier 1/2/3)</li>
+              <li>Incident Responders</li>
+              <li>Threat Hunters</li>
+              <li>Experts forensiques</li>
+              <li>Ingénieurs sécurité</li>
+              <li>SOC Manager</li>
+            </ul>
+          </div>
+          <div class="component-card">
+            <h4><i class="fas fa-sitemap"></i> Les Processus</h4>
+            <ul>
+              <li>Procédures IR</li>
+              <li>Playbooks</li>
+              <li>Workflows</li>
+              <li>Politiques sécurité</li>
+              <li>Standards</li>
+              <li>Documentation</li>
+            </ul>
+          </div>
+          <div class="component-card">
+            <h4><i class="fas fa-server"></i> La Technologie</h4>
+            <ul>
+              <li>SIEM</li>
+              <li>IDS/IPS</li>
+              <li>EDR/XDR</li>
+              <li>Threat Intel feeds</li>
+              <li>SOAR</li>
+              <li>Forensic tools</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Défis SOC -->
+        <div class="section-header">
+          <div class="section-icon" style="background: var(--gradient-danger);"><i class="fas fa-exclamation-triangle"></i></div>
+          <div>
+            <div class="section-title" style="background: var(--gradient-danger); -webkit-background-clip: text;">Défis d'un SOC</div>
+          </div>
+        </div>
+
+        <div class="challenge-list">
+          <div class="challenge-item"><i class="fas fa-bell-slash"></i> Fatigue liée aux alertes (faux positifs)</div>
+          <div class="challenge-item"><i class="fas fa-user-graduate"></i> Manque de compétences</div>
+          <div class="challenge-item"><i class="fas fa-virus"></i> Évolution constante des menaces</div>
+          <div class="challenge-item"><i class="fas fa-puzzle-piece"></i> Complexité d'intégration</div>
+          <div class="challenge-item"><i class="fas fa-gavel"></i> Exigences réglementaires</div>
+          <div class="challenge-item"><i class="fas fa-wallet"></i> Contraintes budgétaires</div>
+        </div>
+
+        <!-- Filtres -->
+        <div class="section-header">
+          <div class="section-icon"><i class="fas fa-question-circle"></i></div>
+          <div>
+            <div class="section-title">60+ Questions d'entretien</div>
+            <span class="section-count">Avec réponses détaillées</span>
+          </div>
+        </div>
+
+        <div class="filter-tabs">
+          <button class="filter-tab active" onclick="filterCategory('all', this)">Toutes</button>
+          <button class="filter-tab" onclick="filterCategory('basics', this)">Fondamentaux</button>
+          <button class="filter-tab" onclick="filterCategory('technical', this)">Technique</button>
+          <button class="filter-tab" onclick="filterCategory('incident', this)">Incidents</button>
+          <button class="filter-tab" onclick="filterCategory('tools', this)">Outils</button>
+          <button class="filter-tab" onclick="filterCategory('advanced', this)">Avancé</button>
+        </div>
+
+        <!-- Questions Grid -->
+        <div class="question-grid" id="questions-container">
+
+          <!-- Fondamentaux -->
+          <div class="question-card" data-category="basics" onclick="toggleQuestion(this)">
+            <div class="question-title"><span class="question-number">1</span>Quel est le rôle d'un Analyste SOC ?</div>
+            <div class="question-answer">Il surveille, détecte, analyse et répond aux incidents de sécurité. L'analyste SOC est la première ligne de défense contre les cybermenaces.</div>
+          </div>
+
+          <div class="question-card" data-category="basics" onclick="toggleQuestion(this)">
+            <div class="question-title"><span class="question-number">2</span>Différence entre SIEM et EDR ?</div>
+            <div class="question-answer">
+              <ul>
+                <li><strong>SIEM</strong> : Collecte et corrèle les logs de multiples sources pour une détection globale</li>
+                <li><strong>EDR</strong> : Surveille et répond aux menaces au niveau endpoint (poste de travail)</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="question-card" data-category="tools" onclick="toggleQuestion(this)">
+            <div class="question-title"><span class="question-number">3</span>Outils courants dans un SOC ?</div>
+            <div class="question-answer">
+              <ul>
+                <li>SIEM (Splunk, QRadar, Elastic)</li>
+                <li>EDR (CrowdStrike, Carbon Black, SentinelOne)</li>
+                <li>Pare-feu nouvelle génération</li>
+                <li>IDS/IPS (Snort, Suricata)</li>
+                <li>Threat Intelligence platforms</li>
+                <li>Outils de packet capture (Wireshark)</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="question-card" data-category="incident" onclick="toggleQuestion(this)">
+            <div class="question-title"><span class="question-number">4</span>Comment prioriser les incidents ?</div>
+            <div class="question-answer">
+              Selon plusieurs critères :
+              <ul>
+                <li><strong>Gravité</strong> de l'alerte</li>
+                <li><strong>Impact métier</strong> potentiel</li>
+                <li><strong>Criticité des actifs</strong> concernés</li>
+                <li><strong>Risque de perte de données</strong></li>
+                <li>Conformité réglementaire</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="question-card" data-category="incident" onclick="toggleQuestion(this)">
+            <div class="question-title"><span class="question-number">5</span>Étapes d'investigation d'un incident ?</div>
+            <div class="question-answer">
+              <ul>
+                <li>1. Collecte des preuves</li>
+                <li>2. Analyse des logs</li>
+                <li>3. Identification de la cause racine</li>
+                <li>4. Évaluation de l'impact</li>
+                <li>5. Documentation complète</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="question-card" data-category="basics" onclick="toggleQuestion(this)">
+            <div class="question-title"><span class="question-number">6</span>Comment rester à jour ?</div>
+            <div class="question-answer">
+              <ul>
+                <li>Forums spécialisés (Reddit, Twitter InfoSec)</li>
+                <li>Conférences (DEF CON, Black Hat)</li>
+                <li>Blogs sécurité</li>
+                <li>Certifications continues</li>
+                <li>Labs pratiques (TryHackMe, HackTheBox)</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="question-card" data-category="advanced" onclick="toggleQuestion(this)">
+            <div class="question-title"><span class="question-number">7</span>Framework MITRE ATT&CK ?</div>
+            <div class="question-answer">Base de connaissances des <strong>TTP (Tactics, Techniques, Procedures)</strong> utilisées par les attaquants. Utilisée pour :
+              <ul>
+                <li>Cartographier les comportements observés</li>
+                <li>Améliorer la détection</li>
+                <li>Évaluer la couverture défensive</li>
+                <li>Communication standardisée</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="question-card" data-category="incident" onclick="toggleQuestion(this)">
+            <div class="question-title"><span class="question-number">8</span>Cycle de vie de réponse à incident ?</div>
+            <div class="question-answer">
+              <ul>
+                <li><strong>1. Préparation</strong> - Plans, outils, formation</li>
+                <li><strong>2. Identification</strong> - Détection de l'incident</li>
+                <li><strong>3. Confinement</strong> - Limiter la propagation</li>
+                <li><strong>4. Éradication</strong> - Supprimer la menace</li>
+                <li><strong>5. Récupération</strong> - Restaurer les systèmes</li>
+                <li><strong>6. Leçons apprises</strong> - Post-mortem</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="question-card" data-category="technical" onclick="toggleQuestion(this)">
+            <div class="question-title"><span class="question-number">9</span>Différence IOC vs TTP ?</div>
+            <div class="question-answer">
+              <ul>
+                <li><strong>IOC</strong> (Indicators of Compromise) : Indicateurs techniques comme IP, hash de fichier, domaine, URL malveillante</li>
+                <li><strong>TTP</strong> (Tactics, Techniques, Procedures) : Comportements et méthodes d'attaque, plus difficiles à changer</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="question-card" data-category="technical" onclick="toggleQuestion(this)">
+            <div class="question-title"><span class="question-number">10</span>Gestion des faux positifs ?</div>
+            <div class="question-answer">
+              <ul>
+                <li>Investigation approfondie de chaque cas</li>
+                <li>Tuning des règles de détection</li>
+                <li>Amélioration de la corrélation</li>
+                <li>Whitelist des comportements légitimes</li>
+                <li>Documentation des exceptions</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="question-card" data-category="advanced" onclick="toggleQuestion(this)">
+            <div class="question-title"><span class="question-number">11</span>Qu'est-ce que le Threat Hunting ?</div>
+            <div class="question-answer">Recherche <strong>proactive</strong> de menaces invisibles aux outils classiques. Le hunter formule des hypothèses et cherche des preuves de compromission dans les données historiques.</div>
+          </div>
+
+          <div class="question-card" data-category="technical" onclick="toggleQuestion(this)">
+            <div class="question-title"><span class="question-number">12</span>Rôle du Threat Intelligence ?</div>
+            <div class="question-answer">Apporte du <strong>contexte</strong> pour améliorer la détection et la réponse :
+              <ul>
+                <li>IOC actualisés</li>
+                <li>Informations sur les acteurs de menace</li>
+                <li>TTP documentés</li>
+                <li>Indicateurs de compromission précoces</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="question-card" data-category="incident" onclick="toggleQuestion(this)">
+            <div class="question-title"><span class="question-number">13</span>Évaluation de l'impact métier ?</div>
+            <div class="question-answer">
+              Analyse des conséquences sur :
+              <ul>
+                <li>Fonctions critiques de l'entreprise</li>
+                <li>Données sensibles (clients, financières)</li>
+                <li>Conformité réglementaire</li>
+                <li>Réputation de l'organisation</li>
+                <li>Continuité d'activité</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="question-card" data-category="technical" onclick="toggleQuestion(this)">
+            <div class="question-title"><span class="question-number">14</span>Segmentation réseau ?</div>
+            <div class="question-answer">Diviser le réseau en segments isolés pour <strong>limiter les mouvements latéraux</strong> en cas de compromission. Exemples : VLAN, micro-segmentation, zones DMZ.</div>
+          </div>
+
+          <div class="question-card" data-category="technical" onclick="toggleQuestion(this)">
+            <div class="question-title"><span class="question-number">15</span>Scan de vulnérabilité vs Pentest ?</div>
+            <div class="question-answer">
+              <ul>
+                <li><strong>Scan</strong> : Identification automatisée des vulnérabilités connues (Nessus, Qualys)</li>
+                <li><strong>Pentest</strong> : Simulation réelle d'attaque par un expert pour exploiter les failles</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="question-card" data-category="incident" onclick="toggleQuestion(this)">
+            <div class="question-title"><span class="question-number">16</span>Triage d'incident ?</div>
+            <div class="question-answer">Processus d'<strong>évaluation rapide</strong> de la gravité d'une alerte pour prioriser les actions. Inclut la catégorisation, l'attribution de sévérité, et l'assignation à l'équipe appropriée.</div>
+          </div>
+
+          <div class="question-card" data-category="advanced" onclick="toggleQuestion(this)">
+            <div class="question-title"><span class="question-number">17</span>Gestion des menaces internes ?</div>
+            <div class="question-answer">
+              <ul>
+                <li>Monitoring de l'activité utilisateur (UEBA)</li>
+                <li>Collaboration avec RH et juridique</li>
+                <li>Analyse comportementale</li>
+                <li>DLP (Data Loss Prevention)</li>
+                <li>Principe du moindre privilège</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="question-card" data-category="incident" onclick="toggleQuestion(this)">
+            <div class="question-title"><span class="question-number">18</span>Composants d'un plan IR ?</div>
+            <div class="question-answer">
+              <ul>
+                <li>Procédures détaillées</li>
+                <li>Matrice d'escalade</li>
+                <li>Plan de communication</li>
+                <li>Procédures de confinement</li>
+                <li>Templates de documentation</li>
+                <li>Analyse post-incident</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="question-card" data-category="advanced" onclick="toggleQuestion(this)">
+            <div class="question-title"><span class="question-number">19</span>Zero Trust ?</div>
+            <div class="question-answer">Modèle de sécurité : <strong>"Ne jamais faire confiance, toujours vérifier"</strong>
+              <ul>
+                <li>Authentification continue</li>
+                <li>Moindre privilège</li>
+                <li>Micro-segmentation</li>
+                <li>Vérification explicite</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="question-card" data-category="incident" onclick="toggleQuestion(this)">
+            <div class="question-title"><span class="question-number">20</span>Gestion ransomware ?</div>
+            <div class="question-answer">
+              <ul>
+                <li>Confinement immédiat (isolation réseau)</li>
+                <li>Identification de la souche</li>
+                <li>Restauration depuis backup</li>
+                <li>Patch des vulnérabilités exploitées</li>
+                <li>Ne pas payer la rançon</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="question-card" data-category="technical" onclick="toggleQuestion(this)">
+            <div class="question-title"><span class="question-number">21</span>Indicateurs de phishing ?</div>
+            <div class="question-answer">
+              <ul>
+                <li>Email avec expéditeur suspect</li>
+                <li>Demande urgente inhabituelle</li>
+                <li>URL incohérente avec le contenu</li>
+                <li>Ton menaçant ou pressant</li>
+                <li>Fautes d'orthographe</li>
+                <li>Pièces jointes suspectes</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="question-card" data-category="advanced" onclick="toggleQuestion(this)">
+            <div class="question-title"><span class="question-number">22</span>Threat Modeling ?</div>
+            <div class="question-answer">Processus d'<strong>identification systématique</strong> des menaces potentielles sur un système. Frameworks : STRIDE, PASTA, DREAD.</div>
+          </div>
+
+          <div class="question-card" data-category="incident" onclick="toggleQuestion(this)">
+            <div class="question-title"><span class="question-number">23</span>Gestion DDoS ?</div>
+            <div class="question-answer">
+              <ul>
+                <li>Filtrage du trafic malveillant</li>
+                <li>Rate limiting</li>
+                <li>Augmentation capacité réseau</li>
+                <li>Collaboration avec ISP</li>
+                <li>CDN et services anti-DDoS</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="question-card" data-category="technical" onclick="toggleQuestion(this)">
+            <div class="question-title"><span class="question-number">24</span>Bonnes pratiques Cloud ?</div>
+            <div class="question-answer">
+              <ul>
+                <li>Contrôles d'accès forts (IAM)</li>
+                <li>Chiffrement des données</li>
+                <li>Monitoring et logging centralisé</li>
+                <li>Patch management</li>
+                <li>Audits réguliers</li>
+                <li>Responsabilité partagée</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="question-card" data-category="technical" onclick="toggleQuestion(this)">
+            <div class="question-title"><span class="question-number">25</span>Détection IOC vs comportementale ?</div>
+            <div class="question-answer">
+              <ul>
+                <li><strong>IOC</strong> : Basée sur signatures connues, rapide mais évitable</li>
+                <li><strong>Comportementale</strong> : Basée sur anomalies, détecte l'inconnu mais génère plus de faux positifs</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="question-card" data-category="incident" onclick="toggleQuestion(this)">
+            <div class="question-title"><span class="question-number">26</span>Gestion data breach ?</div>
+            <div class="question-answer">
+              <ul>
+                <li>Confinement rapide</li>
+                <li>Analyse forensique</li>
+                <li>Notification réglementaire (GDPR: 72h)</li>
+                <li>Communication aux parties affectées</li>
+                <li>Remédiation et amélioration</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="question-card" data-category="basics" onclick="toggleQuestion(this)">
+            <div class="question-title"><span class="question-number">27</span>Équipe IR efficace ?</div>
+            <div class="question-answer">
+              <ul>
+                <li>Rôles clairs et définis</li>
+                <li>Communication efficace</li>
+                <li>Collaboration transverse</li>
+                <li>Exercices réguliers (tabletop)</li>
+                <li>Documentation à jour</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="question-card" data-category="tools" onclick="toggleQuestion(this)">
+            <div class="question-title"><span class="question-number">28</span>Qu'est-ce que SOAR ?</div>
+            <div class="question-answer"><strong>Security Orchestration, Automation and Response</strong> - Automatisation des workflows SOC :
+              <ul>
+                <li>Enrichissement automatique des alertes</li>
+                <li>Playbooks automatisés</li>
+                <li>Orchestration des outils</li>
+                <li>Réduction du temps de réponse</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="question-card" data-category="basics" onclick="toggleQuestion(this)">
+            <div class="question-title"><span class="question-number">29</span>Conformité réglementaire ?</div>
+            <div class="question-answer">
+              <ul>
+                <li>Audits réguliers</li>
+                <li>Documentation des contrôles</li>
+                <li>Alignement avec GDPR, HIPAA, PCI DSS</li>
+                <li>Reporting aux autorités</li>
+                <li>Formation des équipes</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="question-card" data-category="basics" onclick="toggleQuestion(this)">
+            <div class="question-title"><span class="question-number">30</span>Défis d'un Analyste SOC ?</div>
+            <div class="question-answer">
+              <ul>
+                <li>Fatigue liée aux alertes</li>
+                <li>Manque de compétences</li>
+                <li>Évolution constante des menaces</li>
+                <li>Volume de données croissant</li>
+                <li>Travail en rotation 24/7</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Advanced Questions -->
+          <div class="question-card" data-category="advanced" onclick="toggleQuestion(this)">
+            <div class="question-title"><span class="question-number">31</span>Qu'est-ce qu'un APT ?</div>
+            <div class="question-answer"><strong>Advanced Persistent Threat</strong> - Attaque sophistiquée, ciblée et de longue durée, généralement menée par des acteurs étatiques ou groupes organisés avec des ressources importantes.</div>
+          </div>
+
+          <div class="question-card" data-category="advanced" onclick="toggleQuestion(this)">
+            <div class="question-title"><span class="question-number">32</span>Kill Chain cyber ?</div>
+            <div class="question-answer">
+              Modèle Lockheed Martin :
+              <ul>
+                <li>1. Reconnaissance</li>
+                <li>2. Weaponization</li>
+                <li>3. Delivery</li>
+                <li>4. Exploitation</li>
+                <li>5. Installation</li>
+                <li>6. Command & Control</li>
+                <li>7. Actions on Objectives</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="question-card" data-category="technical" onclick="toggleQuestion(this)">
+            <div class="question-title"><span class="question-number">33</span>Zero-day vulnerability ?</div>
+            <div class="question-answer">Vulnérabilité inconnue du fabricant, sans correctif disponible. Très dangereuse car aucune protection n'existe. Détection possible uniquement par analyse comportementale.</div>
+          </div>
+
+          <div class="question-card" data-category="technical" onclick="toggleQuestion(this)">
+            <div class="question-title"><span class="question-number">34</span>Chiffrement symétrique vs asymétrique ?</div>
+            <div class="question-answer">
+              <ul>
+                <li><strong>Symétrique</strong> : Une seule clé pour chiffrer/déchiffrer (AES)</li>
+                <li><strong>Asymétrique</strong> : Paire de clés publique/privée (RSA)</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="question-card" data-category="tools" onclick="toggleQuestion(this)">
+            <div class="question-title"><span class="question-number">35</span>MTTD et MTTR ?</div>
+            <div class="question-answer">
+              <ul>
+                <li><strong>MTTD</strong> (Mean Time To Detect) : Temps moyen de détection d'un incident</li>
+                <li><strong>MTTR</strong> (Mean Time To Respond) : Temps moyen de résolution</li>
+              </ul>
+              Ce sont des KPIs clés pour mesurer l'efficacité du SOC.
+            </div>
+          </div>
+
+          <div class="question-card" data-category="technical" onclick="toggleQuestion(this)">
+            <div class="question-title"><span class="question-number">36</span>Ports courants à connaître ?</div>
+            <div class="question-answer">
+              <ul>
+                <li>22 - SSH</li>
+                <li>80 - HTTP</li>
+                <li>443 - HTTPS</li>
+                <li>53 - DNS</li>
+                <li>3389 - RDP</li>
+                <li>445 - SMB</li>
+                <li>3306 - MySQL</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="question-card" data-category="technical" onclick="toggleQuestion(this)">
+            <div class="question-title"><span class="question-number">37</span>Différence entre IDS et IPS ?</div>
+            <div class="question-answer">
+              <ul>
+                <li><strong>IDS</strong> : Détecte les intrusions, génère des alertes (passif)</li>
+                <li><strong>IPS</strong> : Détecte ET bloque les intrusions (actif)</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="question-card" data-category="incident" onclick="toggleQuestion(this)">
+            <div class="question-title"><span class="question-number">38</span>Lateral movement ?</div>
+            <div class="question-answer">Technique utilisée par un attaquant pour se déplacer d'un système compromis vers d'autres systèmes du réseau. Détection : surveillance des connexions internes inhabituelles.</div>
+          </div>
+
+          <div class="question-card" data-category="technical" onclick="toggleQuestion(this)">
+            <div class="question-title"><span class="question-number">39</span>Event IDs Windows importants ?</div>
+            <div class="question-answer">
+              <ul>
+                <li>4624 - Connexion réussie</li>
+                <li>4625 - Connexion échouée</li>
+                <li>4688 - Création de processus</li>
+                <li>4720 - Création de compte</li>
+                <li>4732 - Ajout à groupe admin</li>
+                <li>7045 - Installation de service</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="question-card" data-category="advanced" onclick="toggleQuestion(this)">
+            <div class="question-title"><span class="question-number">40</span>Pass-the-Hash ?</div>
+            <div class="question-answer">Technique d'attaque où l'attaquant utilise le hash NTLM d'un mot de passe (sans le connaître) pour s'authentifier. Mitigation : Credential Guard, comptes privilégiés séparés.</div>
+          </div>
+
+          <div class="question-card" data-category="tools" onclick="toggleQuestion(this)">
+            <div class="question-title"><span class="question-number">41</span>Outils d'analyse réseau ?</div>
+            <div class="question-answer">
+              <ul>
+                <li>Wireshark - Capture de paquets</li>
+                <li>tcpdump - Ligne de commande</li>
+                <li>Zeek (Bro) - Analyse de trafic</li>
+                <li>NetworkMiner - Forensique réseau</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="question-card" data-category="technical" onclick="toggleQuestion(this)">
+            <div class="question-title"><span class="question-number">42</span>Logs Linux importants ?</div>
+            <div class="question-answer">
+              <ul>
+                <li>/var/log/auth.log - Authentification</li>
+                <li>/var/log/syslog - Système</li>
+                <li>/var/log/secure - Sécurité (RHEL)</li>
+                <li>/var/log/apache2/ - Serveur web</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="question-card" data-category="advanced" onclick="toggleQuestion(this)">
+            <div class="question-title"><span class="question-number">43</span>Qu'est-ce que UEBA ?</div>
+            <div class="question-answer"><strong>User and Entity Behavior Analytics</strong> - Analyse comportementale des utilisateurs et entités pour détecter les anomalies et menaces internes via machine learning.</div>
+          </div>
+
+          <div class="question-card" data-category="incident" onclick="toggleQuestion(this)">
+            <div class="question-title"><span class="question-number">44</span>Chain of custody ?</div>
+            <div class="question-answer">Documentation de la chaîne de possession des preuves numériques : qui a eu accès, quand, quelles actions. Essentiel pour la validité juridique des preuves.</div>
+          </div>
+
+          <div class="question-card" data-category="technical" onclick="toggleQuestion(this)">
+            <div class="question-title"><span class="question-number">45</span>DNS tunneling ?</div>
+            <div class="question-answer">Technique d'exfiltration de données ou de C2 en encapsulant des données dans des requêtes DNS. Détection : requêtes DNS anormalement longues ou fréquentes.</div>
+          </div>
+
+          <div class="question-card" data-category="basics" onclick="toggleQuestion(this)">
+            <div class="question-title"><span class="question-number">46</span>Triade CIA ?</div>
+            <div class="question-answer">
+              <ul>
+                <li><strong>Confidentialité</strong> : Protection contre accès non autorisé</li>
+                <li><strong>Intégrité</strong> : Données non modifiées</li>
+                <li><strong>Disponibilité</strong> : Accès quand nécessaire</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="question-card" data-category="advanced" onclick="toggleQuestion(this)">
+            <div class="question-title"><span class="question-number">47</span>Kerberoasting ?</div>
+            <div class="question-answer">Attaque ciblant les tickets Kerberos de service pour extraire des credentials. L'attaquant demande des tickets TGS et tente de craquer le hash offline.</div>
+          </div>
+
+          <div class="question-card" data-category="tools" onclick="toggleQuestion(this)">
+            <div class="question-title"><span class="question-number">48</span>Sandbox analysis ?</div>
+            <div class="question-answer">Exécution de fichiers suspects dans un environnement isolé pour observer leur comportement sans risque pour le réseau de production.</div>
+          </div>
+
+          <div class="question-card" data-category="technical" onclick="toggleQuestion(this)">
+            <div class="question-title"><span class="question-number">49</span>OSINT ?</div>
+            <div class="question-answer"><strong>Open Source Intelligence</strong> - Collecte d'informations à partir de sources publiques (réseaux sociaux, DNS, WHOIS, etc.) pour la reconnaissance ou la threat intelligence.</div>
+          </div>
+
+          <div class="question-card" data-category="incident" onclick="toggleQuestion(this)">
+            <div class="question-title"><span class="question-number">50</span>Volatility analysis ?</div>
+            <div class="question-answer">Analyse de la mémoire RAM pour identifier des malwares, processus cachés, connexions réseau et autres artefacts non visibles sur le disque.</div>
+          </div>
+
+          <div class="question-card" data-category="technical" onclick="toggleQuestion(this)">
+            <div class="question-title"><span class="question-number">51</span>Différence TCP vs UDP ?</div>
+            <div class="question-answer">
+              <ul>
+                <li><strong>TCP</strong> : Connexion orientée, fiable, accusé de réception</li>
+                <li><strong>UDP</strong> : Sans connexion, plus rapide, pas de garantie de livraison</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="question-card" data-category="advanced" onclick="toggleQuestion(this)">
+            <div class="question-title"><span class="question-number">52</span>Living off the Land (LOTL) ?</div>
+            <div class="question-answer">Technique où l'attaquant utilise des outils légitimes déjà présents sur le système (PowerShell, WMI, certutil) pour éviter la détection.</div>
+          </div>
+
+          <div class="question-card" data-category="tools" onclick="toggleQuestion(this)">
+            <div class="question-title"><span class="question-number">53</span>Sources de Threat Intel ?</div>
+            <div class="question-answer">
+              <ul>
+                <li>VirusTotal</li>
+                <li>AlienVault OTX</li>
+                <li>AbuseIPDB</li>
+                <li>MISP</li>
+                <li>ISAC sectoriels</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="question-card" data-category="incident" onclick="toggleQuestion(this)">
+            <div class="question-title"><span class="question-number">54</span>Containment strategies ?</div>
+            <div class="question-answer">
+              <ul>
+                <li>Isolation réseau de l'hôte</li>
+                <li>Désactivation du compte compromis</li>
+                <li>Blocage des IOC au niveau pare-feu</li>
+                <li>Segmentation d'urgence</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="question-card" data-category="technical" onclick="toggleQuestion(this)">
+            <div class="question-title"><span class="question-number">55</span>Hash MD5 vs SHA256 ?</div>
+            <div class="question-answer">
+              <ul>
+                <li><strong>MD5</strong> : 128 bits, rapide mais vulnérable aux collisions</li>
+                <li><strong>SHA256</strong> : 256 bits, plus sécurisé, standard actuel</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="question-card" data-category="advanced" onclick="toggleQuestion(this)">
+            <div class="question-title"><span class="question-number">56</span>Fileless malware ?</div>
+            <div class="question-answer">Malware qui s'exécute uniquement en mémoire sans écrire de fichier sur le disque. Très difficile à détecter, nécessite une analyse comportementale et mémoire.</div>
+          </div>
+
+          <div class="question-card" data-category="basics" onclick="toggleQuestion(this)">
+            <div class="question-title"><span class="question-number">57</span>Principe du moindre privilège ?</div>
+            <div class="question-answer">Accorder uniquement les permissions minimales nécessaires pour accomplir une tâche. Réduit la surface d'attaque en cas de compromission.</div>
+          </div>
+
+          <div class="question-card" data-category="tools" onclick="toggleQuestion(this)">
+            <div class="question-title"><span class="question-number">58</span>XDR vs EDR ?</div>
+            <div class="question-answer">
+              <ul>
+                <li><strong>EDR</strong> : Focus sur les endpoints uniquement</li>
+                <li><strong>XDR</strong> : Extended Detection and Response - corrèle données endpoint, réseau, cloud, email pour une vision unifiée</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="question-card" data-category="advanced" onclick="toggleQuestion(this)">
+            <div class="question-title"><span class="question-number">59</span>Qu'est-ce qu'un ISAC ?</div>
+            <div class="question-answer"><strong>Information Sharing and Analysis Center</strong> - Organisation sectorielle pour le partage de threat intelligence entre entreprises d'un même secteur.</div>
+          </div>
+
+          <div class="question-card" data-category="incident" onclick="toggleQuestion(this)">
+            <div class="question-title"><span class="question-number">60</span>Post-incident review ?</div>
+            <div class="question-answer">
+              Analyse après incident pour :
+              <ul>
+                <li>Identifier les améliorations possibles</li>
+                <li>Documenter les leçons apprises</li>
+                <li>Mettre à jour les playbooks</li>
+                <li>Renforcer les contrôles</li>
+              </ul>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Résumé -->
+        <div class="summary-card">
+          <h3><i class="fas fa-check-circle"></i> Résumé final</h3>
+          <p style="color: var(--text-secondary); line-height: 1.8;">Un SOC est un <strong>pilier stratégique</strong> de la cybersécurité. Son objectif : réduire l'impact des incidents et protéger l'organisation contre les cybermenaces.</p>
+          
+          <div class="summary-pillars">
+            <div class="pillar">
+              <i class="fas fa-users"></i>
+              <span>Les Personnes</span>
+            </div>
+            <div class="pillar">
+              <i class="fas fa-sitemap"></i>
+              <span>Les Processus</span>
+            </div>
+            <div class="pillar">
+              <i class="fas fa-server"></i>
+              <span>La Technologie</span>
+            </div>
+          </div>
+
+          <p style="color: var(--text-secondary); margin-top: 16px;">Le SOC doit constamment évoluer face à la fatigue des alertes, le manque de compétences et la complexité croissante des attaques.</p>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <script src="assets/js/app.js"></script>
+  <script src="assets/js/quiz-data.js"></script>
+  <script src="assets/js/quiz-engine.js"></script>
+  <script>
+    function toggleQuestion(card) {
+      card.classList.toggle('expanded');
+    }
+
+    function filterCategory(category, btn) {
+      // Update active tab
+      document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+      btn.classList.add('active');
+
+      // Filter questions
+      document.querySelectorAll('.question-card').forEach(card => {
+        if (category === 'all' || card.dataset.category === category) {
+          card.style.display = 'block';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
+
+    function filterQuestions(query) {
+      const lowerQuery = query.toLowerCase();
+      document.querySelectorAll('.question-card').forEach(card => {
+        const text = card.textContent.toLowerCase();
+        card.style.display = text.includes(lowerQuery) ? 'block' : 'none';
+      });
+    }
+  </script>
+  <script src="assets/js/pwa-install.js"></script>
+</body>
+</html>

@@ -1,0 +1,303 @@
+﻿<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SecOps Academy • Hub Révision Gamifié</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/app.css">
+  <style>
+    .rev-hero{position:relative;background:radial-gradient(circle at 0% 0%,rgba(99,102,241,.18),transparent 50%),radial-gradient(circle at 100% 100%,rgba(139,92,246,.18),transparent 50%),var(--bg-card);
+      border:1px solid var(--border-hover);border-radius:24px;padding:28px 32px;margin-bottom:28px;box-shadow:var(--shadow-lg);overflow:hidden;}
+    .rev-hero::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:var(--gradient);}
+    .rev-h-top{display:flex;align-items:center;gap:18px;flex-wrap:wrap;}
+    .rev-h-top .ico{width:64px;height:64px;border-radius:18px;background:var(--gradient);display:flex;align-items:center;justify-content:center;color:#fff;font-size:28px;box-shadow:0 10px 30px rgba(99,102,241,.4);}
+    .rev-h-top h1{font-size:26px;font-weight:900;margin:0;letter-spacing:-.5px;color:var(--text-primary);}
+    .rev-h-top .sub{font-size:13px;color:var(--text-secondary);font-weight:600;}
+    .rev-h-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-top:22px;}
+    .rev-stat{background:var(--bg-card);border:1px solid var(--border);border-radius:14px;padding:14px 16px;}
+    .rev-stat .lbl{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:1.2px;color:var(--text-secondary);}
+    .rev-stat .val{font-size:24px;font-weight:900;background:linear-gradient(135deg,#6366f1,#8b5cf6);-webkit-background-clip:text;background-clip:text;color:transparent;margin-top:2px;}
+    .rev-stat.warn .val{background:linear-gradient(135deg,#f59e0b,#ef4444);-webkit-background-clip:text;background-clip:text;color:transparent;}
+    .rev-stat.ok .val{background:linear-gradient(135deg,#10b981,#059669);-webkit-background-clip:text;background-clip:text;color:transparent;}
+
+    .rev-section-title{font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-secondary);margin:30px 0 14px;}
+    .rev-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;}
+    .rev-card{background:var(--bg-card);border:1.5px solid var(--border);border-radius:18px;padding:20px;cursor:pointer;transition:all .25s;position:relative;overflow:hidden;}
+    .rev-card::before{content:'';position:absolute;inset:0 0 auto 0;height:3px;background:var(--gradient);opacity:0;transition:.25s;}
+    .rev-card:hover{transform:translateY(-4px);border-color:var(--border-hover);box-shadow:var(--shadow-md);}
+    .rev-card:hover::before{opacity:1;}
+    .rev-card .ico{width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:20px;margin-bottom:12px;}
+    .rev-card h3{font-size:16px;font-weight:800;margin:0 0 6px;color:var(--text-primary);}
+    .rev-card p{font-size:13px;color:var(--text-secondary);line-height:1.5;margin:0;}
+    .rev-card .tag{display:inline-block;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:1px;padding:3px 8px;border-radius:999px;margin-top:10px;}
+    .rev-tag-easy{background:rgba(16,185,129,.12);color:#047857;}
+    .rev-tag-mid{background:rgba(245,158,11,.12);color:#b45309;}
+    .rev-tag-hot{background:rgba(239,68,68,.12);color:#b91c1c;}
+    .rev-tag-fun{background:rgba(99,102,241,.12);color:#6366f1;}
+
+    .rev-topic-row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px;}
+    .rev-topic{padding:8px 14px;border-radius:999px;background:var(--bg-card);border:1.5px solid var(--border);color:var(--text-primary);font-weight:700;font-size:12.5px;cursor:pointer;transition:.2s;}
+    .rev-topic:hover,.rev-topic.active{background:var(--gradient);color:#fff;border-color:transparent;transform:translateY(-1px);}
+
+    .rev-badges{display:flex;flex-wrap:wrap;gap:10px;}
+    .rev-badge{display:flex;align-items:center;gap:8px;padding:10px 14px;border-radius:14px;border:1.5px solid var(--border);background:var(--bg-card);font-size:13px;font-weight:700;color:var(--text-secondary);}
+    .rev-badge.unlocked{border-color:#10b981;color:#065f46;background:rgba(16,185,129,.08);}
+    .rev-badge i{font-size:16px;color:#94a3b8;}
+    .rev-badge.unlocked i{color:#10b981;}
+
+    .rev-progress{background:var(--bg-card);border:1px solid var(--border);border-radius:18px;padding:20px;}
+    .rev-progress .head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;}
+    .rev-progress h3{margin:0;font-size:15px;font-weight:800;}
+    .rev-bar{height:10px;background:rgba(99,102,241,.12);border-radius:999px;overflow:hidden;margin:8px 0 14px;}
+    .rev-bar > div{height:100%;background:linear-gradient(90deg,#6366f1,#8b5cf6);border-radius:999px;transition:width .5s;}
+    .rev-topic-list{display:grid;gap:10px;}
+    .rev-tline{display:grid;grid-template-columns:120px 1fr 60px;gap:10px;align-items:center;font-size:13px;}
+    .rev-tline .name{font-weight:700;color:var(--text-primary);}
+    .rev-tline .pct{font-weight:800;color:var(--accent);text-align:right;}
+
+    @media(max-width:768px){.rev-h-top h1{font-size:20px;}.rev-tline{grid-template-columns:90px 1fr 50px;}}
+  </style>
+  <link rel="manifest" href="manifest.webmanifest">
+  <meta name="theme-color" content="#6366f1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="SecOps">
+  <link rel="apple-touch-icon" href="assets/icons/icon-192.png">
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="sidebar-header"><div class="logo"><i class="fas fa-shield-alt"></i><div><div>SecOps Academy</div><div class="tagline">Formation SOC/EDR/SOAR</div></div></div></div>
+      <nav class="sidebar-nav">
+        <div class="nav-section"><div class="nav-section-title">Dashboard</div>
+          <a class="nav-item" href="dashboard.html"><i class="fas fa-home"></i><span>Accueil</span></a>
+          <a class="nav-item" href="progress.html"><i class="fas fa-chart-line"></i><span>Progression</span></a>
+          <a class="nav-item active" href="revision.html"><i class="fas fa-gamepad"></i><span>Hub Révision</span><span class="nav-badge">XP</span></a>
+        </div>
+        <div class="nav-section"><div class="nav-section-title">Formation</div>
+          <a class="nav-item" href="soc-alerts.html"><i class="fas fa-bell"></i><span>Alertes SOC</span><span class="nav-badge">40+</span></a>
+          <a class="nav-item" href="soc-qa.html"><i class="fas fa-question-circle"></i><span>Q&A SOC</span></a>
+          <a class="nav-item" href="edr.html"><i class="fas fa-laptop"></i><span>EDR Investigation</span></a>
+          <a class="nav-item" href="soar.html"><i class="fas fa-robot"></i><span>SOAR Playbooks</span></a>
+          <a class="nav-item" href="pam.html"><i class="fas fa-key"></i><span>PAM</span></a>
+          <a class="nav-item" href="soc-l1-l2.html"><i class="fas fa-shield-virus"></i><span>SOC L1 & L2</span><span class="nav-badge">NEW</span></a>
+          <a class="nav-item" href="pentest.html"><i class="fas fa-user-secret"></i><span>Pentest Senior</span></a>
+        </div>
+        <div class="nav-section"><div class="nav-section-title">Outils & Techniques</div>
+          <a class="nav-item" href="splunk.html"><i class="fas fa-search"></i><span>Splunk SPL</span></a>
+          <a class="nav-item" href="events.html"><i class="fas fa-list"></i><span>Windows Events</span></a>
+          <a class="nav-item" href="linux.html"><i class="fab fa-linux"></i><span>Hardening Linux</span></a>
+          <a class="nav-item" href="apache.html"><i class="fas fa-server"></i><span>Apache & YAML</span></a>
+        </div>
+        <div class="nav-section"><div class="nav-section-title">Entretiens</div>
+          <a class="nav-item" href="star.html"><i class="fas fa-star"></i><span>Méthode STAR</span></a>
+          <a class="nav-item" href="interview.html"><i class="fas fa-microphone"></i><span>Simulation</span></a>
+          <a class="nav-item" href="soc-interview.html"><i class="fas fa-user-tie"></i><span>Questions SOC</span><span class="nav-badge">60+</span></a>
+        </div>
+      </nav>
+      <div class="sidebar-footer"><div class="user-card"><div class="user-avatar">AN</div><div><div class="user-name">Analyste SOC</div><div class="user-role">En formation</div></div></div></div>
+    </aside>
+
+    <main class="main">
+      <nav class="navbar">
+        <div class="search-container"><i class="fas fa-search search-icon"></i><input type="text" class="search-input" id="search" placeholder="Rechercher..." /></div>
+        <div class="navbar-actions">
+          <button class="icon-btn" onclick="toggleTheme()" title="Changer le thème"><i class="fas fa-moon"></i></button>
+          <button class="icon-btn" onclick="QuizEngine.openAmbush()" title="Lancer un pop-up surprise"><i class="fas fa-bell"></i><span class="badge-dot"></span></button>
+        </div>
+      </nav>
+
+      <div class="content">
+        <!-- HERO -->
+        <section class="rev-hero">
+          <div class="rev-h-top">
+            <div class="ico"><i class="fas fa-gamepad"></i></div>
+            <div style="flex:1;min-width:240px;">
+              <h1>Hub Révision Gamifié 🎮</h1>
+              <div class="sub">Joue, progresse, gagne des badges. Apprends tout en <span id="rev-jdays" style="color:#ef4444;font-weight:800;">39 jours</span>.</div>
+            </div>
+          </div>
+          <div class="rev-h-stats" id="rev-stats"></div>
+        </section>
+
+        <!-- MODES -->
+        <div class="rev-section-title">🎯 Modes de jeu</div>
+        <div class="rev-grid">
+          <div class="rev-card" onclick="QuizEngine.openQuiz({mode:'qcm', topic: currentTopic, count:10})">
+            <div class="ico" style="background:linear-gradient(135deg,#6366f1,#8b5cf6);"><i class="fas fa-list-check"></i></div>
+            <h3>QCM Classique</h3>
+            <p>10 questions, explications détaillées après chaque réponse. Idéal pour réviser à ton rythme.</p>
+            <span class="tag rev-tag-easy">Facile</span>
+          </div>
+          <div class="rev-card" onclick="QuizEngine.openQuiz({mode:'speed'})">
+            <div class="ico" style="background:linear-gradient(135deg,#f59e0b,#ef4444);"><i class="fas fa-bolt"></i></div>
+            <h3>⚡ Speed Run 60s</h3>
+            <p>Maximum de bonnes réponses en 60 secondes chrono. Rapidité + précision.</p>
+            <span class="tag rev-tag-mid">Intense</span>
+          </div>
+          <div class="rev-card" onclick="QuizEngine.openQuiz({mode:'survival'})">
+            <div class="ico" style="background:linear-gradient(135deg,#ef4444,#dc2626);"><i class="fas fa-heart-crack"></i></div>
+            <h3>☠️ Mode Survie</h3>
+            <p>3 vies, 15s par question. Combien d'affilée vas-tu tenir ?</p>
+            <span class="tag rev-tag-hot">Hardcore</span>
+          </div>
+          <div class="rev-card" onclick="QuizEngine.openQuiz({mode:'boss'})">
+            <div class="ico" style="background:linear-gradient(135deg,#7c3aed,#1e1b4b);"><i class="fas fa-skull"></i></div>
+            <h3>👹 Boss Mode</h3>
+            <p>20 questions, 20s chacune, tous les thèmes mélangés. 16+ bonnes pour vaincre le boss.</p>
+            <span class="tag rev-tag-hot">Boss</span>
+          </div>
+          <div class="rev-card" onclick="QuizEngine.openQuiz({mode:'daily'})">
+            <div class="ico" style="background:linear-gradient(135deg,#10b981,#059669);"><i class="fas fa-calendar-day"></i></div>
+            <h3>🎯 Défi du jour</h3>
+            <p>5 questions choisies par la date. Une seule tentative par jour, gros bonus XP.</p>
+            <span class="tag rev-tag-fun">+100 XP max</span>
+          </div>
+          <div class="rev-card" onclick="QuizEngine.openQuiz({mode:'qa', topic: currentTopic})">
+            <div class="ico" style="background:linear-gradient(135deg,#0ea5e9,#6366f1);"><i class="fas fa-microphone"></i></div>
+            <h3>🎤 Q&A Entretien SOC</h3>
+            <p>Questions ouvertes type entretien (L1/L2). Reformule à voix haute, compare avec la réponse modèle, auto-évalue.</p>
+            <span class="tag rev-tag-mid">Oral</span>
+          </div>
+          <div class="rev-card" onclick="QuizEngine.openFlashcards(currentTopic)">
+            <div class="ico" style="background:linear-gradient(135deg,#06b6d4,#3b82f6);"><i class="fas fa-layer-group"></i></div>
+            <h3>🃏 Flashcards</h3>
+            <p>Termes ↔ définitions, retournement 3D. Parfait avant un entretien.</p>
+            <span class="tag rev-tag-easy">Mémo</span>
+          </div>
+          <div class="rev-card" onclick="openMatchPicker()">
+            <div class="ico" style="background:linear-gradient(135deg,#ec4899,#8b5cf6);"><i class="fas fa-puzzle-piece"></i></div>
+            <h3>🧩 Memory Match</h3>
+            <p>Associe les paires (Event IDs, MITRE, SOC, Web). Limite tes erreurs !</p>
+            <span class="tag rev-tag-fun">Fun</span>
+          </div>
+          <div class="rev-card" onclick="QuizEngine.openAmbush()">
+            <div class="ico" style="background:linear-gradient(135deg,#dc2626,#7c2d12);"><i class="fas fa-bell"></i></div>
+            <h3>🚨 Pop-up Surprise</h3>
+            <p>Active les pop-ups : ils apparaissent au hasard sur toutes les pages et bloquent l'app jusqu'à réponse.</p>
+            <span class="tag rev-tag-hot">+15 XP/réponse</span>
+          </div>
+        </div>
+
+        <!-- FILTRE THEME -->
+        <div class="rev-section-title">📚 Filtrer QCM/Flashcards par thème</div>
+        <div class="rev-topic-row" id="rev-topics"></div>
+
+        <!-- PROGRESS PAR TOPIC -->
+        <div class="rev-section-title">📊 Maîtrise par thème</div>
+        <div class="rev-progress">
+          <div class="head"><h3>Précision moyenne par thème</h3><span style="font-size:12px;color:var(--text-secondary);font-weight:700;">Mise à jour automatique</span></div>
+          <div class="rev-topic-list" id="rev-topic-progress"></div>
+        </div>
+
+        <!-- BADGES -->
+        <div class="rev-section-title">🏆 Badges</div>
+        <div class="rev-badges" id="rev-badges"></div>
+
+        <!-- PLAN 39J -->
+        <div class="rev-section-title">📆 Plan 39 jours — objectif quotidien</div>
+        <div class="rev-progress">
+          <div class="head">
+            <h3>Aujourd'hui : viser <strong style="color:#6366f1;">20 questions répondues</strong></h3>
+            <span id="rev-day-pill" style="font-size:12px;color:var(--text-secondary);font-weight:700;">—</span>
+          </div>
+          <div class="rev-bar"><div id="rev-day-bar" style="width:0%"></div></div>
+          <div style="font-size:13px;color:var(--text-secondary);line-height:1.7;">
+            <strong>Stratégie :</strong> 1 défi quotidien (matin) → 10 QCM ciblés (midi) → Speed Run + 1 Boss (soir).
+            Active les <strong>pop-ups surprises</strong> en arrière-plan : ils transforment chaque pause en mini-révision.
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="assets/js/app.js"></script>
+  <script src="assets/js/quiz-data.js"></script>
+  <script src="assets/js/quiz-engine.js"></script>
+  <script>
+    let currentTopic = 'all';
+    const TOPICS = ['all','Entretien','SOC','MITRE','EDR','SOAR','PAM','Splunk','Events','Linux','Apache','Phishing','Sigma','Réseau','STAR'];
+    const BADGES = [
+      {id:'first-blood', label:'First Blood', icon:'fa-droplet', desc:'Première bonne réponse'},
+      {id:'hot-streak-3', label:'Hot Streak 3j', icon:'fa-fire', desc:'3 jours consécutifs'},
+      {id:'hot-streak-7', label:'Hot Streak 7j', icon:'fa-fire-flame-curved', desc:'7 jours consécutifs'},
+      {id:'analyst', label:'Analyste', icon:'fa-user-shield', desc:'Niveau 5 atteint'},
+      {id:'hunter', label:'Hunter', icon:'fa-magnifying-glass', desc:'Niveau 10 atteint'},
+      {id:'boss-slayer', label:'Boss Slayer', icon:'fa-skull-crossbones', desc:'Niveau 20 atteint'},
+      {id:'lightning', label:'Lightning', icon:'fa-bolt', desc:'10 réponses en 60s'},
+      {id:'survivor', label:'Survivor', icon:'fa-heart', desc:'15 combos en Survie'}
+    ];
+
+    function renderTopics() {
+      const wrap = document.getElementById('rev-topics');
+      wrap.innerHTML = TOPICS.map(t => `<button class="rev-topic ${t===currentTopic?'active':''}" data-t="${t}">${t==='all'?'Tous':t}</button>`).join('');
+      wrap.querySelectorAll('.rev-topic').forEach(b => b.onclick = () => { currentTopic = b.dataset.t; renderTopics(); });
+    }
+    function renderStats() {
+      const s = QuizEngine.getStats();
+      const acc = s.total ? Math.round(s.correct/s.total*100) : 0;
+      const xpForNext = 25 * (s.level) * (s.level);
+      document.getElementById('rev-stats').innerHTML = `
+        <div class="rev-stat"><div class="lbl">Niveau</div><div class="val">${s.level}</div></div>
+        <div class="rev-stat"><div class="lbl">XP total</div><div class="val">${s.xp}</div></div>
+        <div class="rev-stat ok"><div class="lbl">Précision</div><div class="val">${acc}%</div></div>
+        <div class="rev-stat warn"><div class="lbl">Streak</div><div class="val">🔥 ${s.streakDays}j</div></div>
+        <div class="rev-stat"><div class="lbl">Speed best</div><div class="val">${s.bestSpeed}</div></div>
+        <div class="rev-stat"><div class="lbl">Survie best</div><div class="val">${s.bestSurvival}</div></div>
+        <div class="rev-stat warn"><div class="lbl">Compte à rebours</div><div class="val">J-${QuizEngine.dayCountdown()}</div></div>`;
+      document.getElementById('rev-jdays').textContent = QuizEngine.dayCountdown() + ' jours';
+      // daily progress
+      const today = new Date().toISOString().slice(0,10);
+      // Approximation : on prend total questions today via journal stocké dans qe.daily ou diff with last total ; ici on affiche % vs objectif 20.
+      const todayCount = parseInt(localStorage.getItem('qe.dayCount.'+today) || '0', 10);
+      const pct = Math.min(100, Math.round(todayCount/20*100));
+      document.getElementById('rev-day-bar').style.width = pct + '%';
+      document.getElementById('rev-day-pill').textContent = `${todayCount}/20 aujourd'hui (${pct}%)`;
+    }
+    function renderTopicProgress() {
+      const s = QuizEngine.getStats();
+      const wrap = document.getElementById('rev-topic-progress');
+      const items = TOPICS.filter(t=>t!=='all').map(t => {
+        const d = s.perTopic[t] || {total:0,correct:0};
+        const pct = d.total ? Math.round(d.correct/d.total*100) : 0;
+        return `<div class="rev-tline"><div class="name">${t}</div><div class="rev-bar" style="margin:0;"><div style="width:${pct}%"></div></div><div class="pct">${pct}%</div></div>`;
+      });
+      wrap.innerHTML = items.join('');
+    }
+    function renderBadges() {
+      const s = QuizEngine.getStats();
+      document.getElementById('rev-badges').innerHTML = BADGES.map(b =>
+        `<div class="rev-badge ${s.badges.includes(b.id)?'unlocked':''}" title="${b.desc}"><i class="fas ${b.icon}"></i> ${b.label}</div>`
+      ).join('');
+    }
+    function openMatchPicker() {
+      const games = window.QUIZ_BANK.MATCH;
+      const choice = prompt('Choisis un thème :\n' + games.map((g,i)=>`${i+1}. ${g.topic}`).join('\n'), '1');
+      const idx = Math.max(0, Math.min(games.length-1, parseInt(choice||'1',10)-1));
+      QuizEngine.openMatch(idx);
+    }
+
+    // tracker simple : incrémente un compteur quotidien à chaque réponse
+    (function(){
+      const orig = QuizEngine.openQuiz;
+      // on patch via storage event instead — utilise un MutationObserver léger sur stats
+      let lastTotal = QuizEngine.getStats().total;
+      setInterval(() => {
+        const t = QuizEngine.getStats().total;
+        if (t !== lastTotal) {
+          const today = new Date().toISOString().slice(0,10);
+          const k = 'qe.dayCount.'+today;
+          localStorage.setItem(k, String((parseInt(localStorage.getItem(k)||'0',10)) + (t-lastTotal)));
+          lastTotal = t;
+          renderStats(); renderTopicProgress(); renderBadges();
+        }
+      }, 1500);
+    })();
+
+    renderTopics(); renderStats(); renderTopicProgress(); renderBadges();
+  </script>
+  <script src="assets/js/pwa-install.js"></script>
+</body>
+</html>
