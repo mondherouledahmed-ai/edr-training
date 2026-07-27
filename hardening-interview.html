@@ -1,0 +1,1444 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SecOps Academy • Entretien Responsable Hardening Groupe (Cybertic)</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/app.css">
+  <style>
+    .question-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 16px; margin-bottom: 24px; }
+    .question-card { background: var(--bg-card); backdrop-filter: blur(20px); border: 1px solid var(--border); border-radius: 14px; padding: 20px; cursor: pointer; transition: all .3s cubic-bezier(.4,0,.2,1); position: relative; overflow: hidden; }
+    .question-card::before { content:''; position:absolute; top:0; left:0; width:4px; height:100%; background: var(--gradient); opacity:0; transition: opacity .3s; }
+    .question-card:hover { transform: translateY(-4px); border-color: var(--border-hover); box-shadow: var(--shadow-glow); }
+    .question-card:hover::before { opacity:1; }
+    .question-card.expanded { grid-column: 1 / -1; }
+    .question-card .question-answer { display:none; color: var(--text-secondary); font-size: 14px; line-height: 1.7; padding-left: 40px; margin-top: 10px; }
+    .question-card.expanded .question-answer { display:block; }
+    .question-card .question-answer ul { margin: 8px 0; padding-left: 20px; }
+    .question-card .question-answer li { margin: 6px 0; }
+    .question-card .question-answer h5 { color: var(--accent); margin: 10px 0 4px; font-size: 13px; text-transform: uppercase; letter-spacing: .04em; }
+    .question-number { display:inline-flex; align-items:center; justify-content:center; width:28px; height:28px; background: var(--gradient); color:#0f0f23; border-radius:8px; font-weight:800; font-size:12px; margin-right:12px; }
+    .question-title { font-weight:700; color: var(--text-primary); font-size:15px; display:flex; align-items:center; }
+    .pill { display:inline-block; padding:2px 10px; border-radius:999px; font-size:11px; font-weight:700; margin-left:8px; }
+    .pill.easy { background: rgba(16,185,129,.15); color:#34d399; }
+    .pill.med  { background: rgba(234,179,8,.15);  color:#fbbf24; }
+    .pill.hard { background: rgba(239,68,68,.15);  color:#f87171; }
+    .section-header { display:flex; align-items:center; gap:16px; margin: 32px 0 16px; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
+    .section-icon { width:48px; height:48px; background: var(--gradient); border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:22px; color:#0f0f23; }
+    .section-title { font-size:22px; font-weight:800; background: var(--gradient); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+    .intro-card { background: linear-gradient(135deg, rgba(0,212,255,.10) 0%, rgba(168,85,247,.10) 100%); border: 1px solid var(--border); border-radius: 20px; padding: 24px; margin-bottom: 24px; }
+    .intro-card h3 { color: var(--accent); margin-bottom: 12px; font-size: 18px; }
+    .intro-card p, .intro-card li { color: var(--text-secondary); line-height: 1.7; }
+    .filter-tabs { display:flex; gap:8px; flex-wrap:wrap; margin-bottom: 20px; }
+    .filter-tab { padding:8px 14px; border-radius:10px; border:1px solid var(--border); background: rgba(255,255,255,.03); color: var(--text-secondary); cursor:pointer; font-weight:600; font-size:13px; }
+    .filter-tab:hover { border-color: var(--accent); color: var(--accent); }
+    .filter-tab.active { background: var(--gradient); color:#0f0f23; border-color: transparent; }
+    .kv-table { width:100%; border-collapse: collapse; margin: 12px 0; font-size: 13px; }
+    .kv-table th, .kv-table td { border: 1px solid var(--border); padding: 8px 10px; text-align: left; color: var(--text-secondary); vertical-align: top; }
+    .kv-table th { background: rgba(255,255,255,.04); color: var(--text-primary); }
+    .code-block { background:#0b0d12; color:#e6e8ee; padding:12px 14px; border-radius:10px; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size:12.5px; line-height:1.55; overflow:auto; margin: 8px 0; }
+    .grid-2 { display:grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 14px; }
+    .mini { background: rgba(255,255,255,.03); border:1px solid var(--border); border-radius:12px; padding:14px; }
+    .mini h4 { color: var(--accent); margin-bottom: 8px; display:flex; align-items:center; gap:8px; font-size:14px; }
+    .mini ul { margin:0; padding-left: 18px; color: var(--text-secondary); font-size:13px; }
+    .mini ul li { margin: 4px 0; }
+    .star-block { background: rgba(99,102,241,.08); border:1px solid rgba(99,102,241,.25); border-radius:12px; padding:12px 14px; margin-top:10px; }
+    .star-block b { color:#a5b4fc; }
+    /* Style "oral" — dialogue entretien */
+    .qa-oral { background: var(--bg-card); border:1px solid var(--border); border-left: 4px solid var(--accent); border-radius: 12px; padding: 18px 20px; margin-bottom: 14px; }
+    .qa-oral .qa-q { display:flex; align-items:flex-start; gap:10px; font-weight:700; color: var(--text-primary); font-size:15px; margin-bottom:10px; }
+    .qa-oral .qa-q i { color: var(--accent); margin-top:3px; }
+    .qa-oral .qa-a { display:flex; align-items:flex-start; gap:10px; color: var(--text-secondary); line-height: 1.75; font-size: 14.5px; }
+    .qa-oral .qa-a i { color: #34d399; margin-top: 3px; }
+    .qa-oral .qa-a p { margin: 0 0 10px 0; }
+    .qa-oral .qa-a p:last-child { margin-bottom: 0; }
+    .qa-oral .qa-a ul { margin: 6px 0 10px 18px; padding: 0; }
+    .qa-oral .qa-a ul li { margin: 3px 0; }
+    .qa-oral .qa-tip { margin-top: 10px; padding: 8px 12px; background: rgba(234,179,8,.08); border-left: 3px solid #fbbf24; border-radius: 6px; font-size: 13px; color: #fbbf24; }
+    .qa-oral .qa-tip b { color: #fbbf24; }
+
+    /* ====== Glossaire interactif : survol = définition prête pour entretien ====== */
+    .term {
+      position: relative;
+      cursor: help;
+      border-bottom: 1px dashed var(--accent);
+      color: var(--accent);
+      font-weight: 600;
+      transition: background .15s;
+    }
+    .term:hover { background: rgba(99,102,241,.10); border-radius: 3px; }
+    .term::after {
+      content: attr(data-def);
+      position: absolute;
+      bottom: calc(100% + 8px);
+      left: 50%;
+      transform: translateX(-50%) translateY(4px);
+      min-width: 260px;
+      max-width: 380px;
+      background: #0f172a;
+      color: #e2e8f0;
+      border: 1px solid var(--accent);
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 13px;
+      font-weight: 400;
+      line-height: 1.55;
+      text-align: left;
+      white-space: normal;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .18s, transform .18s;
+      z-index: 9999;
+      box-shadow: 0 10px 30px rgba(0,0,0,.4);
+    }
+    .term::before {
+      content: "";
+      position: absolute;
+      bottom: calc(100% + 2px);
+      left: 50%;
+      transform: translateX(-50%);
+      border: 6px solid transparent;
+      border-top-color: var(--accent);
+      opacity: 0;
+      transition: opacity .18s;
+      z-index: 9999;
+    }
+    .term:hover::after,
+    .term:hover::before { opacity: 1; transform: translateX(-50%) translateY(0); }
+    .term:hover::before { transform: translateX(-50%); }
+    /* tooltips qui débordent à gauche/droite */
+    .term.tip-right::after { left: 0; transform: translateX(0) translateY(4px); }
+    .term.tip-right:hover::after { transform: translateX(0); }
+    .term.tip-left::after { left: auto; right: 0; transform: translateX(0) translateY(4px); }
+    .term.tip-left:hover::after { transform: translateX(0); }
+  </style>
+  <link rel="manifest" href="manifest.webmanifest">
+  <meta name="theme-color" content="#6366f1">
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="sidebar-header"><div class="logo"><i class="fas fa-shield-halved"></i><div><div>SecOps Academy</div><div class="tagline">Hardening Groupe • Cybertic</div></div></div></div>
+      <nav class="sidebar-nav">
+        <div class="nav-section"><div class="nav-section-title">Dashboard</div>
+          <a class="nav-item" href="dashboard.html"><i class="fas fa-home"></i><span>Accueil</span></a>
+          <a class="nav-item" href="progress.html"><i class="fas fa-chart-line"></i><span>Progression</span></a>
+          <a class="nav-item" href="revision.html"><i class="fas fa-gamepad"></i><span>Hub Révision</span><span class="nav-badge">XP</span></a>
+        </div>
+        <div class="nav-section"><div class="nav-section-title">Formation</div>
+          <a class="nav-item" href="soc-alerts.html"><i class="fas fa-bell"></i><span>Alertes SOC</span></a>
+          <a class="nav-item" href="soc-qa.html"><i class="fas fa-question-circle"></i><span>Q&A SOC</span></a>
+          <a class="nav-item" href="edr.html"><i class="fas fa-laptop"></i><span>EDR Investigation</span></a>
+          <a class="nav-item" href="soar.html"><i class="fas fa-robot"></i><span>SOAR Playbooks</span></a>
+          <a class="nav-item" href="pam.html"><i class="fas fa-key"></i><span>PAM</span></a>
+          <a class="nav-item" href="pentest.html"><i class="fas fa-user-secret"></i><span>Pentest Senior</span></a>
+        </div>
+        <div class="nav-section"><div class="nav-section-title">Outils & Techniques</div>
+          <a class="nav-item" href="splunk.html"><i class="fas fa-search"></i><span>Splunk SPL</span></a>
+          <a class="nav-item" href="events.html"><i class="fas fa-list"></i><span>Windows Events</span></a>
+          <a class="nav-item" href="linux.html"><i class="fab fa-linux"></i><span>Hardening Linux</span></a>
+          <a class="nav-item" href="apache.html"><i class="fas fa-server"></i><span>Apache & YAML</span></a>
+        </div>
+        <div class="nav-section"><div class="nav-section-title">Entretiens</div>
+          <a class="nav-item" href="star.html"><i class="fas fa-star"></i><span>Méthode STAR</span></a>
+          <a class="nav-item" href="interview.html"><i class="fas fa-microphone"></i><span>Simulation</span></a>
+          <a class="nav-item" href="soc-interview.html"><i class="fas fa-user-tie"></i><span>Questions SOC</span></a>
+          <a class="nav-item active" href="hardening-interview.html"><i class="fas fa-shield-halved"></i><span>Hardening Groupe</span><span class="nav-badge">NEW</span></a>
+        </div>
+      </nav>
+      <div class="sidebar-footer"><div class="user-card"><div class="user-avatar">MO</div><div><div class="user-name">Mondher O.</div><div class="user-role">Candidat RSSI Adj.</div></div></div></div>
+    </aside>
+
+    <main class="main">
+      <nav class="navbar">
+        <div class="search-container"><i class="fas fa-search search-icon"></i><input type="text" class="search-input" id="search" placeholder="Rechercher une question, un standard, un outil..." oninput="filterQuestions(this.value)" /></div>
+        <div class="navbar-actions">
+          <button class="icon-btn" onclick="toggleTheme()" title="Changer le thème"><i class="fas fa-moon"></i></button>
+          <button class="icon-btn" onclick="expandAll()" title="Tout déplier"><i class="fas fa-expand"></i></button>
+          <button class="icon-btn" onclick="collapseAll()" title="Tout replier"><i class="fas fa-compress"></i></button>
+        </div>
+      </nav>
+
+      <div class="content">
+        <div class="page-header">
+          <h1 class="page-title">Responsable Hardening / Security Baseline Groupe 🛡️</h1>
+          <p class="page-subtitle">Préparation entretien Cybertic — niveau senior / expert. Standards : ANSSI · CIS · NIST CSF · NIST SP 800-53/800-40 · ISO 27001/27002/27005 · EBIOS RM · MITRE ATT&CK · ITIL v4 · ENISA · OWASP · Microsoft Security Baselines.</p>
+        </div>
+
+        <!-- ===== PARTIE 1 : ANALYSE DU POSTE ===== -->
+        <div class="section-header"><div class="section-icon"><i class="fas fa-bullseye"></i></div><div class="section-title">1 · Analyse de la mission Cybertic</div></div>
+        <div class="intro-card">
+          <h3><i class="fas fa-magnifying-glass"></i> Lecture experte de la fiche de poste</h3>
+          <p><b>Intitulé décrypté :</b> Responsable transverse du <b>durcissement (security baseline)</b> du SI Groupe — à la croisée du <b>RSSI</b>, du <b>CSIRT</b>, des <b>équipes infra/DSI</b> et de la <b>gouvernance</b>. Rattachement type : Direction Cybersécurité / RSSI Groupe.</p>
+          <p><b>Ce que cherche réellement le recruteur :</b> quelqu'un qui sait <i>écrire une politique</i>, la <i>faire appliquer</i> sur du multi-OS / multi-cloud / SaaS, la <i>mesurer</i> (KPI, scans, audits), <i>arbitrer</i> avec la production et <i>industrialiser</i> (Ansible, GPO, CI/CD). Un profil RSSI-adjoint orienté delivery, pas un consultant qui rédige sans déployer.</p>
+        </div>
+        <div class="grid-2">
+          <div class="mini"><h4><i class="fas fa-flag"></i> Définition & pilotage</h4><ul>
+            <li><b>Définir</b> les politiques de durcissement Groupe (ISO 27002 §8, CIS Benchmarks, ANSSI guides).</li>
+            <li><b>Aligner</b> sur réglementaire (NIS2, DORA, RGPD, ISAE 3402, PCI-DSS selon secteur).</li>
+            <li><b>Roadmap</b> 12/24/36 mois priorisée par <b>analyse de risque EBIOS RM</b> + KEV CISA.</li>
+            <li><b>Intégrer</b> les recommandations <b>CSIRT</b> post-incident / post-CVE.</li>
+            <li><b>Piloter</b> les comités hardening, arbitrer, mobiliser expertises internes/externes.</li>
+            <li><b>Veille continue</b> : CERT-FR, CISA KEV, MSRC, vendor advisories, MITRE ATT&CK updates.</li>
+            <li><b>KPI</b> : taux de conformité CIS, MTTR vuln critiques, % exceptions, dérive baseline.</li>
+          </ul></div>
+          <div class="mini"><h4><i class="fas fa-clipboard-check"></i> Conformité opérationnelle</h4><ul>
+            <li><b>Vérifier</b> l'application réelle (scans Tenable/Qualys, CIS-CAT, OpenSCAP, MS Compliance Toolkit).</li>
+            <li><b>Contrôle continu</b> : audits, benchmarks, drift detection (Wazuh FIM, Ansible --check).</li>
+            <li><b>SI étendu</b> : SaaS (M365, Salesforce, ServiceNow), CMO/CRO, stockistes, partenaires.</li>
+            <li><b>Fournisseurs critiques</b> : clauses contractuelles sécurité, PAS, audits tiers, SOC 2 / ISAE 3402.</li>
+            <li><b>Traçabilité</b> & <b>gestion des exceptions</b> (registre, durée max, validation RSSI, revue).</li>
+            <li><b>Référentiels techniques</b> : GPO, baselines, golden images, IaC sécurisé.</li>
+            <li><b>Industrialisation</b> : Ansible/AWX, Puppet/Chef, Terraform, pipelines CI/CD sécurisés.</li>
+            <li><b>ITIL v4</b> : Change, Release, Configuration, Problem, Continual Improvement.</li>
+          </ul></div>
+        </div>
+        <div class="intro-card" style="margin-top:14px;">
+          <h3><i class="fas fa-people-arrows"></i> Compétences attendues — décodage du référentiel Cybertic</h3>
+          <table class="kv-table"><thead><tr><th>Compétence</th><th>Niveau (A→D)</th><th>Traduction concrète en entretien</th></tr></thead><tbody>
+            <tr><td>Fiabilité / Rigueur</td><td>—</td><td>Traçabilité bout-en-bout, registres d'exceptions, preuves d'audit.</td></tr>
+            <tr><td>Transversalité / Sens relationnel</td><td>C</td><td>Animer DSI, métiers, filiales, fournisseurs — diplomatie + fermeté.</td></tr>
+            <tr><td>Initiative</td><td>D (Expert)</td><td>Proposer la roadmap, défricher CVE, lancer POC d'industrialisation.</td></tr>
+            <tr><td>Esprit d'équipe / Coopération</td><td>D (Expert)</td><td>Co-construire avec CSIRT, infra, DevOps, achats, juridique.</td></tr>
+            <tr><td>Analyse de risques</td><td>C</td><td>EBIOS RM, ISO 27005, scoring CVSS+EPSS+KEV+impact métier.</td></tr>
+            <tr><td>Reporting</td><td>C</td><td>Dashboards COMEX (1 page), KPI ITIL, narratif risque/coût/délai.</td></tr>
+            <tr><td>Réseaux & Télécoms</td><td>C</td><td>Segmentation, ZTNA, durcissement firewall/switch/routeur.</td></tr>
+            <tr><td>Méthodes / Processus</td><td>C</td><td>ITIL v4, ISO 27001 Annexe A, processus exception, change advisory.</td></tr>
+            <tr><td>Organisation</td><td>D</td><td>Pilotage portefeuille, planning multi-filiales, comités gouvernance.</td></tr>
+            <tr><td>Sécurité informatique</td><td>D (Expert)</td><td>Maîtrise multi-OS, cloud, AD, K8s, SaaS, MITRE ATT&CK, hardening profond.</td></tr>
+            <tr><td>Veille</td><td>C</td><td>CERT-FR, CISA KEV, MSRC, MITRE, ENISA, ANSSI, NIST, vendors.</td></tr>
+          </tbody></table>
+          <p style="margin-top:8px;"><b>Lecture stratégique :</b> niveaux <b>D</b> sur <i>Initiative</i>, <i>Coopération</i>, <i>Organisation</i>, <i>Sécurité</i> → poste à forte autonomie, fort leadership transverse, orienté delivery industriel — pas un poste purement normatif.</p>
+        </div>
+
+        <!-- ===== PITCH ===== -->
+        <div class="section-header"><div class="section-icon"><i class="fas fa-microphone-lines"></i></div><div class="section-title">2 · Pitch d'ouverture (à mémoriser)</div></div>
+        <div class="intro-card">
+          <h3><i class="fas fa-bullhorn"></i> Pitch 90 secondes — version Hardening Groupe</h3>
+          <p>« Ingénieur cybersécurité avec <b>5 ans d'expérience opérationnelle</b> chez Sopra HR Software, j'ai piloté la sécurité de <b>100+ clients dont 10 grands comptes</b> dans des secteurs régulés — bancaire, énergie, aérospatial, assurance. Mon cœur de métier, c'est exactement ce poste : <b>définir, déployer et mesurer le durcissement</b> sur des parcs Linux RHEL 7/8/9 et Windows Server, intégrer les <b>recommandations CSIRT</b> dans une roadmap, et piloter <b>500+ remédiations de vulnérabilités par an</b> via Qualys et Tenable. »</p>
+          <p>« Je suis <b>ISO 27001 Lead Auditor</b>, j'ai contribué à des audits <b>ISAE 3402</b>, et j'ai industrialisé le déploiement via <b>Ansible/AWX</b>. Côté gouvernance, j'anime des comités transverses entre équipes SOC, systèmes, production, métiers et fournisseurs — c'est exactement la posture attendue ici : <b>arbitrer, prioriser, faire appliquer</b>, sans casser la production. »</p>
+          <p>« Ce qui me motive sur ce poste Cybertic : passer d'une <b>responsabilité opérationnelle multi-clients</b> à une <b>responsabilité Groupe transverse</b>, structurer la baseline, l'auditabilité et l'industrialisation à l'échelle, et porter la roadmap devant le COMEX. »</p>
+        </div>
+
+        <!-- ===== ENTRETIEN ORAL COMPLET (style ChatGPT) ===== -->
+        <div class="section-header"><div class="section-icon"><i class="fas fa-headset"></i></div><div class="section-title">3 · Entretien oral complet — réponses prêtes à dire</div></div>
+        <div class="intro-card" style="margin-bottom:18px;">
+          <h3><i class="fas fa-circle-info"></i> Mode d'emploi</h3>
+          <p>Format <b>Recruteur → Toi</b>, fluide, naturel, parlé. Lis chaque réponse <b>à voix haute 2 fois</b> avant l'entretien. Ce sont les <b>mêmes mots</b> que tu peux dire tel quel. Objectif : reproduire 70% calmement = entretien réussi.</p>
+        </div>
+        <h3 style="margin: 20px 0 12px; color: var(--accent); font-size:18px;">🎬 Bloc 1 — Ouverture & contexte</h3>
+
+        <div class="qa-oral">
+          <div class="qa-q"><i class="fas fa-microphone"></i> Bonjour Mondher, merci d'être présent aujourd'hui. Pouvez-vous vous présenter ?</div>
+          <div class="qa-a"><i class="fas fa-check-circle"></i><div>
+            <p>Bonjour, merci de me recevoir.</p>
+            <p>Je suis <b>ingénieur cybersécurité avec plus de 5 ans d'expérience en sécurité opérationnelle chez Sopra HR Software</b>.</p>
+            <p>J'interviens principalement sur des environnements grands comptes dans plusieurs secteurs : <b>banque, énergie, transport, assurance, secteur public</b>.</p>
+            <p>Mon activité couvre plusieurs volets : <b>la gestion des vulnérabilités, le patch management, le hardening Linux et Windows, la supervision sécurité via SIEM et EDR, ainsi que la gestion des incidents</b>.</p>
+            <p>J'interviens également sur des sujets de gouvernance, de conformité et d'amélioration continue, notamment autour d'<b>ISO 27001 et ISAE 3402</b>.</p>
+            <p>Aujourd'hui, je recherche une opportunité me permettant d'évoluer sur des sujets de <b>sécurité transverse, de hardening et d'amélioration de la posture sécurité à grande échelle</b>.</p>
+          </div></div>
+          <div class="qa-tip"><b>💡 Astuce :</b> rester calme, parler en 90 secondes max, finir par la phrase "à grande échelle" qui renvoie directement à la mission Groupe.</div>
+        </div>
+
+        <div class="qa-oral">
+          <div class="qa-q"><i class="fas fa-microphone"></i> Pourquoi souhaitez-vous quitter votre poste actuel ?</div>
+          <div class="qa-a"><i class="fas fa-check-circle"></i><div>
+            <p>J'ai énormément appris dans mon environnement actuel et j'ai eu la chance de travailler sur des contextes très riches techniquement.</p>
+            <p>Cependant, aujourd'hui je souhaite évoluer vers un contexte me permettant d'avoir <b>davantage d'exposition à des problématiques cybersécurité plus larges</b>, avec plus de transversalité, d'interactions internationales et une montée en expertise sur des enjeux à plus grande échelle.</p>
+            <p>Ce n'est pas un départ contre mon entreprise actuelle, c'est davantage une volonté d'évolution professionnelle.</p>
+          </div></div>
+          <div class="qa-tip"><b>⚠️ Erreur à éviter :</b> ne jamais dénigrer Sopra HR. Toujours formuler en positif.</div>
+        </div>
+
+        <div class="qa-oral">
+          <div class="qa-q"><i class="fas fa-microphone"></i> Pourquoi cette mission vous intéresse ?</div>
+          <div class="qa-a"><i class="fas fa-check-circle"></i><div>
+            <p>Cette mission m'intéresse particulièrement car elle correspond fortement à mon expérience actuelle.</p>
+            <p>Je travaille déjà sur des problématiques liées au <b>hardening, à la gestion des vulnérabilités, à la coordination des remédiations et à la sécurité opérationnelle</b>.</p>
+            <p>J'apprécie également l'aspect transverse de la mission, puisqu'elle nécessite d'interagir avec différentes équipes techniques et métiers afin d'améliorer la posture sécurité globale.</p>
+          </div></div>
+        </div>
+
+        <div class="qa-oral">
+          <div class="qa-q"><i class="fas fa-microphone"></i> Comment avez-vous compris le contexte de cette mission ?</div>
+          <div class="qa-a"><i class="fas fa-check-circle"></i><div>
+            <p>De ce que j'ai compris, la mission ne se limite pas à des aspects techniques de hardening : elle couvre également une <b>dimension transverse importante</b>.</p>
+            <p>L'objectif est d'<b>améliorer et harmoniser la posture sécurité du SI à grande échelle</b>, à travers plusieurs axes :</p>
+            <ul>
+              <li>définition et application des standards sécurité,</li>
+              <li>pilotage des remédiations et du durcissement,</li>
+              <li>vérification continue de la conformité opérationnelle,</li>
+              <li>coordination avec plusieurs équipes techniques et métiers,</li>
+              <li>industrialisation et standardisation des pratiques sécurité.</li>
+            </ul>
+            <p>J'ai aussi compris qu'il existe une forte dimension <b>gouvernance, reporting et coordination transverse</b>, puisque le rôle nécessite des interactions avec plusieurs équipes, filiales et fournisseurs.</p>
+            <p>Ce qui me semble particulièrement important dans cette mission, c'est de <b>trouver un équilibre entre exigences sécurité, contraintes opérationnelles et besoins métiers</b>.</p>
+            <p>Pour moi, c'est davantage une mission d'<b>amélioration continue de la posture sécurité</b> qu'une mission purement technique.</p>
+          </div></div>
+          <div class="qa-tip"><b>🔥 Phrase consultant :</b> "Je vois davantage cette mission comme une mission d'amélioration continue de la posture sécurité plutôt qu'une mission purement technique."</div>
+        </div>
+
+        <div class="qa-oral">
+          <div class="qa-q"><i class="fas fa-microphone"></i> Qu'est-ce qui vous différencie d'un autre candidat ?</div>
+          <div class="qa-a"><i class="fas fa-check-circle"></i><div>
+            <p>Trois choses principalement.</p>
+            <p>D'abord, j'ai une <b>expérience opérationnelle réelle</b> — pas seulement de la théorie : 500+ vulnérabilités traitées par an, 100+ environnements clients sécurisés, ce sont des chiffres concrets.</p>
+            <p>Ensuite, j'ai la <b>double casquette technique et gouvernance</b> : ISO 27001 Lead Auditor, ISO 42001, ISAE 3402, mais aussi Ansible, Splunk, EDR HarfangLab, scans Qualys et Tenable au quotidien.</p>
+            <p>Enfin, je porte un véritable intérêt pour l'<b>innovation</b> : j'ai développé deux projets R&D personnels — un pentest assisté par IA et une CMDB de sécurité automatisée — qui montrent ma volonté d'aller au-delà du quotidien.</p>
+          </div></div>
+        </div>
+
+        <h3 style="margin: 24px 0 12px; color: var(--accent); font-size:18px;">🛡️ Bloc 2 — Hardening technique</h3>
+
+        <div class="qa-oral">
+          <div class="qa-q"><i class="fas fa-microphone"></i> Qu'est-ce que le hardening, pour vous ?</div>
+          <div class="qa-a"><i class="fas fa-check-circle"></i><div>
+            <p>Le hardening consiste à <b>réduire la surface d'attaque d'un système</b> en appliquant des mesures techniques, organisationnelles et de configuration afin de limiter les risques de compromission.</p>
+            <p>Cela comprend notamment le renforcement des configurations, la suppression des services inutiles, la gestion des correctifs, les restrictions d'accès, ainsi que l'application de standards sécurité comme <b>les benchmarks CIS, les guides ANSSI ou les Microsoft Security Baselines</b>.</p>
+          </div></div>
+        </div>
+
+        <div class="qa-oral">
+          <div class="qa-q"><i class="fas fa-microphone"></i> Comment durciriez-vous un serveur Windows ?</div>
+          <div class="qa-a"><i class="fas fa-check-circle"></i><div>
+            <p>Je travaille généralement sur plusieurs axes en parallèle :</p>
+            <ul>
+              <li>désactivation des services inutiles,</li>
+              <li>application des politiques GPO basées sur Microsoft Security Baseline,</li>
+              <li>renforcement des mots de passe et restriction des privilèges,</li>
+              <li>sécurisation du RDP avec NLA et certificats,</li>
+              <li>configuration du firewall Windows,</li>
+              <li>activation des audit policies avancées,</li>
+              <li>patch management régulier via WSUS ou SCCM,</li>
+              <li>segmentation réseau et isolation des comptes administratifs.</li>
+            </ul>
+            <p>Tout cela doit évidemment être fait en prenant en compte les <b>contraintes métier</b>, afin d'éviter les impacts sur la production.</p>
+          </div></div>
+        </div>
+
+        <div class="qa-oral">
+          <div class="qa-q"><i class="fas fa-microphone"></i> Et un serveur Linux ?</div>
+          <div class="qa-a"><i class="fas fa-check-circle"></i><div>
+            <p>Sur Linux, je m'appuie principalement sur les <b>benchmarks CIS RHEL ou Ubuntu</b>, ainsi que sur les guides ANSSI.</p>
+            <p>Les actions principales sont :</p>
+            <ul>
+              <li>partitionnement avec options <code>nodev, nosuid, noexec</code>,</li>
+              <li>SELinux ou AppArmor en mode enforcing,</li>
+              <li>SSH durci : pas de root login, pas de mot de passe, ciphers forts,</li>
+              <li>règles auditd alignées sur CIS, logs envoyés vers le SIEM en TLS,</li>
+              <li>firewalld ou nftables en deny par défaut,</li>
+              <li>sysctl renforcé (ASLR, rp_filter, kptr_restrict),</li>
+              <li>patch management via Satellite ou dnf-automatic.</li>
+            </ul>
+            <p>Et j'industrialise tout via <b>Ansible</b>, ce qui me permet d'avoir le même niveau de durcissement appliqué partout, de manière reproductible.</p>
+          </div></div>
+        </div>
+
+        <div class="qa-oral">
+          <div class="qa-q"><i class="fas fa-microphone"></i> Qu'est-ce qu'une GPO ?</div>
+          <div class="qa-a"><i class="fas fa-check-circle"></i><div>
+            <p>Une <b>GPO</b>, ou Group Policy Object, permet d'appliquer de manière centralisée des configurations ou politiques de sécurité sur un ensemble de machines ou utilisateurs dans un environnement Active Directory.</p>
+            <p>Cela permet d'<b>industrialiser l'application des mesures de sécurité</b> et d'assurer une cohérence globale sur tout le parc.</p>
+          </div></div>
+        </div>
+
+        <div class="qa-oral">
+          <div class="qa-q"><i class="fas fa-microphone"></i> C'est quoi une baseline sécurité ?</div>
+          <div class="qa-a"><i class="fas fa-check-circle"></i><div>
+            <p>Une baseline représente un <b>ensemble standardisé de configurations sécurité</b> servant de référence pour assurer une configuration homogène des systèmes.</p>
+            <p>Les baselines permettent d'<b>industrialiser le hardening</b> et de faciliter les contrôles de conformité.</p>
+            <p>Concrètement, on s'appuie sur des référentiels reconnus comme <b>CIS Benchmarks, Microsoft Security Baselines ou les guides ANSSI</b>, qu'on adapte ensuite aux contraintes du Groupe.</p>
+          </div></div>
+        </div>
+
+        <div class="qa-oral">
+          <div class="qa-q"><i class="fas fa-microphone"></i> Avez-vous déjà travaillé avec des politiques d'authentification ?</div>
+          <div class="qa-a"><i class="fas fa-check-circle"></i><div>
+            <p>Oui.</p>
+            <p>J'ai notamment travaillé sur des sujets liés à <b>LDAP, aux politiques de mots de passe, et à l'application d'évolutions liées aux mécanismes d'authentification</b> utilisés dans les environnements d'entreprise : MFA, SSO, IAM.</p>
+            <p>L'objectif était principalement de <b>renforcer la sécurité tout en gardant une expérience utilisateur acceptable</b>.</p>
+          </div></div>
+        </div>
+        <h3 style="margin: 24px 0 12px; color: var(--accent); font-size:18px;">🔥 Bloc 3 — Vulnérabilités & CVE</h3>
+
+        <div class="qa-oral">
+          <div class="qa-q"><i class="fas fa-microphone"></i> Comment priorisez-vous les vulnérabilités ?</div>
+          <div class="qa-a"><i class="fas fa-check-circle"></i><div>
+            <p>Je ne me base pas uniquement sur le score CVSS.</p>
+            <p>Je prends généralement en compte plusieurs critères :</p>
+            <ul>
+              <li>la <b>criticité métier</b> de l'actif touché,</li>
+              <li>l'<b>exposition Internet</b>,</li>
+              <li>l'<b>exploitabilité</b> et la présence d'un exploit public,</li>
+              <li>la <b>présence dans le catalogue KEV de la CISA</b>,</li>
+              <li>le score <b>EPSS</b>, qui donne une probabilité d'exploitation,</li>
+              <li>l'impact potentiel et la facilité de remédiation.</li>
+            </ul>
+            <p>Une vulnérabilité critique exposée sur Internet, présente dans le KEV, sera naturellement priorisée avant tout le reste.</p>
+          </div></div>
+          <div class="qa-tip"><b>💡 Mot-clé à placer :</b> "KEV CISA" + "EPSS" — montre que tu es à jour des standards 2024-2025.</div>
+        </div>
+
+        <div class="qa-oral">
+          <div class="qa-q"><i class="fas fa-microphone"></i> Une CVE critique sort aujourd'hui. Que faites-vous ?</div>
+          <div class="qa-a"><i class="fas fa-check-circle"></i><div>
+            <p>Je commence par <b>identifier le périmètre impacté</b> via la CMDB et un scan ciblé Qualys ou Tenable.</p>
+            <p>Ensuite, j'évalue l'<b>exposition réelle</b> des actifs concernés — interne, externe, criticité métier.</p>
+            <p>Je <b>communique rapidement</b> aux équipes concernées : CSIRT, RSSI, métiers, production.</p>
+            <p>En parallèle, je mets en place des <b>mesures compensatoires</b> si le patch n'est pas immédiatement applicable : règles WAF, segmentation réseau, désactivation de fonctionnalité, ACL firewall.</p>
+            <p>Puis je coordonne le <b>déploiement du patch par vagues</b>, en respectant les SLA définis : 48h pour les CVE du KEV CISA, 7 jours pour les autres critiques.</p>
+            <p>Enfin, j'assure le <b>suivi jusqu'à validation complète</b> et je fais un retour d'expérience qui peut alimenter la baseline.</p>
+          </div></div>
+        </div>
+
+        <div class="qa-oral">
+          <div class="qa-q"><i class="fas fa-microphone"></i> Quels SLA appliquez-vous au patching ?</div>
+          <div class="qa-a"><i class="fas fa-check-circle"></i><div>
+            <p>Mes SLA standards sont alignés sur les bonnes pratiques NIST SP 800-40 :</p>
+            <ul>
+              <li><b>KEV CISA : 48 heures</b>,</li>
+              <li><b>Critique : 7 jours</b>,</li>
+              <li><b>Élevé : 30 jours</b>,</li>
+              <li><b>Moyen : 90 jours</b>,</li>
+              <li><b>Faible : 180 jours</b>.</li>
+            </ul>
+            <p>Et je divise systématiquement ces délais <b>par deux pour les actifs exposés à Internet</b>.</p>
+          </div></div>
+        </div>
+
+        <h3 style="margin: 24px 0 12px; color: var(--accent); font-size:18px;">📋 Bloc 4 — Conformité opérationnelle</h3>
+
+        <div class="qa-oral">
+          <div class="qa-q"><i class="fas fa-microphone"></i> Comment vérifier qu'un hardening est réellement appliqué ?</div>
+          <div class="qa-a"><i class="fas fa-check-circle"></i><div>
+            <p>Je combine généralement plusieurs approches complémentaires :</p>
+            <ul>
+              <li>des <b>scans automatisés</b> via Qualys, Tenable Compliance ou OpenSCAP,</li>
+              <li>des <b>benchmarks CIS</b> via CIS-CAT Pro ou Microsoft Security Compliance Toolkit,</li>
+              <li>des <b>audits techniques périodiques</b> et des revues de configuration,</li>
+              <li>des <b>contrôles continus</b> via FIM, Wazuh SCA, ou Defender for Cloud,</li>
+              <li>du <b>reporting régulier</b> via des KPI de conformité.</li>
+            </ul>
+            <p>L'objectif est de garantir le <b>maintien dans le temps</b>, et pas uniquement l'application initiale.</p>
+          </div></div>
+        </div>
+
+        <div class="qa-oral">
+          <div class="qa-q"><i class="fas fa-microphone"></i> Comment mettre en place un contrôle continu ?</div>
+          <div class="qa-a"><i class="fas fa-check-circle"></i><div>
+            <p>L'objectif du contrôle continu, c'est d'<b>éviter les vérifications ponctuelles</b> qui ne reflètent pas la réalité du parc.</p>
+            <p>Je mettrais en place :</p>
+            <ul>
+              <li>des <b>scans réguliers</b> hebdomadaires sur tout le périmètre,</li>
+              <li>des <b>tableaux de bord</b> consolidés par filiale et par technologie,</li>
+              <li>des <b>indicateurs de conformité</b> suivis mensuellement,</li>
+              <li>des <b>contrôles automatisés</b> intégrés aux pipelines,</li>
+              <li>des <b>alertes en cas de dérive de configuration</b>, remontées dans le SIEM.</li>
+            </ul>
+            <p>Cela donne une <b>visibilité permanente</b> sur le niveau de sécurité réel du Groupe.</p>
+          </div></div>
+        </div>
+
+        <div class="qa-oral">
+          <div class="qa-q"><i class="fas fa-microphone"></i> Comment sécuriser un SI étendu — SaaS, fournisseurs, partenaires ?</div>
+          <div class="qa-a"><i class="fas fa-check-circle"></i><div>
+            <p>Pour le SI étendu, il est essentiel de vérifier que les <b>exigences de sécurité appliquées en interne soient également prises en compte chez les partenaires critiques</b>.</p>
+            <p>Cela passe par plusieurs leviers :</p>
+            <ul>
+              <li>des <b>exigences contractuelles</b> claires — annexe sécurité, droit d'audit, notification d'incident sous 24 à 72 heures,</li>
+              <li>des <b>questionnaires sécurité</b> standardisés type CAIQ de la CSA,</li>
+              <li>la demande de <b>certifications</b> reconnues : SOC 2 Type II, ISO 27001, ISAE 3402,</li>
+              <li>des <b>audits réguliers</b>, parfois sur site,</li>
+              <li>la vérification des <b>configurations exposées</b> et du <b>contrôle des accès</b>,</li>
+              <li>la <b>segmentation</b> des accès partenaires.</li>
+            </ul>
+            <p>L'objectif est simple : <b>éviter qu'un fournisseur devienne un point d'entrée pour un attaquant</b>.</p>
+          </div></div>
+        </div>
+
+        <div class="qa-oral">
+          <div class="qa-q"><i class="fas fa-microphone"></i> Comment gérez-vous les exceptions de sécurité ?</div>
+          <div class="qa-a"><i class="fas fa-check-circle"></i><div>
+            <p>Une exception sécurité doit toujours être <b>formalisée, documentée, approuvée et limitée dans le temps</b>.</p>
+            <p>Je cherche également à définir des <b>mesures compensatoires</b> afin de réduire le risque résiduel tout en conservant la traçabilité complète.</p>
+            <p>Concrètement, chaque exception est enregistrée dans un <b>registre central</b> avec : un propriétaire, une justification métier, le risque accepté, la mesure compensatoire mise en place, une date d'expiration — généralement 12 mois maximum — et une validation au niveau RSSI.</p>
+            <p>Et toutes les exceptions sont <b>revues trimestriellement</b>, pour s'assurer qu'elles sont toujours justifiées.</p>
+          </div></div>
+        </div>
+
+        <div class="qa-oral">
+          <div class="qa-q"><i class="fas fa-microphone"></i> Comment maintenir vos référentiels techniques dans le temps ?</div>
+          <div class="qa-a"><i class="fas fa-check-circle"></i><div>
+            <p>Les référentiels doivent évoluer régulièrement, sinon ils deviennent rapidement obsolètes.</p>
+            <p>J'intègre dans le cycle de mise à jour plusieurs éléments :</p>
+            <ul>
+              <li>les <b>nouvelles menaces</b> et tendances d'attaque,</li>
+              <li>les <b>nouvelles technologies</b> adoptées par le Groupe,</li>
+              <li>les <b>retours d'incidents</b> remontés par le CSIRT,</li>
+              <li>les <b>nouvelles vulnérabilités</b> structurantes,</li>
+              <li>les <b>contraintes métiers</b> évolutives.</li>
+            </ul>
+            <p>L'objectif est d'avoir des <b>standards vivants et non figés</b>, revus au minimum une fois par an.</p>
+          </div></div>
+        </div>
+        <h3 style="margin: 24px 0 12px; color: var(--accent); font-size:18px;">⚙️ Bloc 5 — Automatisation, CI/CD & ITIL</h3>
+
+        <div class="qa-oral">
+          <div class="qa-q"><i class="fas fa-microphone"></i> Comment automatiser le hardening ?</div>
+          <div class="qa-a"><i class="fas fa-check-circle"></i><div>
+            <p>L'automatisation permet d'assurer <b>cohérence, rapidité et réduction des erreurs humaines</b>.</p>
+            <p>Concrètement, cela passe par :</p>
+            <ul>
+              <li>des <b>scripts standardisés</b>,</li>
+              <li>des <b>GPO centralisées</b> côté Windows,</li>
+              <li>des <b>outils de configuration management</b> comme Ansible, Puppet ou Chef,</li>
+              <li>des <b>pipelines CI/CD</b> intégrant des contrôles policy-as-code,</li>
+              <li>des <b>golden images</b> construites via Packer avec scan Trivy au build.</li>
+            </ul>
+            <p>J'ai personnellement industrialisé ce type d'approche via <b>Ansible et AWX</b> chez Sopra HR, sur des infrastructures multi-sites France, Espagne et Maroc.</p>
+          </div></div>
+        </div>
+
+        <div class="qa-oral">
+          <div class="qa-q"><i class="fas fa-microphone"></i> Pourquoi le CI/CD est-il important pour la sécurité ?</div>
+          <div class="qa-a"><i class="fas fa-check-circle"></i><div>
+            <p>Intégrer la sécurité dans les pipelines — c'est ce qu'on appelle le <b>DevSecOps</b> — permet trois choses essentielles :</p>
+            <ul>
+              <li><b>identifier les problèmes plus tôt</b> dans le cycle, ce qui réduit le coût de correction,</li>
+              <li><b>réduire les risques liés aux erreurs manuelles</b> au déploiement,</li>
+              <li><b>garantir un déploiement homogène</b> des standards sécurité sur l'ensemble du parc.</li>
+            </ul>
+            <p>Concrètement, j'intègre dans les pipelines : <b>SAST, SCA, secret scanning, scan d'images container et policy-as-code</b> via OPA ou Kyverno.</p>
+          </div></div>
+        </div>
+
+        <div class="qa-oral">
+          <div class="qa-q"><i class="fas fa-microphone"></i> Que signifie ITIL et comment l'appliquez-vous ?</div>
+          <div class="qa-a"><i class="fas fa-check-circle"></i><div>
+            <p>ITIL est un <b>ensemble de bonnes pratiques permettant d'améliorer la gestion des services IT</b> à travers des processus standardisés.</p>
+            <p>En cybersécurité, cela intervient notamment dans :</p>
+            <ul>
+              <li>l'<b>incident management</b>,</li>
+              <li>le <b>change management</b>,</li>
+              <li>le <b>problem management</b>,</li>
+              <li>le <b>configuration management</b> avec la CMDB,</li>
+              <li>l'<b>amélioration continue</b>.</li>
+            </ul>
+            <p>Au quotidien, je m'appuie sur <b>ServiceNow</b> pour tracer toutes les actions de hardening en tant que <i>changes</i>, avec passage en CAB, fenêtres de change, plan de rollback et post-implementation review.</p>
+          </div></div>
+        </div>
+
+        <div class="qa-oral">
+          <div class="qa-q"><i class="fas fa-microphone"></i> Pourquoi le change management est-il important en sécurité ?</div>
+          <div class="qa-a"><i class="fas fa-check-circle"></i><div>
+            <p>Parce qu'<b>une modification sécurité mal maîtrisée peut créer des impacts importants en production</b>.</p>
+            <p>Le change management permet de <b>réduire les risques, améliorer la traçabilité et sécuriser les déploiements</b>.</p>
+            <p>Et inversement, un déploiement de patch ou de baseline réalisé sans passer par le change peut casser des applicatifs critiques — d'où l'importance de toujours respecter le processus, même quand il y a urgence.</p>
+          </div></div>
+        </div>
+
+        <h3 style="margin: 24px 0 12px; color: var(--accent); font-size:18px;">🤝 Bloc 6 — Gouvernance & relationnel</h3>
+
+        <div class="qa-oral">
+          <div class="qa-q"><i class="fas fa-microphone"></i> Comment gérez-vous les équipes qui refusent une remédiation ?</div>
+          <div class="qa-a"><i class="fas fa-check-circle"></i><div>
+            <p>J'essaie toujours d'<b>expliquer le risque, l'impact potentiel ainsi que les enjeux sécurité associés</b>, avant d'imposer quoi que ce soit.</p>
+            <p>L'objectif est de <b>trouver un équilibre entre les contraintes opérationnelles et la réduction du risque</b>, plutôt que d'imposer une mesure de manière purement technique.</p>
+            <p>Si malgré tout la décision est de ne pas appliquer la remédiation, on bascule sur une <b>exception formalisée avec mesure compensatoire et durée limitée</b>. Et si l'exposition est trop forte, on escalade au RSSI ou au COMEX.</p>
+          </div></div>
+          <div class="qa-tip"><b>🔥 Phrase clé :</b> "Je ne refuse jamais une exception, je l'encadre."</div>
+        </div>
+
+        <div class="qa-oral">
+          <div class="qa-q"><i class="fas fa-microphone"></i> Comment animer des groupes de travail sécurité avec des filiales ou des métiers ?</div>
+          <div class="qa-a"><i class="fas fa-check-circle"></i><div>
+            <p>J'adopte une <b>approche collaborative</b>, pas descendante.</p>
+            <p>L'objectif est d'<b>expliquer les risques, comprendre les contraintes métiers et construire des solutions pragmatiques ensemble</b>, plutôt que d'imposer des mesures purement techniques.</p>
+            <p>Concrètement, j'organise des <b>comités hardening mensuels</b>, avec un ordre du jour standard : KPI du mois précédent, CVE critiques, exceptions à arbitrer, avancement roadmap, décisions à prendre. Et un compte-rendu est diffusé dans les 48 heures.</p>
+          </div></div>
+        </div>
+
+        <div class="qa-oral">
+          <div class="qa-q"><i class="fas fa-microphone"></i> Quels KPI suivriez-vous ?</div>
+          <div class="qa-a"><i class="fas fa-check-circle"></i><div>
+            <p>Je suivrais principalement :</p>
+            <ul>
+              <li>le <b>taux de conformité hardening</b> par rapport aux baselines CIS,</li>
+              <li>le <b>délai moyen de remédiation</b>, ou MTTR, sur les vulnérabilités critiques,</li>
+              <li>le <b>nombre de vulnérabilités ouvertes</b> par criticité,</li>
+              <li>le <b>patch compliance</b> à J+7 pour les critiques,</li>
+              <li>le <b>nombre d'exceptions sécurité actives</b>, avec une attention particulière sur celles qui durent plus de 12 mois,</li>
+              <li>la <b>couverture des contrôles</b> — c'est-à-dire le pourcentage d'actifs effectivement scannés par rapport à la CMDB.</li>
+            </ul>
+            <p>Et je présente le tout dans un <b>tableau de bord d'une seule page pour le COMEX</b>, avec code couleur rouge / orange / vert et commentaire narratif.</p>
+          </div></div>
+        </div>
+
+        <div class="qa-oral">
+          <div class="qa-q"><i class="fas fa-microphone"></i> Comment faites-vous du reporting sécurité ?</div>
+          <div class="qa-a"><i class="fas fa-check-circle"></i><div>
+            <p>Je privilégie toujours des <b>indicateurs simples, compréhensibles et orientés décision</b>.</p>
+            <p>L'objectif du reporting n'est pas de produire des chiffres pour produire des chiffres, mais d'<b>aider les équipes et le management à prioriser et à arbitrer</b>.</p>
+            <p>Chaque KPI doit pouvoir répondre à la question : "et alors ? quelle décision en découle ?".</p>
+          </div></div>
+        </div>
+
+        <h3 style="margin: 24px 0 12px; color: var(--accent); font-size:18px;">⚡ Bloc 7 — Questions pièges</h3>
+
+        <div class="qa-oral">
+          <div class="qa-q"><i class="fas fa-microphone"></i> Que faites-vous si une filiale refuse une règle sécurité ?</div>
+          <div class="qa-a"><i class="fas fa-check-circle"></i><div>
+            <p>Première étape : <b>écouter et comprendre la raison réelle du refus</b>. Souvent ce n'est pas un refus pur, c'est une contrainte technique ou business qu'il faut adresser.</p>
+            <p>Ensuite, je <b>reformule le risque en langage métier</b> — pas en jargon technique — et je propose des <b>alternatives ou des mesures compensatoires</b>.</p>
+            <p>Si la filiale persiste, je <b>formalise une exception</b> avec validation RSSI et durée limitée.</p>
+            <p>Et si l'exposition est trop forte, j'<b>escalade en COMEX</b> avec inscription au registre de risques Groupe. À ce niveau, c'est la direction qui tranche, pas moi tout seul.</p>
+            <p>Le principe directeur : <b>on est dans la même équipe Groupe, on cherche une solution, pas un bras de fer</b>.</p>
+          </div></div>
+        </div>
+
+        <div class="qa-oral">
+          <div class="qa-q"><i class="fas fa-microphone"></i> Comment convaincre les métiers ?</div>
+          <div class="qa-a"><i class="fas fa-check-circle"></i><div>
+            <p>Je parle <b>leur langage, pas le mien</b>.</p>
+            <p>Plutôt que dire "CVSS 9.8, faille critique", je dis "si cette vulnérabilité est exploitée, voici ce qui peut se passer pour votre activité : indisponibilité de tel service, perte de telles données, sanction réglementaire à hauteur de tant".</p>
+            <p>Et je propose toujours <b>une solution chiffrée, avec un planning et un impact maîtrisé</b>. Le métier ne refuse jamais une bonne idée bien présentée — il refuse une contrainte non justifiée.</p>
+          </div></div>
+        </div>
+
+        <div class="qa-oral">
+          <div class="qa-q"><i class="fas fa-microphone"></i> Comment éviter qu'un hardening casse la production ?</div>
+          <div class="qa-a"><i class="fas fa-check-circle"></i><div>
+            <p>La règle d'or, c'est de <b>ne jamais déployer une baseline directement en production</b>.</p>
+            <p>J'applique systématiquement le cycle suivant :</p>
+            <ul>
+              <li><b>POC en environnement de laboratoire</b>,</li>
+              <li><b>pilote sur quelques serveurs non critiques</b>,</li>
+              <li><b>UAT avec les équipes métiers</b> pour valider qu'aucun applicatif ne casse,</li>
+              <li><b>déploiement par vagues</b> via Ansible, avec rollback systématique préparé,</li>
+              <li><b>monitoring post-déploiement renforcé</b> pendant 48 à 72 heures,</li>
+              <li><b>gestion d'exceptions ciblées</b> si certains serveurs ne supportent pas un paramètre.</li>
+            </ul>
+            <p>Et toujours via le <b>processus de change ITIL</b>, avec passage en CAB.</p>
+          </div></div>
+        </div>
+
+        <div class="qa-oral">
+          <div class="qa-q"><i class="fas fa-microphone"></i> Comment arbitrer entre risque sécurité et contraintes opérationnelles ?</div>
+          <div class="qa-a"><i class="fas fa-check-circle"></i><div>
+            <p>Pour moi c'est un <b>faux dilemme</b>.</p>
+            <p>Le cadre, c'est l'<b>appétit au risque validé par le CODIR</b>. Une fois ce cadre posé, on sait jusqu'où on peut aller.</p>
+            <p>Si un patch risque de casser la production : on teste avant, on prépare le rollback, on planifie une fenêtre, on communique. Si c'est vraiment incompatible, on documente une exception avec mesure compensatoire et durée limitée.</p>
+            <p>Au final, la sécurité <b>sert la disponibilité à long terme</b> : un ransomware crée bien plus d'indisponibilité qu'une fenêtre de maintenance planifiée.</p>
+          </div></div>
+        </div>
+
+        <div class="qa-oral">
+          <div class="qa-q"><i class="fas fa-microphone"></i> Comment gérez-vous un fournisseur critique non conforme ?</div>
+          <div class="qa-a"><i class="fas fa-check-circle"></i><div>
+            <p>D'abord je <b>cartographie les exigences</b> : ce qui est bloquant — MFA, chiffrement, journalisation — et ce qui est négociable.</p>
+            <p>Ensuite je propose des <b>alternatives ou mesures compensatoires</b> : par exemple, un CASB peut compenser un MFA SaaS faible.</p>
+            <p>Si le fournisseur reste non conforme sur des points bloquants, je <b>formalise une exception document\u00e9e</b> avec mesure compensatoire, durée limitée et revue trimestrielle.</p>
+            <p>Et si le risque résiduel reste inacceptable, j'escalade au RSSI, aux achats, et si nécessaire à la direction générale, avec <b>un plan de remplacement budgétisé</b>.</p>
+          </div></div>
+        </div>
+
+        <h3 style="margin: 24px 0 12px; color: var(--accent); font-size:18px;">🎯 Bloc 8 — Clôture</h3>
+
+        <div class="qa-oral">
+          <div class="qa-q"><i class="fas fa-microphone"></i> Avez-vous des questions ?</div>
+          <div class="qa-a"><i class="fas fa-check-circle"></i><div>
+            <p>Oui, j'aimerais comprendre plusieurs points :</p>
+            <ul>
+              <li>Comment l'<b>organisation cybersécurité</b> du Groupe est-elle structurée aujourd'hui ?</li>
+              <li>Quels sont les <b>principaux défis sécurité</b> rencontrés actuellement ?</li>
+              <li>Quelles seraient les <b>priorités pour cette mission durant les premiers mois</b> ?</li>
+              <li>Quel est le <b>niveau de maturité actuel</b> sur la baseline ?</li>
+              <li>Y a-t-il déjà des <b>outils d'industrialisation</b> en place — Ansible, Puppet, Chef ?</li>
+              <li>Quels sont les <b>critères de succès attendus à 6 et 12 mois</b> ?</li>
+            </ul>
+          </div></div>
+          <div class="qa-tip"><b>💡 Astuce :</b> ne jamais dire "non j'ai pas de questions". Toujours poser au moins 3 questions intelligentes — ça montre l'intérêt et la maturité.</div>
+        </div>
+
+        <div class="qa-oral">
+          <div class="qa-q"><i class="fas fa-microphone"></i> Merci Mondher. Avez-vous un dernier mot ?</div>
+          <div class="qa-a"><i class="fas fa-check-circle"></i><div>
+            <p>Merci pour cet échange.</p>
+            <p>Cette mission correspond réellement au type de problématiques sur lesquelles je souhaite évoluer.</p>
+            <p>Je pense pouvoir <b>rapidement apporter de la valeur</b> grâce à mon expérience sécurité opérationnelle, ma capacité à travailler en transverse, et mon intérêt fort pour les problématiques cybersécurité.</p>
+            <p>Je reste à votre disposition pour les prochaines étapes.</p>
+          </div></div>
+          <div class="qa-tip"><b>🎯 Astuce finale :</b> sourire, regard franc, poignée de main ferme. Le dernier mot reste dans la tête du recruteur.</div>
+        </div>
+
+        <!-- ===== QUESTIONS ===== -->
+        <div class="section-header"><div class="section-icon"><i class="fas fa-circle-question"></i></div><div class="section-title">4 · Banque de questions techniques (fiche express)</div></div>
+        <div class="filter-tabs">
+          <button class="filter-tab active" onclick="filterCategory('all', this)">Toutes</button>
+          <button class="filter-tab" onclick="filterCategory('rh', this)">RH</button>
+          <button class="filter-tab" onclick="filterCategory('gouv', this)">Gouvernance</button>
+          <button class="filter-tab" onclick="filterCategory('hard', this)">Hardening</button>
+          <button class="filter-tab" onclick="filterCategory('vuln', this)">Vulnérabilités</button>
+          <button class="filter-tab" onclick="filterCategory('csirt', this)">CSIRT</button>
+          <button class="filter-tab" onclick="filterCategory('audit', this)">Audit</button>
+          <button class="filter-tab" onclick="filterCategory('cloud', this)">Cloud</button>
+          <button class="filter-tab" onclick="filterCategory('linux', this)">Linux</button>
+          <button class="filter-tab" onclick="filterCategory('win', this)">Windows / AD</button>
+          <button class="filter-tab" onclick="filterCategory('net', this)">Réseau</button>
+          <button class="filter-tab" onclick="filterCategory('saas', this)">SaaS / Fournisseurs</button>
+          <button class="filter-tab" onclick="filterCategory('itil', this)">ITIL</button>
+          <button class="filter-tab" onclick="filterCategory('kpi', this)">KPI / Reporting</button>
+          <button class="filter-tab" onclick="filterCategory('road', this)">Roadmap / Pilotage</button>
+          <button class="filter-tab" onclick="filterCategory('crise', this)">Crise</button>
+          <button class="filter-tab" onclick="filterCategory('piege', this)">Pièges</button>
+        </div>
+        <div class="question-grid" id="questions-container">
+          <!-- ===== RH ===== -->
+          <div class="question-card" data-category="rh" onclick="toggleQuestion(this)"><div class="question-title"><span class="question-number">1</span>Présentez-vous en 2 minutes <span class="pill easy">Facile</span></div><div class="question-answer"><h5>Réponse idéale (RSSI)</h5>Dérouler le pitch ci-dessus : 5 ans, 100+ clients, secteurs régulés, ISO 27001 LA, hardening Linux/Windows, Qualys/Tenable, Ansible, ISAE 3402, projets IA appliqués.<h5>À éviter</h5>Réciter le CV ligne par ligne. Pas de chiffres. Ne pas relier au poste.</div></div>
+          <div class="question-card" data-category="rh" onclick="toggleQuestion(this)"><div class="question-title"><span class="question-number">2</span>Pourquoi quitter votre poste actuel ? <span class="pill med">Moyen</span></div><div class="question-answer">« Je cherche à passer d'une <b>responsabilité multi-clients ESN</b> à une <b>responsabilité Groupe transverse</b>, avec un mandat clair sur la baseline, la roadmap, et le pilotage COMEX. »<h5>À éviter</h5>Dénigrer l'employeur actuel. Parler salaire en premier.</div></div>
+          <div class="question-card" data-category="rh" onclick="toggleQuestion(this)"><div class="question-title"><span class="question-number">3</span>Pourquoi ce poste / cette mission Cybertic ? <span class="pill easy">Facile</span></div><div class="question-answer">3 raisons : (1) le périmètre <b>Groupe transverse</b> correspond à mon ambition, (2) le scope <b>hardening + CSIRT + gouvernance</b> recoupe 80% de mon expérience, (3) je veux contribuer à <b>industrialiser</b> et porter la roadmap devant le management.</div></div>
+          <div class="question-card" data-category="rh" onclick="toggleQuestion(this)"><div class="question-title"><span class="question-number">4</span>Vos forces / faiblesses ? <span class="pill med">Moyen</span></div><div class="question-answer"><b>Forces :</b> rigueur opérationnelle, vision transverse (SOC ↔ infra ↔ GRC), capacité à industrialiser, certifications ISO.<br><b>Faiblesse honnête :</b> « j'ai parfois tendance à vouloir tout documenter avant d'arbitrer — j'ai appris à timeboxer en utilisant un cadre EBIOS RM allgé. »</div></div>
+          <div class="question-card" data-category="rh" onclick="toggleQuestion(this)"><div class="question-title"><span class="question-number">5</span>Comment gérez-vous le stress / une crise ? <span class="pill med">Moyen</span></div><div class="question-answer">Cadre : <b>NIST SP 800-61</b> (Prepare/Detect/Contain/Eradicate/Recover/Lessons). Méthode : war room, RACI clair, commé toutes les 30′, journal d'incident horodaté, décision base de faits. Exemple vécu : campagne CVE Log4Shell sur parc client.</div></div>
+          <div class="question-card" data-category="rh" onclick="toggleQuestion(this)"><div class="question-title"><span class="question-number">6</span>Prétentions salariales ? <span class="pill hard">Difficile</span></div><div class="question-answer">Ancrer une fourchette marché (Hays/Michael Page CISO 2025), donner un range cohérent avec le niveau d'expertise demandé (D sur sécurité), rester ouvert au package complet. <b>Ne jamais</b> donner un chiffre sec sans fourchette.</div></div>
+          <div class="question-card" data-category="rh" onclick="toggleQuestion(this)"><div class="question-title"><span class="question-number">7</span>Où vous voyez-vous dans 3 ans ? <span class="pill easy">Facile</span></div><div class="question-answer">« RSSI adjoint Groupe ou Head of Security Baseline, avec une roadmap 36 mois livrée, un score CIS > 90% sur le scope critique et une gouvernance hardening reconnue comme référence interne. »</div></div>
+
+          <!-- ===== GOUVERNANCE ===== -->
+          <div class="question-card" data-category="gouv" onclick="toggleQuestion(this)"><div class="question-title"><span class="question-number">8</span>Comment construisez-vous une politique de hardening Groupe ? <span class="pill med">Moyen</span></div><div class="question-answer"><b>Méthode :</b> (1) cartographie SI (CMDB, criticité métier), (2) analyse de risque <b>EBIOS RM</b>, (3) choix référentiels (<b>CIS L1/L2</b>, <b>ANSSI</b>, <b>Microsoft Security Baselines</b>), (4) déclinaison en standards par techno, (5) gouvernance (comité hardening mensuel), (6) processus d'exception, (7) métrologie KPI, (8) revue annuelle.<h5>Standards</h5>ISO 27001 A.8 / A.12 / A.14, NIST CSF Protect (PR.IP-1, PR.PT-3), CIS Controls v8 #4.</div></div>
+          <div class="question-card" data-category="gouv" onclick="toggleQuestion(this)"><div class="question-title"><span class="question-number">9</span>Quelle différence entre politique, standard, procédure, baseline ? <span class="pill easy">Facile</span></div><div class="question-answer"><b>Politique</b> = quoi & pourquoi (signée CODIR). <b>Standard</b> = exigences mesurables (ex : TLS ≥ 1.2). <b>Baseline</b> = configuration cible technique (CIS L1). <b>Procédure</b> = comment, pas à pas. <b>Guideline</b> = recommandation non contraignante.</div></div>
+          <div class="question-card" data-category="gouv" onclick="toggleQuestion(this)"><div class="question-title"><span class="question-number">10</span>Comment gérer les exceptions de sécurité ? <span class="pill med">Moyen</span></div><div class="question-answer"><b>Registre central</b> (ServiceNow GRC) avec : owner métier, justification, risque accepté, mesure compensatoire, durée max (12 mois), validation RSSI, revue trimestrielle. <b>KPI :</b> nb exceptions, % > 12 mois, % sans mesure compensatoire.</div></div>
+          <div class="question-card" data-category="gouv" onclick="toggleQuestion(this)"><div class="question-title"><span class="question-number">11</span>Comment animez-vous un comité hardening ? <span class="pill med">Moyen</span></div><div class="question-answer">Mensuel, 60′, RACI : Prés = RSSI ou Resp. Hardening, Membres = représentants infra/DSI filiales/CSIRT/achats. Ordre du jour standard : (1) KPI mois N-1, (2) CVE critiques, (3) exceptions à arbitrer, (4) avancement roadmap, (5) décisions. CR diffusé sous 48h.</div></div>
+          <div class="question-card" data-category="gouv" onclick="toggleQuestion(this)"><div class="question-title"><span class="question-number">12</span>Comment articulez-vous ISO 27001 et NIST CSF ? <span class="pill hard">Difficile</span></div><div class="question-answer">NIST CSF = <b>cadre de pilotage</b> (Identify, Protect, Detect, Respond, Recover, Govern). ISO 27001 = <b>système de management certifiable</b> + Annexe A. On utilise CSF pour la <b>maturité</b> et le narratif COMEX, ISO 27001 pour la <b>certification</b>. Mapping officiel NIST disponible.</div></div>
+          <div class="question-card" data-category="gouv" onclick="toggleQuestion(this)"><div class="question-title"><span class="question-number">13</span>Comment intégrer NIS2 / DORA dans la baseline ? <span class="pill hard">Difficile</span></div><div class="question-answer"><b>NIS2 :</b> renforcement gestion des risques (Art.21), reporting incidents 24h/72h, gouvernance board-level. <b>DORA</b> (financier) : ICT risk framework, registre fournisseurs critiques, tests TLPT. Impact baseline : exigences MFA, chiffrement, logging, gestion vuln, fournisseurs.</div></div>
+          <div class="question-card" data-category="gouv" onclick="toggleQuestion(this)"><div class="question-title"><span class="question-number">14</span>Comment justifiez-vous un budget hardening au COMEX ? <span class="pill hard">Difficile</span></div><div class="question-answer">Triptyque : <b>Risque évité</b> (ALE = SLE × ARO, scénarios EBIOS), <b>Conformité</b> (sanctions NIS2/RGPD jusqu'à 10 M€ ou 2% CA), <b>Performance</b> (réduction MTTR, automatisation = -X ETP). Toujours un scénario « coût de l'inaction ».</div></div>
+
+          <!-- ===== HARDENING ===== -->
+          <div class="question-card" data-category="hard" onclick="toggleQuestion(this)"><div class="question-title"><span class="question-number">15</span>Définissez le hardening en 30 secondes <span class="pill easy">Facile</span></div><div class="question-answer">Réduction de la surface d'attaque d'un système par <b>configuration sécurisée</b> : désactivation services inutiles, comptes par défaut, durcissement réseau/auth/log, application de baselines (CIS, ANSSI, vendor). Objectif : <b>minimum privilege</b> + <b>defense in depth</b>.</div></div>
+          <div class="question-card" data-category="hard" onclick="toggleQuestion(this)"><div class="question-title"><span class="question-number">16</span>CIS L1 vs L2 ? <span class="pill easy">Facile</span></div><div class="question-answer"><b>L1</b> : base de sécurité sans impact fonctionnel majeur, applicable largement. <b>L2</b> : durcissement avancé pour environnements sensibles, peut casser des usages. Stratégie Groupe : L1 partout + L2 sur périmètres critiques (DC, jump server, PCI).</div></div>
+          <div class="question-card" data-category="hard" onclick="toggleQuestion(this)"><div class="question-title"><span class="question-number">17</span>Comment mesurer la conformité d'une baseline ? <span class="pill med">Moyen</span></div><div class="question-answer">Outils : <b>CIS-CAT Pro</b>, <b>OpenSCAP</b>, <b>Microsoft Security Compliance Toolkit</b>, <b>Tenable Compliance</b>, <b>Wazuh SCA</b>. Métrique : % contrôles pass / total. Cible : > 90% L1. Restitution : dashboard par filiale/techno + drift.</div></div>
+          <div class="question-card" data-category="hard" onclick="toggleQuestion(this)"><div class="question-title"><span class="question-number">18</span>Comment déployez-vous une baseline sans casser la prod ? <span class="pill hard">Difficile</span></div><div class="question-answer">Process : (1) <b>POC labo</b>, (2) <b>pilote</b> 5-10 serveurs non critiques, (3) <b>UAT métier</b>, (4) <b>déploiement par vagues</b> via Ansible avec rollback, (5) <b>monitoring post-deploy</b>, (6) gestion exceptions ciblées. Toujours via <b>CAB ITIL</b>.</div></div>
+          <div class="question-card" data-category="hard" onclick="toggleQuestion(this)"><div class="question-title"><span class="question-number">19</span>Golden image : avantages & risques ? <span class="pill med">Moyen</span></div><div class="question-answer"><b>+</b> Conformité dès le build, vitesse, traçabilité (Packer + signature). <b>−</b> Dérive si pas de rebuild régulier, héritage de vulns. <b>Règle :</b> rebuild mensuel + CI/CD signe les images + scan Trivy/Grype au build.</div></div>
+          <div class="question-card" data-category="hard" onclick="toggleQuestion(this)"><div class="question-title"><span class="question-number">20</span>Drift de configuration : détection ? <span class="pill med">Moyen</span></div><div class="question-answer">Outils : <b>Ansible --check / Puppet noop</b>, <b>Wazuh FIM</b>, <b>Tripwire</b>, <b>AWS Config / Azure Policy</b>, <b>CIS-CAT scheduled</b>. Réaction : alerte SIEM → ticket auto ServiceNow → remed via playbook.</div></div>
+          <div class="question-card" data-category="hard" onclick="toggleQuestion(this)"><div class="question-title"><span class="question-number">21</span>Industrialisation : votre stack ? <span class="pill med">Moyen</span></div><div class="question-answer"><b>IaC :</b> Terraform. <b>Config :</b> Ansible/AWX (mon expérience). <b>CI/CD :</b> GitLab CI + SAST/SCA/secret scan. <b>Images :</b> Packer + Trivy. <b>Policy as code :</b> OPA/Conftest, Checkov, Kyverno (K8s). <b>Traçabilité :</b> Git + signatures.</div></div>
+
+          <!-- ===== VULNERABILITES ===== -->
+          <div class="question-card" data-category="vuln" onclick="toggleQuestion(this)"><div class="question-title"><span class="question-number">22</span>CVE / CVSS / EPSS / KEV : expliquez <span class="pill med">Moyen</span></div><div class="question-answer"><b>CVE</b> : identifiant unique (MITRE). <b>CVSS v3.1/v4</b> : score sévérité 0-10 (Base/Temp/Env). <b>EPSS</b> : probabilité d'exploitation à 30j (FIRST.org). <b>KEV CISA</b> : catalogue des CVE <i>exploitées activement</i>. <b>Stratégie :</b> prioriser KEV > EPSS > 70% > CVSS ≥ 9 > exposition externe.</div></div>
+          <div class="question-card" data-category="vuln" onclick="toggleQuestion(this)"><div class="question-title"><span class="question-number">23</span>Une CVE critique sort aujourd'hui, que faites-vous ? <span class="pill hard">Difficile</span></div><div class="question-answer"><b>T+0</b> : qualification (KEV ? PoC public ? exposition ?). <b>T+1h</b> : inventaire impact via CMDB + scan Qualys/Tenable ciblé. <b>T+2h</b> : commé CSIRT → RSSI → métiers concernés. <b>T+4h</b> : mesures compensatoires (WAF, segmentation, désactivation). <b>T+24-72h</b> : patching priorisé selon SLA NIST SP 800-40 rév.4. <b>Post</b> : RETEX, mise à jour baseline. Réf. : <b>NIST SP 800-40 r4</b>, <b>CISA BOD 22-01</b>.</div></div>
+          <div class="question-card" data-category="vuln" onclick="toggleQuestion(this)"><div class="question-title"><span class="question-number">24</span>Vos SLA de patching ? <span class="pill med">Moyen</span></div><div class="question-answer">Standard : <b>Critique 7j (KEV : 48h)</b>, <b>Élevé 30j</b>, <b>Moyen 90j</b>, <b>Faible 180j</b>. CISA BOD 22-01 : KEV en 2 semaines max fédéral. Toujours différencier <b>exposition externe</b> (SLA divisé par 2) vs interne.</div></div>
+          <div class="question-card" data-category="vuln" onclick="toggleQuestion(this)"><div class="question-title"><span class="question-number">25</span>La prod refuse un patch critique, que faites-vous ? <span class="pill hard">Difficile</span></div><div class="question-answer">(1) Ne pas s'opposer frontalement. (2) Comprendre la raison (rupture appli ? fenêtre ?). (3) Proposer <b>mesures compensatoires</b> (segmentation, WAF, ACL, désactivation feature). (4) Exception formelle avec durée max & owner. (5) Escalade RSSI/COMEX si exposition externe + KEV. (6) Tracer dans le registre. <b>Mantra :</b> arbitrage éclairé, pas blocage.</div></div>
+          <div class="question-card" data-category="vuln" onclick="toggleQuestion(this)"><div class="question-title"><span class="question-number">26</span>Différence scan authentifié / non-authentifié ? <span class="pill easy">Facile</span></div><div class="question-answer"><b>Non-auth</b> = vue attaquant externe (services exposés). <b>Auth</b> = vue interne profonde (patches manquants, conf). <b>Combiner les deux.</b> Tenable/Qualys : credentials via vault, comptes dédiés least-priv.</div></div>
+          <div class="question-card" data-category="vuln" onclick="toggleQuestion(this)"><div class="question-title"><span class="question-number">27</span>Comment couvrir 100% du parc en scan ? <span class="pill med">Moyen</span></div><div class="question-answer">Réconciliation <b>CMDB ↔ scanner</b> : tout asset CMDB doit apparaître dans Tenable. KPI <b>Scan Coverage</b> = (assets scannés / assets CMDB). Cible ≥ 95%. Écarts traités en comité hebdo.</div></div>
+          <div class="question-card" data-category="vuln" onclick="toggleQuestion(this)"><div class="question-title"><span class="question-number">28</span>Patch Tuesday Microsoft : votre process ? <span class="pill med">Moyen</span></div><div class="question-answer"><b>J+0</b> : triage MSRC + KEV check. <b>J+1</b> : test labo + golden image. <b>J+3</b> : pilote (Ring 1). <b>J+7</b> : production non critique (Ring 2). <b>J+14</b> : production critique (Ring 3). Outil : <b>WSUS / SCCM / Intune</b>. Reporting : compliance rate par ring.</div></div>
+          <!-- ===== CSIRT ===== -->
+          <div class="question-card" data-category="csirt" onclick="toggleQuestion(this)"><div class="question-title"><span class="question-number">29</span>Comment intégrer les recommandations CSIRT dans la roadmap ? <span class="pill hard">Difficile</span></div><div class="question-answer"><b>Process :</b> (1) RETEX incident signé CSIRT, (2) recommandations qualifiées (P1/P2/P3) + mapping <b>MITRE ATT&CK</b>, (3) chaque reco devient un <b>backlog item</b> dans le portefeuille hardening (Jira), (4) priorisation : impact × effort × récurrence, (5) comité hardening valide injection roadmap, (6) suivi mensuel taux d'application reco CSIRT.</div></div>
+          <div class="question-card" data-category="csirt" onclick="toggleQuestion(this)"><div class="question-title"><span class="question-number">30</span>Différence CERT / CSIRT / SOC ? <span class="pill easy">Facile</span></div><div class="question-answer"><b>SOC</b> = surveillance & détection 24/7. <b>CSIRT</b> = réponse à incident, coordination, RETEX. <b>CERT</b> = marque déposée (CMU), souvent sectoriel (CERT-FR ANSSI). Au Groupe : SOC détecte → CSIRT gère → RSSI décide.</div></div>
+          <div class="question-card" data-category="csirt" onclick="toggleQuestion(this)"><div class="question-title"><span class="question-number">31</span>Cycle de vie d'un incident (NIST SP 800-61) ? <span class="pill med">Moyen</span></div><div class="question-answer">1) <b>Preparation</b> 2) <b>Detection & Analysis</b> 3) <b>Containment, Eradication & Recovery</b> 4) <b>Post-Incident Activity</b> (RETEX). Chaque phase produit des recos hardening : conf manquante, log absent, EDR inefficace.</div></div>
+          <div class="question-card" data-category="csirt" onclick="toggleQuestion(this)"><div class="question-title"><span class="question-number">32</span>MITRE ATT&CK : usage concret en hardening ? <span class="pill hard">Difficile</span></div><div class="question-answer">Mapper chaque baseline à des <b>techniques mitigées</b> (M1026, M1042…). Mesurer la <b>couverture ATT&CK</b> via DeTT&CT / ATT&CK Navigator. Reco CSIRT → technique ATT&CK → mitigation → contrôle baseline. Permet narratif COMEX « on couvre 78% des techniques observées par l'ANSSI sur secteur X ».</div></div>
+          <div class="question-card" data-category="csirt" onclick="toggleQuestion(this)"><div class="question-title"><span class="question-number">33</span>Comment qualifiez-vous une recommandation CSIRT ? <span class="pill med">Moyen</span></div><div class="question-answer">Grille : <b>P1</b> = exploit actif + impact critique (SLA 48h), <b>P2</b> = impact élevé sans exploit (30j), <b>P3</b> = bonne pratique (90j). Critères : KEV, exposition, criticité asset, coût reméd.</div></div>
+
+          <!-- ===== AUDIT ===== -->
+          <div class="question-card" data-category="audit" onclick="toggleQuestion(this)"><div class="question-title"><span class="question-number">34</span>Comment préparez-vous un audit ISO 27001 ? <span class="pill med">Moyen</span></div><div class="question-answer">SoA à jour, registre de risques actualisé, preuves d'application des contrôles A.5→A.8, revue de direction, audits internes préalables, registre exceptions, indicateurs PDCA. Outil : ServiceNow GRC / Eramba.</div></div>
+          <div class="question-card" data-category="audit" onclick="toggleQuestion(this)"><div class="question-title"><span class="question-number">35</span>Audit ISAE 3402 : qu'est-ce que c'est ? <span class="pill med">Moyen</span></div><div class="question-answer">Standard d'assurance pour prestataires de services impactant le contrôle interne des clients (souvent financiers). <b>Type I</b> = design des contrôles à une date. <b>Type II</b> = efficacité opérationnelle sur période (6-12 mois). Très exigeant sur preuves continues.</div></div>
+          <div class="question-card" data-category="audit" onclick="toggleQuestion(this)"><div class="question-title"><span class="question-number">36</span>Audit révèle 40% non-conformité sur baseline, vous faites quoi ? <span class="pill hard">Difficile</span></div><div class="question-answer">(1) Pas de panique — normal sur première campagne. (2) Catégoriser non-conf par criticité + cause racine (ignorance / techno / refus). (3) Plan d'action prirorisé 90j sur top 20% impact. (4) Commé COMEX : trajectoire de progression, pas score brut. (5) Industrialisation pour prévenir récurrence.</div></div>
+          <div class="question-card" data-category="audit" onclick="toggleQuestion(this)"><div class="question-title"><span class="question-number">37</span>EBIOS RM en 5 étapes ? <span class="pill med">Moyen</span></div><div class="question-answer">A1 Cadrage & socle, A2 Sources de risque, A3 Scénarios stratégiques, A4 Scénarios opérationnels, A5 Traitement du risque. Aboutit à un PACS (Plan d'Amélioration Continue de la Sécurité). Méthode ANSSI 2018.</div></div>
+
+          <!-- ===== CLOUD ===== -->
+          <div class="question-card" data-category="cloud" onclick="toggleQuestion(this)"><div class="question-title"><span class="question-number">38</span>Modèle de responsabilité partagée Cloud ? <span class="pill easy">Facile</span></div><div class="question-answer"><b>IaaS</b> : provider = physique/réseau/hyperviseur ; client = OS, app, data, IAM. <b>PaaS</b> : provider gère l'OS aussi. <b>SaaS</b> : provider gère l'app ; client = data, identités, conf. „You are responsible for security <i>in</i> the cloud” (AWS).</div></div>
+          <div class="question-card" data-category="cloud" onclick="toggleQuestion(this)"><div class="question-title"><span class="question-number">39</span>Hardening AWS top 10 ? <span class="pill med">Moyen</span></div><div class="question-answer">1) Root account verrouillé + MFA hard. 2) IAM least-priv + SCP Organizations. 3) CloudTrail multi-région + S3 logs immuables. 4) GuardDuty + Security Hub + Inspector. 5) Config rules + Conformance packs CIS. 6) KMS chiffrement at-rest. 7) S3 block public access global. 8) VPC flow logs + SG least-priv + no 0.0.0.0/0. 9) Patch via SSM. 10) Tags + Cost Allocation + lifecycle. Réf. : <b>CIS AWS Foundations Benchmark v3</b>.</div></div>
+          <div class="question-card" data-category="cloud" onclick="toggleQuestion(this)"><div class="question-title"><span class="question-number">40</span>Hardening Azure top 10 ? <span class="pill med">Moyen</span></div><div class="question-answer">1) Entra ID : MFA + Conditional Access + PIM. 2) Azure Policy + Initiatives (Azure Security Benchmark). 3) Defender for Cloud (Foundational CSPM + plans). 4) Key Vault + RBAC + soft-delete. 5) Network : NSG, Azure Firewall, Private Endpoint. 6) Storage : block public, secure transfer, lifecycle. 7) Activity Log + Diagnostic Settings vers Sentinel. 8) JIT VM access. 9) Update Manager. 10) Tags & Management Groups. Réf. : <b>Azure Security Baseline</b> + <b>CIS Azure</b>.</div></div>
+          <div class="question-card" data-category="cloud" onclick="toggleQuestion(this)"><div class="question-title"><span class="question-number">41</span>Kubernetes : par où commencer le hardening ? <span class="pill hard">Difficile</span></div><div class="question-answer">RBAC strict, NetworkPolicies par défaut deny, Pod Security Standards (restricted), images signées (cosign), admission control (Kyverno/OPA), secrets via External Secrets, audit log, runtime (Falco), API server exposé privé, ETCD chiffré. Réf. : <b>CIS Kubernetes Benchmark</b>, <b>NSA/CISA Kubernetes Hardening Guide</b>.</div></div>
+          <div class="question-card" data-category="cloud" onclick="toggleQuestion(this)"><div class="question-title"><span class="question-number">42</span>Docker : top mesures ? <span class="pill med">Moyen</span></div><div class="question-answer">Images minimales (distroless), USER non-root, read-only FS, no --privileged, scan Trivy/Grype, signatures cosign, secrets pas dans image, capabilities drop-all + add ciblé, seccomp/AppArmor, daemon socket protégé. Réf. : <b>CIS Docker Benchmark</b>.</div></div>
+          <div class="question-card" data-category="cloud" onclick="toggleQuestion(this)"><div class="question-title"><span class="question-number">43</span>Hardening VMware vSphere ? <span class="pill med">Moyen</span></div><div class="question-answer">vCenter sur réseau mgmt isolé, MFA SSO, lockdown mode ESXi, secure boot, TPM, audit syslog vers SIEM, certificats CA Groupe, comptes service dédiés, snapshots limités, patch via VUM/Lifecycle Manager. Réf. : <b>vSphere Security Configuration Guide</b> (Broadcom/VMware).</div></div>
+
+          <!-- ===== LINUX ===== -->
+          <div class="question-card" data-category="linux" onclick="toggleQuestion(this)"><div class="question-title"><span class="question-number">44</span>Top 15 mesures hardening Linux ? <span class="pill med">Moyen</span></div><div class="question-answer"><ul><li>Partitions séparées (/var, /tmp, /home) + options <code>nodev,nosuid,noexec</code></li><li>Désactiver services inutiles (<code>systemctl list-unit-files</code>)</li><li>SSH : PermitRootLogin no, PasswordAuthentication no, AllowGroups, Ciphers/MACs forts</li><li>Sudo : NOPASSWD interdit, log <code>/var/log/sudo</code></li><li>PAM : pwquality, faillock, pwhistory</li><li>auditd règles CIS, journald persistent, rsyslog → SIEM TLS</li><li>SELinux enforcing (RHEL) ou AppArmor (Ubuntu)</li><li>firewalld/nftables deny par défaut</li><li>sysctl : kernel.kptr_restrict, net.ipv4.conf.all.rp_filter, ASLR</li><li>USB storage désactivé si serveur</li><li>Crypto : TLS 1.2+, OpenSSH > 8, FIPS si requis</li><li>Patch via Satellite / Spacewalk / dnf-automatic</li><li>FIM (AIDE / Wazuh)</li><li>Banner /etc/issue.net</li><li>Comptes : UID 0 unique, lock comptes système</li></ul>Réf. : <b>CIS RHEL 8/9 Benchmark</b>, <b>ANSSI guide config Linux</b>.</div></div>
+          <div class="question-card" data-category="linux" onclick="toggleQuestion(this)"><div class="question-title"><span class="question-number">45</span>SELinux vs AppArmor ? <span class="pill med">Moyen</span></div><div class="question-answer"><b>SELinux</b> : MAC label-based, granularité fine, complexe, par défaut RHEL/Fedora. <b>AppArmor</b> : path-based, plus simple, par défaut Ubuntu/SUSE. Les deux valent mieux qu'aucun. Mode <code>enforcing</code> obligatoire en prod (<code>getenforce</code>).</div></div>
+          <div class="question-card" data-category="linux" onclick="toggleQuestion(this)"><div class="question-title"><span class="question-number">46</span>Comment industrialiser le hardening Linux ? <span class="pill med">Moyen</span></div><div class="question-answer">Rôles Ansible (<b>ansible-lockdown/RHEL9-CIS</b> ou maison), packagés par tags (level1, level2, scored), pipeline AWX, idempotence testée en CI, scan post-deploy CIS-CAT/OpenSCAP, drift Wazuh, golden image via Packer.</div></div>
+          <div class="question-card" data-category="linux" onclick="toggleQuestion(this)"><div class="question-title"><span class="question-number">47</span>Patch management RHEL : votre approche ? <span class="pill med">Moyen</span></div><div class="question-answer"><b>Red Hat Satellite</b> (ou Foreman) : content views par environnement (DEV/INT/PROD), errata CVE filtrés, lifecycle paths, kpatch pour kernel sans reboot, fenêtres patch mensuelles avec rollback snapshot. KPI : % serveurs patchés à J+30 critiques.</div></div>
+          <!-- ===== WINDOWS / AD ===== -->
+          <div class="question-card" data-category="win" onclick="toggleQuestion(this)"><div class="question-title"><span class="question-number">48</span>Top mesures hardening Windows Server ? <span class="pill med">Moyen</span></div><div class="question-answer">Microsoft Security Baseline (SCT) appliqué via GPO, SMBv1 désactivé, LLMNR/NetBIOS off, LM/NTLMv1 off, Credential Guard, LSA Protection, Windows Defender ASR rules, AppLocker/WDAC, BitLocker, audit policy avancée, RDP NLA + cert, WSUS/MECM, WinRM HTTPS uniquement. Réf. : <b>CIS Microsoft Windows Server 2022</b>, <b>Microsoft Security Baselines</b>.</div></div>
+          <div class="question-card" data-category="win" onclick="toggleQuestion(this)"><div class="question-title"><span class="question-number">49</span>Hardening Active Directory : Tier Model ? <span class="pill hard">Difficile</span></div><div class="question-answer"><b>Modèle 3 tiers Microsoft</b> : Tier 0 (DC, ADFS, PKI), Tier 1 (serveurs), Tier 2 (postes/users). Aucun compte ne croise les tiers. PAW (Privileged Access Workstation) pour admin Tier 0. LAPS pour comptes locaux. gMSA pour services. Protected Users group. Pas de comptes admin domaine en usage quotidien. Réf. : <b>Microsoft ESAE</b> (anciennement Red Forest) → maintenant approche <b>Privileged Access Strategy</b>.</div></div>
+          <div class="question-card" data-category="win" onclick="toggleQuestion(this)"><div class="question-title"><span class="question-number">50</span>Comment détecter une compromission AD ? <span class="pill hard">Difficile</span></div><div class="question-answer">Outils : <b>PingCastle</b> (audit régulier), <b>BloodHound</b> (chemins d'attaque), <b>Purple Knight</b>. Événements : 4624 type 3 anormal, 4768/4769 Kerberoasting, 4662 DCSync, 4720 création compte, 4732 ajout groupe priv. Monitoring : Defender for Identity / EDR + SIEM.</div></div>
+          <div class="question-card" data-category="win" onclick="toggleQuestion(this)"><div class="question-title"><span class="question-number">51</span>Golden Ticket / Pass-the-Hash : mitigations ? <span class="pill hard">Difficile</span></div><div class="question-answer">Rotation régulière du compte <b>krbtgt</b> (2 fois), Credential Guard, LSA Protection (RunAsPPL), Protected Users, désactiver NTLM où possible, PAW + tier model, monitoring 4769 RC4 anormal, AES uniquement, MFA admin.</div></div>
+          <div class="question-card" data-category="win" onclick="toggleQuestion(this)"><div class="question-title"><span class="question-number">52</span>LAPS : utilité ? <span class="pill easy">Facile</span></div><div class="question-answer">Rotation automatique du mot de passe administrateur local de chaque machine, stocké chiffré dans AD, lecture contrôlée par ACL. Évite la réutilisation de hash local (lateral movement). Version moderne : <b>Windows LAPS</b> (intégré OS depuis 2023).</div></div>
+
+          <!-- ===== RÉSEAU ===== -->
+          <div class="question-card" data-category="net" onclick="toggleQuestion(this)"><div class="question-title"><span class="question-number">53</span>Segmentation réseau : votre approche ? <span class="pill med">Moyen</span></div><div class="question-answer">Macro-segmentation par zones de confiance (DMZ, prod, mgmt, OT), micro-segmentation par workload (NSX, Illumio, AWS SG), flux modélisés (matrice flux), default deny, jump servers/bastion, ZTNA progressif. Cible : suppression VLAN « fourre-tout ».</div></div>
+          <div class="question-card" data-category="net" onclick="toggleQuestion(this)"><div class="question-title"><span class="question-number">54</span>Hardening Fortinet/Palo Alto ? <span class="pill med">Moyen</span></div><div class="question-answer">Admin via plan mgmt séparé + MFA + ACL src IP, comptes nominatifs RADIUS/TACACS, suppression compte admin par défaut, HTTPS mgmt only, SNMPv3, logs vers SIEM, NTP signé, firmware patché (CVE 2024 FortiOS critiques), TLS 1.2+, IPS/AV/URL filtering activés, geo-blocking, IoC feeds. Réf. : <b>FortiOS / PAN-OS Hardening Guide</b>, <b>CIS Palo Alto</b>.</div></div>
+          <div class="question-card" data-category="net" onclick="toggleQuestion(this)"><div class="question-title"><span class="question-number">55</span>SPF / DKIM / DMARC : rôles ? <span class="pill easy">Facile</span></div><div class="question-answer"><b>SPF</b> : autorise IP émettrices. <b>DKIM</b> : signature cryptographique. <b>DMARC</b> : politique (none/quarantine/reject) + reporting agrégé. Cible : DMARC p=reject aligné. Outil : PowerDMARC (sur ton CV).</div></div>
+          <div class="question-card" data-category="net" onclick="toggleQuestion(this)"><div class="question-title"><span class="question-number">56</span>TLS : minimum acceptable en 2025 ? <span class="pill easy">Facile</span></div><div class="question-answer">TLS 1.2 minimum, TLS 1.3 recommandé. Désactivation SSLv2/v3, TLS 1.0/1.1. Ciphers AEAD (AES-GCM, ChaCha20). HSTS, OCSP stapling. Réf. : <b>ANSSI - Recommandations de sécurité relatives à TLS</b>, <b>Mozilla SSL Config</b>.</div></div>
+          <div class="question-card" data-category="net" onclick="toggleQuestion(this)"><div class="question-title"><span class="question-number">57</span>Zero Trust : par où commencer ? <span class="pill hard">Difficile</span></div><div class="question-answer">Pas un produit, une architecture. Pilotes : (1) MFA + Conditional Access partout, (2) device posture (compliant), (3) ZTNA pour accès applicatif (remplace VPN), (4) micro-segmentation, (5) PAM/JIT. Réf. : <b>NIST SP 800-207</b>, <b>CISA Zero Trust Maturity Model v2</b>.</div></div>
+
+          <!-- ===== SaaS / FOURNISSEURS ===== -->
+          <div class="question-card" data-category="saas" onclick="toggleQuestion(this)"><div class="question-title"><span class="question-number">58</span>Hardening M365 : top mesures ? <span class="pill med">Moyen</span></div><div class="question-answer">Security Defaults ou Conditional Access (MFA partout, block legacy auth), Secure Score > 75%, Defender for O365 (Safe Links/Attachments), DLP, Sensitivity Labels, Audit log activé + rétention, Entra ID PIM pour admin, Privileged Access Groups, Cross-tenant access, anti-phishing avancé. Réf. : <b>CIS Microsoft 365 Foundations Benchmark</b>.</div></div>
+          <div class="question-card" data-category="saas" onclick="toggleQuestion(this)"><div class="question-title"><span class="question-number">59</span>Comment auditer un SaaS critique ? <span class="pill med">Moyen</span></div><div class="question-answer">Questionnaire CAIQ (CSA), exigence <b>SOC 2 Type II</b> + <b>ISO 27001</b>, revue rapport pénétration récent, due diligence GDPR/SCC, plan de réversibilité, monitoring via CASB (Defender for Cloud Apps, Netskope), logs SaaS → SIEM, MFA SSO imposé, scim provisioning.</div></div>
+          <div class="question-card" data-category="saas" onclick="toggleQuestion(this)"><div class="question-title"><span class="question-number">60</span>Un fournisseur refuse des exigences sécurité, que faites-vous ? <span class="pill hard">Difficile</span></div><div class="question-answer">(1) Cartographier exigences <b>bloquantes</b> (MFA, chiffrement, logs) vs <b>négociables</b>. (2) Proposer alternatives (CASB compense un MFA SaaS faible). (3) Mesure compensatoire + exception documentée + durée + revue. (4) Si fournisseur critique + risque inacceptable : escalade RSSI → achats → DG. (5) Plan de remplacement.</div></div>
+          <div class="question-card" data-category="saas" onclick="toggleQuestion(this)"><div class="question-title"><span class="question-number">61</span>Comment sécuriser les échanges fournisseurs critiques ? <span class="pill med">Moyen</span></div><div class="question-answer">Annexe sécurité contractuelle (PAS), SLA sécurité, droit d'audit, notification incident 24/72h, exigences hardening alignées Groupe, MFA + SSO, chiffrement, segmentation accès, revue annuelle. Cadre : <b>ISO 27036</b>, <b>NIS2 supply chain</b>.</div></div>
+
+          <!-- ===== ITIL ===== -->
+          <div class="question-card" data-category="itil" onclick="toggleQuestion(this)"><div class="question-title"><span class="question-number">62</span>Quels processus ITIL utilisez-vous au quotidien ? <span class="pill med">Moyen</span></div><div class="question-answer"><b>Change Enablement</b> (CAB pour déploiement baseline), <b>Release Management</b>, <b>Configuration Management</b> (CMDB), <b>Incident</b> + <b>Problem</b>, <b>Service Request</b>, <b>Continual Improvement</b>. ITIL v4 : <b>Service Value Chain</b>, <b>Practices</b>, <b>Guiding Principles</b> (focus on value, start where you are, progress iteratively).</div></div>
+          <div class="question-card" data-category="itil" onclick="toggleQuestion(this)"><div class="question-title"><span class="question-number">63</span>Comment articulez-vous hardening et processus de change ? <span class="pill med">Moyen</span></div><div class="question-answer">Toute application de baseline = RFC dans ServiceNow, catégorisé (standard/normal/emergency), CAB hebdo, fenêtre de change, plan de rollback, post-implementation review. Standard changes pour baselines testées industrialisées (Ansible).</div></div>
+          <div class="question-card" data-category="itil" onclick="toggleQuestion(this)"><div class="question-title"><span class="question-number">64</span>CMDB : pourquoi c'est central pour vous ? <span class="pill med">Moyen</span></div><div class="question-answer">Sans CMDB à jour : pas d'inventaire fiable → pas de couverture scan → pas de KPI crédible. Cible : 100% assets, criticité métier, owner, env, exposition. Mon projet R&D <b>CMDB de sécurité automatisée</b> répond exactement à ce besoin.</div></div>
+          <!-- ===== KPI / REPORTING ===== -->
+          <div class="question-card" data-category="kpi" onclick="toggleQuestion(this)"><div class="question-title"><span class="question-number">65</span>Top 10 KPI Responsable Hardening ? <span class="pill med">Moyen</span></div><div class="question-answer"><ol><li><b>Baseline Compliance Score</b> (% contrôles CIS pass) — cible ≥ 90%</li><li><b>Patch Compliance critiques</b> à J+7 — cible ≥ 95%</li><li><b>MTTR vuln critiques</b> — cible ≤ 7j</li><li><b>Scan Coverage</b> (assets scannés/CMDB) — cible ≥ 95%</li><li><b>Nb exceptions</b> + % > 12 mois — cible &lt; 5%</li><li><b>Configuration drift</b> (% assets en écart) — cible &lt; 5%</li><li><b>% recos CSIRT appliquées</b> à J+30 — cible ≥ 80%</li><li><b>Couverture MITRE ATT&CK</b> mitigations — trend</li><li><b>Score CIS / Secure Score M365 / AWS Sec Hub</b> — trend</li><li><b>% golden images récentes</b> (&lt; 30j) — cible ≥ 95%</li></ol></div></div>
+          <div class="question-card" data-category="kpi" onclick="toggleQuestion(this)"><div class="question-title"><span class="question-number">66</span>Dashboard COMEX : que mettre ? <span class="pill med">Moyen</span></div><div class="question-answer">1 page max : (1) Score global de durcissement (jauge), (2) Top 3 risques résiduels, (3) Avancement roadmap (%), (4) MTTR critique + tendance, (5) Nb exceptions résiduelles, (6) Décisions attendues. <b>Couleur</b> rouge/orange/vert, <b>commentaire</b> narratif 3 lignes.</div></div>
+          <div class="question-card" data-category="kpi" onclick="toggleQuestion(this)"><div class="question-title"><span class="question-number">67</span>Comment éviter le « vanity metric » ? <span class="pill hard">Difficile</span></div><div class="question-answer">Chaque KPI doit répondre à « et alors ? ». Coupler valeur + tendance + seuil + action. Éviter « nb scans » sans coverage, « nb patches » sans criticité. Préférer KPI <b>résultat</b> (risque réduit) aux KPI <b>activité</b>.</div></div>
+
+          <!-- ===== ROADMAP / PILOTAGE ===== -->
+          <div class="question-card" data-category="road" onclick="toggleQuestion(this)"><div class="question-title"><span class="question-number">68</span>Comment bâtissez-vous une roadmap hardening Groupe ? <span class="pill hard">Difficile</span></div><div class="question-answer"><b>Inputs :</b> EBIOS RM, audits, RETEX CSIRT, KEV, ambitions métier. <b>Sorties :</b> 3 horizons (Quick Wins 0-3 mois / Build 3-12 / Run 12-36). Priorisation : matrice <b>impact risque × effort</b>. Budget : OPEX + CAPEX par chantier. Gouvernance : COPIL trimestriel.</div></div>
+          <div class="question-card" data-category="road" onclick="toggleQuestion(this)"><div class="question-title"><span class="question-number">69</span>Vos 5 Quick Wins arrivée en poste ? <span class="pill med">Moyen</span></div><div class="question-answer">(1) Audit baseline existante via CIS-CAT → baseline. (2) Inventaire exceptions + nettoyage des périmées. (3) Activation MFA admin partout. (4) Patch top 10 KEV résiduelles. (5) Dashboard KPI v1 à COMEX. → démontre valeur en 90 jours.</div></div>
+          <div class="question-card" data-category="road" onclick="toggleQuestion(this)"><div class="question-title"><span class="question-number">70</span>Comment alignez-vous les filiales sur la baseline Groupe ? <span class="pill hard">Difficile</span></div><div class="question-answer">Politique = obligation Groupe. Standards = adaptables avec dérogation. <b>Modèle fédéré</b> : Groupe définit, filiale décline et reporte. Communauté hardening trimestrielle inter-filiales, partage Ansible roles, mêmes KPI consolidés. Sanction = inscription au registre de risques Groupe escaladé COMEX.</div></div>
+
+          <!-- ===== CRISE ===== -->
+          <div class="question-card" data-category="crise" onclick="toggleQuestion(this)"><div class="question-title"><span class="question-number">71</span>Cellule de crise cyber : qui, comment ? <span class="pill hard">Difficile</span></div><div class="question-answer">Activation par RSSI ou COO. Membres : RSSI, CSIRT, DSI, Comm', Juridique, DRH, Métier impacté, parfois CEO. <b>Cadence</b> : points 30′ puis 2h. <b>Rôles</b> : Incident Commander, Commé, Technique, Forensic, Juridique. <b>Outils</b> : war room physique + virtuelle hors-bande (Signal). Réf. : <b>ANSSI Guide gestion de crise cyber</b>.</div></div>
+          <div class="question-card" data-category="crise" onclick="toggleQuestion(this)"><div class="question-title"><span class="question-number">72</span>Ransomware détecté sur 200 serveurs, premiers gestes ? <span class="pill hard">Difficile</span></div><div class="question-answer">(1) <b>Containment</b> immédiat : isolation réseau (EDR network containment, ACL FW), suspension réplications. (2) Préserver preuves (snapshots, mémoire). (3) Activation cellule de crise. (4) Notification ANSSI + CNIL (72h RGPD) + CERT-FR. (5) Communication contrôlée. (6) Restauration depuis sauvegardes <b>vérifiées immuables</b>. (7) Eradication + hardening pre-restore. (8) Pas de paiement (position ANSSI).</div></div>
+          <div class="question-card" data-category="crise" onclick="toggleQuestion(this)"><div class="question-title"><span class="question-number">73</span>Comment testez-vous votre dispositif de crise ? <span class="pill med">Moyen</span></div><div class="question-answer">Exercices semestriels : <b>tabletop</b> (scénario sur papier), <b>simulation technique</b> (purple team), <b>exercice complet</b> annuel avec COMEX. Référentiel : <b>ANSSI - Exercices de gestion de crise cyber</b>. RETEX et plan d'amélioration systématique.</div></div>
+
+          <!-- ===== PIEGES ===== -->
+          <div class="question-card" data-category="piege" onclick="toggleQuestion(this)"><div class="question-title"><span class="question-number">74</span>« Le hardening, c'est juste appliquer CIS, non ? » <span class="pill hard">Piège</span></div><div class="question-answer">Non. CIS est un <b>point de départ</b> excellent, mais hardening = <b>politique + standards + déploiement + mesure + exception + amélioration continue</b>. Sans gouvernance, sans CMDB, sans KPI, CIS reste un PDF inutile.</div></div>
+          <div class="question-card" data-category="piege" onclick="toggleQuestion(this)"><div class="question-title"><span class="question-number">75</span>« Conflit avec une équipe infra qui refuse vos règles » <span class="pill hard">Piège</span></div><div class="question-answer">Méthode : (1) écouter la raison technique réelle, (2) reformuler le risque en langage métier (impact €), (3) co-construire alternative (mesure compensatoire), (4) tracer la décision, (5) escalade gouvernance si bloquant. <b>Jamais</b> de bras de fer public. Mantra : « on est dans la même équipe Groupe ».</div></div>
+          <div class="question-card" data-category="piege" onclick="toggleQuestion(this)"><div class="question-title"><span class="question-number">76</span>« Comment arbitrez-vous disponibilité vs sécurité ? » <span class="pill hard">Piège</span></div><div class="question-answer">Faux dilemme. Cadre : <b>apprétit au risque</b> validé par CODIR. Si patch casse la prod : test préalable, fenêtre, rollback, communication. Si vraiment incompatible : exception documentée avec mesure compensatoire et durée. La sécurité sert la dispo à long terme (anti-ransomware).</div></div>
+          <div class="question-card" data-category="piege" onclick="toggleQuestion(this)"><div class="question-title"><span class="question-number">77</span>« Une exception dure depuis 18 mois » <span class="pill hard">Piège</span></div><div class="question-answer">C'est une <b>défaillance gouvernance</b>. Action : (1) revue — le risque est-il toujours acceptable ? (2) propriétaire identifié ? (3) plan de sortie sous 90j ou re-validation RSSI/CODIR avec mesure compensatoire renforcée + revue 3 mois. (4) KPI Comex « nb exceptions > 12 mois » → visibilité.</div></div>
+          <div class="question-card" data-category="piege" onclick="toggleQuestion(this)"><div class="question-title"><span class="question-number">78</span>« Vous n'avez jamais été RSSI, comment justifier ce poste ? » <span class="pill hard">Piège</span></div><div class="question-answer">« Le poste n'est pas RSSI mais Responsable Hardening Groupe — un rôle d'<b>expertise et de pilotage transverse</b> que j'ai exercé à l'échelle multi-clients. Mes 5 ans opérationnels + ISO 27001 LA + animation de comités sur grands comptes me donnent la légitimité technique et méthodologique. Je viens livrer, pas spectateur. »</div></div>
+          <div class="question-card" data-category="piege" onclick="toggleQuestion(this)"><div class="question-title"><span class="question-number">79</span>« Donnez-moi un échec professionnel » <span class="pill hard">Piège</span></div><div class="question-answer">Choisir un échec <b>réel</b>, technique, <b>pas critique</b>, format STAR : situation, action, résultat négatif, <b>leçon tirée + ce qui a changé ensuite</b>. Ex : sous-estimation de l'impact métier d'un patch → création d'un comité UAT systématique.</div></div>
+          <div class="question-card" data-category="piege" onclick="toggleQuestion(this)"><div class="question-title"><span class="question-number">80</span>« Vous préférez la technique ou le management ? » <span class="pill med">Piège</span></div><div class="question-answer">« Les deux — et c'est ce que ce poste demande. Sans technique, on ne challenge pas les équipes ; sans management, on ne fait pas adopter. Mon profil est exactement à cette charnière : ingénieur senior qui anime des comités et pilote une roadmap. »</div></div>
+        </div>
+
+        <!-- ===== HARDENING CHEATSHEETS ===== -->
+        <div class="section-header"><div class="section-icon"><i class="fas fa-toolbox"></i></div><div class="section-title">4 · Fiches Hardening Express</div></div>
+        <div class="grid-2">
+          <div class="mini"><h4><i class="fab fa-windows"></i> Windows Server</h4><ul>
+            <li>Microsoft Security Baseline (SCT) via GPO</li>
+            <li>Credential Guard, LSA Protection (RunAsPPL)</li>
+            <li>ASR rules Defender, WDAC/AppLocker, BitLocker</li>
+            <li>SMBv1 off, LM/NTLMv1 off, LLMNR/NetBIOS off</li>
+            <li>RDP NLA + cert CA, WinRM HTTPS only</li>
+            <li>Audit policy avancée + Sysmon → SIEM</li>
+            <li><b>Bench</b>: CIS Windows Server 2022 / Microsoft Baseline</li>
+          </ul></div>
+          <div class="mini"><h4><i class="fab fa-linux"></i> Linux RHEL/Ubuntu</h4><ul>
+            <li>Partitions nodev/nosuid/noexec, SELinux/AppArmor enforcing</li>
+            <li>SSH durci, sudo logé, PAM (pwquality/faillock)</li>
+            <li>auditd règles CIS, journald persist, syslog TLS SIEM</li>
+            <li>nftables/firewalld deny par défaut</li>
+            <li>sysctl hardening (ASLR, rp_filter, kptr)</li>
+            <li>Patch via Satellite / dnf-automatic / kpatch</li>
+            <li><b>Bench</b>: CIS RHEL 8/9, ANSSI guide Linux</li>
+          </ul></div>
+          <div class="mini"><h4><i class="fas fa-sitemap"></i> Active Directory</h4><ul>
+            <li>Tier Model 0/1/2 + PAW Tier 0</li>
+            <li>LAPS (Windows LAPS), gMSA, Protected Users</li>
+            <li>Rotation krbtgt ×2/an, AES only, NTLM réduit</li>
+            <li>PingCastle + BloodHound réguliers</li>
+            <li>Defender for Identity + SIEM 4624/4769/4662</li>
+            <li>ADCS sécurisé (ESC1-8 mitigations)</li>
+            <li><b>Réf</b>: Microsoft Privileged Access Strategy</li>
+          </ul></div>
+          <div class="mini"><h4><i class="fab fa-aws"></i> AWS</h4><ul>
+            <li>Organizations + SCP + Control Tower</li>
+            <li>IAM Identity Center, MFA hard, least-priv, Access Analyzer</li>
+            <li>CloudTrail multi-region + S3 logs immuables (Object Lock)</li>
+            <li>GuardDuty + Security Hub + Inspector + Config rules</li>
+            <li>KMS CMK, S3 Block Public Access, VPC FlowLogs</li>
+            <li>SSM Patch Manager + Session Manager (pas SSH)</li>
+            <li><b>Bench</b>: CIS AWS Foundations v3</li>
+          </ul></div>
+          <div class="mini"><h4><i class="fas fa-cloud"></i> Azure</h4><ul>
+            <li>Entra ID : MFA, Conditional Access, PIM, Access Reviews</li>
+            <li>Azure Policy + Initiatives (Azure Security Benchmark)</li>
+            <li>Defender for Cloud + Sentinel</li>
+            <li>Key Vault RBAC + soft-delete + purge protection</li>
+            <li>Private Endpoints, NSG least-priv, Azure Firewall</li>
+            <li>Update Manager, JIT VM</li>
+            <li><b>Bench</b>: CIS Azure / Azure Security Baseline</li>
+          </ul></div>
+          <div class="mini"><h4><i class="fab fa-docker"></i> Docker / Kubernetes</h4><ul>
+            <li>Images distroless, USER non-root, read-only FS</li>
+            <li>Scan Trivy/Grype + cosign signature</li>
+            <li>K8s : RBAC strict, NetworkPolicies deny, PSS restricted</li>
+            <li>Admission : Kyverno / OPA Gatekeeper</li>
+            <li>Runtime : Falco, ETCD chiffré, API server privé</li>
+            <li><b>Réf</b>: CIS Docker / CIS K8s / NSA-CISA K8s Hardening</li>
+          </ul></div>
+          <div class="mini"><h4><i class="fas fa-server"></i> VMware vSphere</h4><ul>
+            <li>vCenter mgmt isolé + MFA SSO</li>
+            <li>ESXi lockdown mode, secure boot, TPM</li>
+            <li>Syslog → SIEM, certs CA Groupe</li>
+            <li>Patch via Lifecycle Manager</li>
+            <li><b>Réf</b>: vSphere Security Configuration Guide</li>
+          </ul></div>
+          <div class="mini"><h4><i class="fas fa-network-wired"></i> Réseau (FW/SW)</h4><ul>
+            <li>Plan mgmt isolé, MFA, ACL src</li>
+            <li>RADIUS/TACACS+, comptes nominatifs, suppression admin par défaut</li>
+            <li>HTTPS only, SNMPv3, NTP authentifié</li>
+            <li>Firmware patché (CVE Forti/PAN), TLS 1.2+</li>
+            <li>IPS/AV activés, geo-blocking, IoC feeds</li>
+            <li><b>Réf</b>: CIS Cisco/Palo Alto, FortiOS Hardening</li>
+          </ul></div>
+          <div class="mini"><h4><i class="fas fa-database"></i> Bases de données</h4><ul>
+            <li>Comptes app dédiés least-priv, pas SA/SYS app</li>
+            <li>TDE / TLS in-transit obligatoire</li>
+            <li>Audit log (Oracle Unified, SQL Audit) → SIEM</li>
+            <li>Network : pas d'expo Internet, vault credentials</li>
+            <li>Patch CPU Oracle / CU SQL trimestriel</li>
+            <li><b>Bench</b>: CIS Oracle 19c / MS SQL / PostgreSQL / MongoDB</li>
+          </ul></div>
+          <div class="mini"><h4><i class="fas fa-cloud-arrow-up"></i> SaaS (M365, Salesforce…)</h4><ul>
+            <li>SSO SAML/OIDC + MFA + Conditional Access</li>
+            <li>SCIM provisioning, JIT, revues d'accès</li>
+            <li>Audit logs vers SIEM (Graph API, Event Monitoring)</li>
+            <li>CASB (Defender for Cloud Apps, Netskope)</li>
+            <li>DLP, sensitivity labels, retention</li>
+            <li><b>Bench</b>: CIS M365, vendor security baselines</li>
+          </ul></div>
+        </div>
+
+        <!-- ===== ROADMAP ===== -->
+        <div class="section-header"><div class="section-icon"><i class="fas fa-route"></i></div><div class="section-title">5 · Roadmap Hardening Groupe 12 / 24 / 36 mois</div></div>
+        <div class="intro-card"><h3><i class="fas fa-bolt"></i> Quick Wins 0-3 mois</h3>
+          <ul>
+            <li>État des lieux : audit baseline existante (CIS-CAT, Tenable Compliance) sur échantillon représentatif</li>
+            <li>Inventaire & nettoyage du registre d'exceptions (suppression périmées, identification > 12 mois)</li>
+            <li>MFA admin partout (Entra ID, AWS, vCenter, FW, EDR, SIEM)</li>
+            <li>Patch KEV CISA top 20 résiduelles, focus expositions externes</li>
+            <li>Dashboard KPI v1 (5 indicateurs) restitué mensuel au COMEX</li>
+            <li>Création comité hardening mensuel + RACI + ordre du jour standard</li>
+          </ul>
+        </div>
+        <div class="intro-card"><h3><i class="fas fa-hammer"></i> Build 3-12 mois (an 1)</h3>
+          <ul>
+            <li>Rédaction politique hardening Groupe + standards par techno (10-12 documents)</li>
+            <li>Industrialisation Ansible (rôles CIS RHEL/Windows) + pipelines AWX</li>
+            <li>Golden images Packer + scan Trivy au build</li>
+            <li>Déploiement baseline CIS L1 sur 100% Windows Server, RHEL critiques</li>
+            <li>Déploiement contrôle continu : Wazuh SCA / OpenSCAP / Defender for Cloud</li>
+            <li>Intégration logs hardening dans SIEM + règles dérive</li>
+            <li>Programme de tier model AD (PAW, LAPS, PIM)</li>
+            <li>Démarrage cycle EBIOS RM → PACS</li>
+          </ul>
+        </div>
+        <div class="intro-card"><h3><i class="fas fa-tower-broadcast"></i> Scale 12-24 mois (an 2)</h3>
+          <ul>
+            <li>Extension baseline CIS L2 sur périmètres sensibles (DC, jump, PCI)</li>
+            <li>Hardening Cloud (AWS/Azure) aligné CIS Foundations + conformance packs auto</li>
+            <li>K8s/Docker : admission control (Kyverno), image signing (cosign), SBOM</li>
+            <li>SaaS critiques : revue conformité, CASB, Secure Score > 75%</li>
+            <li>Fournisseurs critiques : PAS signées, droits d'audit, monitoring</li>
+            <li>Programme purple team / exercices crise (2/an)</li>
+            <li>Maturité NIST CSF ciblée (Identify/Protect/Detect ≥ 4)</li>
+          </ul>
+        </div>
+        <div class="intro-card"><h3><i class="fas fa-rocket"></i> Run & Optimize 24-36 mois (an 3)</h3>
+          <ul>
+            <li>Zero Trust : ZTNA généralisé, micro-segmentation production</li>
+            <li>Automatisation remédiation (SOAR + Ansible) sur top patterns dérive</li>
+            <li>Certification ISO 27001 étendue / prêt NIS2 / DORA audité</li>
+            <li>Maturité CIS Controls v8 niveau IG3 sur périmètre critique</li>
+            <li>Programme de bug bounty / red team continu</li>
+            <li>Threat-informed defense : couverture MITRE ATT&CK > 80% top techniques sectorielles</li>
+          </ul>
+        </div>
+        <div class="intro-card"><h3><i class="fas fa-scale-balanced"></i> Méthode de priorisation</h3>
+          <p>Score = <b>(Impact Risque × Probabilité) / (Effort × Coût)</b>, pondéré par : (1) présence KEV CISA, (2) exposition externe, (3) couverture multi-filiales, (4) gain quick win démontrable, (5) exigence réglementaire (NIS2, DORA). Validation en comité hardening, arbitrage budget en COPIL trimestriel.</p>
+        </div>
+
+        <!-- ===== KPI ===== -->
+        <div class="section-header"><div class="section-icon"><i class="fas fa-chart-pie"></i></div><div class="section-title">6 · KPI & Tableaux de bord COMEX</div></div>
+        <table class="kv-table"><thead><tr><th>KPI</th><th>Formule</th><th>Cible</th><th>Seuil alerte</th><th>Source</th></tr></thead><tbody>
+          <tr><td>Baseline Compliance</td><td>(contrôles CIS pass / total) %</td><td>≥ 90%</td><td>&lt; 80%</td><td>CIS-CAT / Tenable</td></tr>
+          <tr><td>Patch Compliance Critique J+7</td><td>(serveurs patchés / vulnérables) %</td><td>≥ 95%</td><td>&lt; 85%</td><td>Tenable / WSUS / Satellite</td></tr>
+          <tr><td>MTTR Vuln Critique</td><td>moyenne (date_rem - date_pub)</td><td>≤ 7j</td><td>&gt; 14j</td><td>Tenable / Jira</td></tr>
+          <tr><td>MTTR KEV CISA</td><td>moyenne</td><td>≤ 48h</td><td>&gt; 7j</td><td>KEV + Tenable</td></tr>
+          <tr><td>Scan Coverage</td><td>(assets scannés / CMDB) %</td><td>≥ 95%</td><td>&lt; 90%</td><td>Tenable ↔ ServiceNow</td></tr>
+          <tr><td>Exceptions actives</td><td>nb total + % &gt; 12 mois</td><td>&lt; 50 / &lt; 5%</td><td>&gt; 10%</td><td>ServiceNow GRC</td></tr>
+          <tr><td>Drift Configuration</td><td>(assets driftant / total) %</td><td>&lt; 5%</td><td>&gt; 10%</td><td>Wazuh / Ansible</td></tr>
+          <tr><td>Reco CSIRT appliquées J+30</td><td>(appliquées / émises) %</td><td>≥ 80%</td><td>&lt; 60%</td><td>Jira / CSIRT</td></tr>
+          <tr><td>Couverture MITRE ATT&CK</td><td>tech mitigées / tech ciblage sectoriel</td><td>≥ 70%</td><td>&lt; 50%</td><td>DeTT&CT / Navigator</td></tr>
+          <tr><td>Golden Image Freshness</td><td>(images &lt; 30j / total) %</td><td>≥ 95%</td><td>&lt; 80%</td><td>Packer / Registry</td></tr>
+          <tr><td>M365 Secure Score</td><td>fourni Microsoft</td><td>≥ 75%</td><td>&lt; 60%</td><td>M365 Admin</td></tr>
+          <tr><td>AWS Security Hub Score</td><td>fourni AWS</td><td>≥ 85%</td><td>&lt; 70%</td><td>Security Hub</td></tr>
+        </tbody></table>
+        <div class="intro-card" style="margin-top:14px;">
+          <h3><i class="fas fa-presentation-screen"></i> Tableau de bord COMEX (1 page)</h3>
+          <ul>
+            <li><b>Jauge globale</b> de durcissement (note A→E + trend)</li>
+            <li><b>3 risques majeurs</b> du mois (avec décision attendue)</li>
+            <li><b>Avancement roadmap</b> trimestrielle (% par chantier)</li>
+            <li><b>MTTR critique</b> + courbe 12 mois</li>
+            <li><b>Exceptions résiduelles > 12 mois</b></li>
+            <li><b>Comparatif filiales</b> (anonymisé si politique)</li>
+            <li><b>1 narratif</b> : « Ce mois-ci… / Le mois prochain… / J'ai besoin de… »</li>
+          </ul>
+        </div>
+
+        <!-- ===== SIMULATIONS ===== -->
+        <div class="section-header"><div class="section-icon"><i class="fas fa-comments"></i></div><div class="section-title">7 · Simulations d'entretien (30 scénarios)</div></div>
+        <div class="grid-2">
+          <div class="mini"><h4><i class="fas fa-comment-dots"></i> S1 — Présentation</h4>
+            <p><b>R :</b> Présentez-vous.<br><b>M :</b> [dérouler pitch 90s].<br><b>+</b> Chiffres concrets, lien au poste.<br><b>−</b> Éviter la chronologie totale.</p></div>
+          <div class="mini"><h4><i class="fas fa-comment-dots"></i> S2 — Motivation</h4>
+            <p><b>R :</b> Pourquoi ce poste ?<br><b>M :</b> Périmètre Groupe, scope hardening+CSIRT+gouvernance, ambition d'industrialiser.<br><b>+</b> Lier à sa propre roadmap.<br><b>−</b> Ne pas dire « pour le challenge » sans préciser.</p></div>
+          <div class="mini"><h4><i class="fas fa-comment-dots"></i> S3 — ISO 27001</h4>
+            <p><b>R :</b> Quels contrôles Annexe A couvrent le hardening ?<br><b>M :</b> A.5.32, A.8.7-8.9 (gestion config, vuln), A.8.20-8.22 (sécurité réseau), A.5.23 (cloud).<br><b>+</b> Cite codes exacts ISO 27002:2022.</p></div>
+          <div class="mini"><h4><i class="fas fa-comment-dots"></i> S4 — CIS L1/L2</h4>
+            <p><b>R :</b> Quand passer L2 ?<br><b>M :</b> Sur DC, jump, PCI, systèmes contenant PII massif. Le reste = L1 partout.</p></div>
+          <div class="mini"><h4><i class="fas fa-comment-dots"></i> S5 — KEV CISA</h4>
+            <p><b>R :</b> C'est quoi le KEV ?<br><b>M :</b> Catalog CISA des CVE exploitées activement, SLA fédéral 2 semaines. Prio absolue dans notre process.</p></div>
+          <div class="mini"><h4><i class="fas fa-comment-dots"></i> S6 — Log4Shell</h4>
+            <p><b>R :</b> Comment auriez-vous géré ?<br><b>M :</b> Inventaire Java/Log4j via Tenable + scripts, WAF rules immédiates, segmentation, upgrade 2.17+, scan continu, RETEX baseline.</p></div>
+          <div class="mini"><h4><i class="fas fa-comment-dots"></i> S7 — AD compromis</h4>
+            <p><b>R :</b> Symptomes ?<br><b>M :</b> PingCastle score dégradé, 4769 RC4 anormaux, DCSync, comptes priv ajoutés, krbtgt non rot.</p></div>
+          <div class="mini"><h4><i class="fas fa-comment-dots"></i> S8 — Exception</h4>
+            <p><b>R :</b> Comment refuser une demande d'exception ?<br><b>M :</b> Ne jamais refuser sec : reformuler le risque chiffré, proposer alternatives, escalader si bloc, tracer.</p></div>
+          <div class="mini"><h4><i class="fas fa-comment-dots"></i> S9 — Budget refusé</h4>
+            <p><b>R :</b> COMEX coupe 30% de votre budget ?<br><b>M :</b> Reprioriser sur KEV + réglementaire bloquant, documenter les chantiers reportés = nouveaux risques au registre, RACI clair vers DG.</p></div>
+          <div class="mini"><h4><i class="fas fa-comment-dots"></i> S10 — Filiale récalcitrante</h4>
+            <p><b>R :</b> Une filiale refuse votre baseline ?<br><b>M :</b> Écouter raisons (souveraineté ? CIO local ?), proposer plan progressif + KPI Groupe consolidés, escalade COMEX si bloquant.</p></div>
+          <div class="mini"><h4><i class="fas fa-comment-dots"></i> S11 — Industrialisation</h4>
+            <p><b>R :</b> Comment passez de 100 à 10 000 serveurs ?<br><b>M :</b> Ansible/AWX, rôles CIS, golden images Packer, CI/CD, drift detection, scaling humain via communauté hardening filiales.</p></div>
+          <div class="mini"><h4><i class="fas fa-comment-dots"></i> S12 — SaaS critique</h4>
+            <p><b>R :</b> Comment durcir un nouveau SaaS ?<br><b>M :</b> SSO+MFA, SCIM, CASB, logs SIEM, DLP, contrat (SOC 2, droit audit, notif 24/72h), revue annuelle.</p></div>
+          <div class="mini"><h4><i class="fas fa-comment-dots"></i> S13 — Patch impossible</h4>
+            <p><b>R :</b> App legacy non patchable ?<br><b>M :</b> Isolation réseau, WAF/RASP, monitoring renforcé, exception documentée, plan de remplacement budgété.</p></div>
+          <div class="mini"><h4><i class="fas fa-comment-dots"></i> S14 — Audit ISO</h4>
+            <p><b>R :</b> Comment préparer audit ISO Groupe ?<br><b>M :</b> SoA, registre risques, preuves PDCA, audits internes, gap analysis 6 mois avant, plan d'action.</p></div>
+          <div class="mini"><h4><i class="fas fa-comment-dots"></i> S15 — Roadmap</h4>
+            <p><b>R :</b> Premiers 100 jours ?<br><b>M :</b> Cartographier, mesurer, gagner 5 quick wins, livrer 1er dashboard COMEX, poser gouvernance.</p></div>
+          <div class="mini"><h4><i class="fas fa-comment-dots"></i> S16 — NIS2</h4>
+            <p><b>R :</b> Impact NIS2 sur votre périmètre ?<br><b>M :</b> Renforcement gouvernance (board), supply chain, reporting 24/72h, sanctions → baseline plus stricte + audits fournisseurs.</p></div>
+          <div class="mini"><h4><i class="fas fa-comment-dots"></i> S17 — Ransomware</h4>
+            <p><b>R :</b> 200 serveurs chiffrés ?<br><b>M :</b> Containment, preuves, cellule crise, ANSSI+CNIL, restauration immuable, pas de paiement, RETEX baseline.</p></div>
+          <div class="mini"><h4><i class="fas fa-comment-dots"></i> S18 — K8s</h4>
+            <p><b>R :</b> Hardening K8s prio ?<br><b>M :</b> RBAC, NetworkPolicy deny, PSS restricted, admission Kyverno, images signées, Falco runtime.</p></div>
+          <div class="mini"><h4><i class="fas fa-comment-dots"></i> S19 — Tier model AD</h4>
+            <p><b>R :</b> Expliquez le modèle 3 tiers.<br><b>M :</b> T0 DC/PKI, T1 serveurs, T2 postes ; aucun croisement ; PAW pour T0 ; LAPS+gMSA+PIM.</p></div>
+          <div class="mini"><h4><i class="fas fa-comment-dots"></i> S20 — Cloud public</h4>
+            <p><b>R :</b> Souveraineté cloud ?<br><b>M :</b> Classification data, SecNumCloud si requis, BYOK, audit résidence, plan réversibilité, ENISA EUCS niveau.</p></div>
+          <div class="mini"><h4><i class="fas fa-comment-dots"></i> S21 — Drift</h4>
+            <p><b>R :</b> Comment détecter drift ?<br><b>M :</b> Wazuh FIM + Ansible --check + AWS Config + CIS-CAT planifié → alerte SIEM → ticket auto.</p></div>
+          <div class="mini"><h4><i class="fas fa-comment-dots"></i> S22 — ITIL</h4>
+            <p><b>R :</b> Vous êtes ITIL ?<br><b>M :</b> J'applique au quotidien Change/Release/Incident/Problem/Config. ITIL v4 : Service Value System. Standard Change pour baselines industrialisées.</p></div>
+          <div class="mini"><h4><i class="fas fa-comment-dots"></i> S23 — Résistance</h4>
+            <p><b>R :</b> Un manager DSI vous shunte.<br><b>M :</b> 1–1 d'abord, comprendre, aligner sur objectifs Groupe, formaliser RACI, escalade RSSI si persistant.</p></div>
+          <div class="mini"><h4><i class="fas fa-comment-dots"></i> S24 — IA et sécu</h4>
+            <p><b>R :</b> IA dans le hardening ?<br><b>M :</b> Mon projet R&D Pentest IA + CMDB intelligente. Cas réels : priorisation EPSS+impact, auto-remed pattern, anomaly drift.</p></div>
+          <div class="mini"><h4><i class="fas fa-comment-dots"></i> S25 — SOC integration</h4>
+            <p><b>R :</b> Comment vous intégrez avec le SOC ?<br><b>M :</b> Logs hardening → SIEM, use cases drift, share recos CSIRT pour baseline, comité mensuel commun.</p></div>
+          <div class="mini"><h4><i class="fas fa-comment-dots"></i> S26 — Forensic</h4>
+            <p><b>R :</b> Après incident, votre rôle ?<br><b>M :</b> Pas forensic actif, mais ingest des recos CSIRT → backlog hardening, contrôle que le même vecteur ne ré-arrive pas.</p></div>
+          <div class="mini"><h4><i class="fas fa-comment-dots"></i> S27 — OT/ICS</h4>
+            <p><b>R :</b> Hardening OT ?<br><b>M :</b> Approche distincte (IEC 62443), segmentation Purdue, pas de patch agressif, monitoring passif (Claroty/Nozomi), comptes engineering verrouillés.</p></div>
+          <div class="mini"><h4><i class="fas fa-comment-dots"></i> S28 — BYOD</h4>
+            <p><b>R :</b> BYOD impose-t-il du hardening ?<br><b>M :</b> Pas le terminal mais le contexte d'accès : MDM/MAM, conditional access device compliance, isolation des données, app protection policies.</p></div>
+          <div class="mini"><h4><i class="fas fa-comment-dots"></i> S29 — Veille</h4>
+            <p><b>R :</b> Comment veillez-vous ?<br><b>M :</b> CERT-FR, CISA KEV, MSRC, MITRE, vendor advisories, X/Mastodon InfoSec, OSINT auto, 1h/jour minimum, partage hebdo équipe.</p></div>
+          <div class="mini"><h4><i class="fas fa-comment-dots"></i> S30 — Question à vous</h4>
+            <p><b>R :</b> Des questions ?<br><b>M :</b> Maturité actuelle ? Soutien COMEX ? Budget annuel ? Équipe rattachée ? Premiers livrables attendus ? Critères de succès 12 mois ?</p></div>
+        </div>
+
+        <!-- ===== CAS PRATIQUES ===== -->
+        <div class="section-header"><div class="section-icon"><i class="fas fa-briefcase"></i></div><div class="section-title">8 · Études de cas (20)</div></div>
+        <div class="grid-2">
+          <div class="mini"><h4><i class="fas fa-briefcase"></i> Cas 1 — Filiale refuse la baseline</h4>
+            <p><b>Décision :</b> dialogue, plan progressif, KPI consolidé. <b>Escalade :</b> registre risques Groupe COMEX. <b>Commé :</b> non-stigmatisante.</p></div>
+          <div class="mini"><h4><i class="fas fa-briefcase"></i> Cas 2 — CVE critique 10 000 serveurs</h4>
+            <p><b>Décision :</b> war room, mesures compensatoires (WAF, ACL), patching par vagues 72h. <b>Commé :</b> COMEX quotidienne.</p></div>
+          <div class="mini"><h4><i class="fas fa-briefcase"></i> Cas 3 — Fournisseur SaaS refuse exigences</h4>
+            <p><b>Décision :</b> mesures compensatoires CASB, exception, plan de remplacement si critique.</p></div>
+          <div class="mini"><h4><i class="fas fa-briefcase"></i> Cas 4 — Exception 18 mois</h4>
+            <p><b>Décision :</b> revue forcée, plan sortie 90j ou re-validation RSSI/CODIR. <b>KPI</b> mensuel.</p></div>
+          <div class="mini"><h4><i class="fas fa-briefcase"></i> Cas 5 — Audit 40% non-conf</h4>
+            <p><b>Décision :</b> plan top 20% impact, narratif trajectoire. <b>Industrialisation</b> pour prévenir.</p></div>
+          <div class="mini"><h4><i class="fas fa-briefcase"></i> Cas 6 — Shadow IT découvert</h4>
+            <p><b>Décision :</b> CASB découverte, catégorisation, intégration ou blocage, ouverture catalogue SaaS officiel.</p></div>
+          <div class="mini"><h4><i class="fas fa-briefcase"></i> Cas 7 — Reboot impossible (24/7)</h4>
+            <p><b>Décision :</b> kpatch (Linux), hot-patch Windows quand possible, clustering, fenêtres tournantes, mesure compensatoire.</p></div>
+          <div class="mini"><h4><i class="fas fa-briefcase"></i> Cas 8 — Compte admin partagé historique</h4>
+            <p><b>Décision :</b> migration vers PAM (CyberArk/Vault), comptes nominatifs, JIT, monitoring, suppression 90j.</p></div>
+          <div class="mini"><h4><i class="fas fa-briefcase"></i> Cas 9 — Cloud account orphelin</h4>
+            <p><b>Décision :</b> rattachement Organizations, audit access, SCP de baseline, monitoring CloudTrail/Activity Log.</p></div>
+          <div class="mini"><h4><i class="fas fa-briefcase"></i> Cas 10 — OT non patché depuis 5 ans</h4>
+            <p><b>Décision :</b> segmentation Purdue stricte, monitoring passif, plan de modernisation budgété, exception documentée.</p></div>
+          <div class="mini"><h4><i class="fas fa-briefcase"></i> Cas 11 — BitLocker non déployé</h4>
+            <p><b>Décision :</b> GPO + Intune, recovery keys Entra ID/AD, plan phasé, exception terrain limitée.</p></div>
+          <div class="mini"><h4><i class="fas fa-briefcase"></i> Cas 12 — Logs absents serveurs critiques</h4>
+            <p><b>Décision :</b> intégration urgente SIEM (Universal Forwarder Splunk), gap analysis sources, KPI couverture.</p></div>
+          <div class="mini"><h4><i class="fas fa-briefcase"></i> Cas 13 — PingCastle score 70</h4>
+            <p><b>Décision :</b> top 10 remed priorisé, rotation krbtgt, suppression comptes obsolètes, tier model, suivi mensuel.</p></div>
+          <div class="mini"><h4><i class="fas fa-briefcase"></i> Cas 14 — Conteneurs en root</h4>
+            <p><b>Décision :</b> Kyverno policy refuse runAsRoot, refactor images, USER 1000, capabilities drop-all, audit registry.</p></div>
+          <div class="mini"><h4><i class="fas fa-briefcase"></i> Cas 15 — Migration cloud sans hardening</h4>
+            <p><b>Décision :</b> stop migration jusqu'à Landing Zone conforme (SCP, Config rules, Guardrails), retrofit auto via IaC.</p></div>
+          <div class="mini"><h4><i class="fas fa-briefcase"></i> Cas 16 — Achat M&A intégration</h4>
+            <p><b>Décision :</b> due diligence cyber, plan harmonisation baseline 12 mois, isolation réseau pendant intégration.</p></div>
+          <div class="mini"><h4><i class="fas fa-briefcase"></i> Cas 17 — Phishing massif</h4>
+            <p><b>Décision :</b> renforcement DMARC reject, Safe Links/Attachments, simulations régulières, MFA hard partout.</p></div>
+          <div class="mini"><h4><i class="fas fa-briefcase"></i> Cas 18 — Fuite de données</h4>
+            <p><b>Décision :</b> cellule crise, CNIL 72h, forensic, RETEX vers baseline (DLP, classification, sensibilisation).</p></div>
+          <div class="mini"><h4><i class="fas fa-briefcase"></i> Cas 19 — Départ admin sensible</h4>
+            <p><b>Décision :</b> révocation accès J-1, rotation secrets, audit accès 30 jours précédents, sortie tier model.</p></div>
+          <div class="mini"><h4><i class="fas fa-briefcase"></i> Cas 20 — Outil hardening end-of-life</h4>
+            <p><b>Décision :</b> RFP successeur, POC, plan migration 6 mois, continuité maintenance vendor support étendu.</p></div>
+        </div>
+
+        <!-- ===== CV STORYTELLING ===== -->
+        <div class="section-header"><div class="section-icon"><i class="fas fa-user-tie"></i></div><div class="section-title">9 · Storytelling personnalisé (CV Mondher)</div></div>
+        <div class="intro-card">
+          <h3><i class="fas fa-id-badge"></i> Forces à marteler</h3>
+          <ul>
+            <li><b>5 ans opérationnels</b> sur multi-clients grands comptes (banque, énergie, aéro, assurance) — crédibilité secteurs régulés.</li>
+            <li><b>500+ vulnérabilités remédiées/an</b>, 500+ incidents — réflexe opérationnel démontré.</li>
+            <li><b>ISO 27001 Lead Auditor + ISO 42001 + EC-Council</b> — langage gouvernance + technique.</li>
+            <li><b>Qualys Certified + Tenable</b> — maîtrise des deux leaders du marché.</li>
+            <li><b>Ansible/AWX, Docker, K8s, Python</b> — capacité d'industrialisation réelle.</li>
+            <li><b>Splunk + HarfangLab EDR + Wazuh</b> — vision SIEM/EDR intégrée à la baseline.</li>
+            <li><b>Projets R&D IA</b> (Pentest IA, CMDB intelligente) — différenciation, vision long terme.</li>
+            <li><b>Animation comités + 900 utilisateurs sensibilisés</b> — dimension transverse et pédagogique.</li>
+          </ul>
+        </div>
+        <div class="intro-card">
+          <h3><i class="fas fa-triangle-exclamation"></i> Points de vigilance & parades</h3>
+          <ul>
+            <li><b>« Pas de titre Manager/RSSI au CV »</b> → valoriser « pilotage projets transverses, animation comités, coordination N1/N2/N3 ». Citer nb d'équipes coordonnées.</li>
+            <li><b>« Pas d'expérience Groupe »</b> → 100+ clients = analogue à 100 filiales ; mêmes problématiques transverses.</li>
+            <li><b>Pas de Azure cité explicitement</b> → évoquer « Cloud Security Engineer » (diplôme) + AWS + transposition immédiate Azure (mêmes standards CIS).</li>
+            <li><b>Tunisien basé Tunisie</b> → anticiper question mobilité/remote/visa, réponse claire et offensive.</li>
+          </ul>
+        </div>
+        <div class="intro-card">
+          <h3><i class="fas fa-star"></i> 6 stories STAR prêtes à l'emploi</h3>
+          <div class="star-block"><b>Story 1 — Industrialisation hardening Linux</b><br><b>S :</b> Parc 200+ serveurs RHEL 7/8/9 multi-clients, drift constant, audits ISAE 3402 répétitifs.<br><b>T :</b> Réduire les écarts baseline et automatiser la conformité.<br><b>A :</b> Rôles Ansible CIS RHEL + pipeline AWX + scan post-deploy + drift detection Wazuh. CR aux RSSI clients.<br><b>R :</b> Temps de mise en conformité d'un nouveau serveur divisé par 5, audits ISAE passés sans écart majeur.</div>
+          <div class="star-block"><b>Story 2 — CVE critique grand compte bancaire</b><br><b>S :</b> CVE 9.8 sur composant exposé chez client banque.<br><b>T :</b> Contenir et patcher en 72h sans rupture de service.<br><b>A :</b> Inventaire Qualys + WAF rule immédiate + plan patch par vagues coordonné prod + commé quotidienne RSSI client.<br><b>R :</b> 100% patché à J+3, aucune indisponibilité, RETEX intégré à la baseline.</div>
+          <div class="star-block"><b>Story 3 — Mise en conformité ISO 27001</b><br><b>S :</b> Préparation audit certification annuel.<br><b>T :</b> Garantir 0 non-conformité majeure.<br><b>A :</b> Gap analysis SoA, mise à jour procédures, audits internes blancs, preuves PDCA.<br><b>R :</b> Certification renouvelée, 2 observations mineures seulement.</div>
+          <div class="star-block"><b>Story 4 — Centralisation logs sur SIEM</b><br><b>S :</b> Couverture log incomplète sur infrastructures critiques multi-sites (FR, ES, MA).<br><b>T :</b> Atteindre 95% sources critiques dans Splunk.<br><b>A :</b> Déploiement Universal Forwarders, rsyslog TLS, cartographie sources/criticités, KPI couverture.<br><b>R :</b> Couverture passée de 60 % à 95 % en 6 mois, MTTD amélioré sur incidents N1.</div>
+          <div class="star-block"><b>Story 5 — Sensibilisation phishing</b><br><b>S :</b> Forte exposition phishing, 900 utilisateurs.<br><b>T :</b> Réduire taux de clic.<br><b>A :</b> Campagnes simulations trimestrielles, e-learning ciblé, DMARC reject, Safe Links.<br><b>R :</b> Taux de clic divisé par 3 en 9 mois.</div>
+          <div class="star-block"><b>Story 6 — Projet R&D CMDB de sécurité</b><br><b>S :</b> Manque de visibilité transverse sur les configurations sécurité.<br><b>T :</b> Créer un outil détectant les dérives baseline.<br><b>A :</b> Conception CMDB dédiée, collecteurs auto, comparaison baseline, alerting.<br><b>R :</b> POC fonctionnel, vision continue de la conformité — directement transposable sur ce poste.</div>
+        </div>
+        <div class="intro-card">
+          <h3><i class="fas fa-link"></i> Mapping CV ↔ fiche de poste Cybertic</h3>
+          <table class="kv-table"><thead><tr><th>Exigence Cybertic</th><th>Preuve dans votre CV</th><th>Phrase d'accroche à utiliser</th></tr></thead><tbody>
+            <tr><td>Définir politiques de durcissement Groupe</td><td>Hardening Linux/Windows + politiques sécurité Sopra HR</td><td>« J'ai décliné des politiques de durcissement sur 100+ environnements clients hiérarchisés. »</td></tr>
+            <tr><td>Roadmap & priorisation CVE / CSIRT</td><td>Pilotage 500+ remédiations/an, coordination CERT</td><td>« Je priorisé chaque trimestre 500+ vulnérabilités en lien direct avec le CERT client. »</td></tr>
+            <tr><td>Contrôle continu (scans, audits, benchmarks)</td><td>Qualys VMDR + Tenable SC + audits ISO/ISAE</td><td>« Mon métier est déjà le contrôle continu via Qualys et Tenable. »</td></tr>
+            <tr><td>SI étendu / SaaS / fournisseurs</td><td>Multi-clients + AWS IAM + OpenLDAP + DMARC fournisseurs</td><td>« J'ai géré les accès SaaS et la sécurité d'échanges fournisseurs critiques. »</td></tr>
+            <tr><td>Traçabilité, exceptions, référentiels</td><td>ISO 27001 Lead Auditor + procédures</td><td>« La traçabilité et la gouvernance des exceptions sont au cœur de ma certification ISO 27001 LA. »</td></tr>
+            <tr><td>Industrialisation / CI/CD / scripts</td><td>Ansible/AWX, Docker, K8s, Python</td><td>« J'ai industrialisé le déploiement via Ansible/AWX sur infrastructures multi-sites. »</td></tr>
+            <tr><td>Animation groupes de travail filiales / métiers</td><td>900 utilisateurs sensibilisés + comités SOC</td><td>« J'ai animé régulièrement des comités cyber transverses entre métiers, SOC et production. »</td></tr>
+            <tr><td>ITIL</td><td>ServiceNow + processus Sopra HR</td><td>« J'applique ITIL au quotidien via ServiceNow : Change, Incident, Problem. »</td></tr>
+          </tbody></table>
+        </div>
+
+        <!-- ===== FICHE FINALE ===== -->
+        <div class="section-header"><div class="section-icon"><i class="fas fa-graduation-cap"></i></div><div class="section-title">10 · Fiche de révision finale — Expert absolu</div></div>
+        <div class="intro-card">
+          <h3><i class="fas fa-graduation-cap"></i> 10 messages clés à mémoriser</h3>
+          <ol>
+            <li><b>Posture :</b> « Je viens délivrer un durcissement industrialisé, mesuré et arbitré » — pas un consultant qui rédige.</li>
+            <li><b>Méthode :</b> Politique → Standard → Baseline → Déploiement → Mesure → Exception → Amélioration.</li>
+            <li><b>Priorisation vuln :</b> KEV CISA &gt; EPSS &gt; CVSS × exposition × criticité métier.</li>
+            <li><b>SLA :</b> KEV 48h, Critique 7j, Élevé 30j, Moyen 90j.</li>
+            <li><b>Gouvernance :</b> comité hardening mensuel, COPIL trimestriel, dashboard COMEX 1 page.</li>
+            <li><b>Exceptions :</b> registre, durée max 12 mois, mesure compensatoire, revue trimestrielle.</li>
+            <li><b>Industrialisation :</b> Ansible/AWX + golden images Packer + drift Wazuh + CI/CD policy-as-code.</li>
+            <li><b>Standards :</b> CIS L1 partout, L2 sur périmètres sensibles, ANSSI guides, Microsoft Baselines, Vendor.</li>
+            <li><b>Cadres :</b> NIST CSF pour maturité, ISO 27001 pour certif, EBIOS RM pour risque, MITRE ATT&CK pour menace, ITIL v4 pour processus.</li>
+            <li><b>Réglementaire :</b> NIS2, DORA (si finance), RGPD, ISAE 3402, SecNumCloud si souveraineté.</li>
+          </ol>
+        </div>
+        <div class="intro-card">
+          <h3><i class="fas fa-language"></i> Vocabulaire RSSI / COMEX / Audit</h3>
+          <p><b>RSSI :</b> apprtétit au risque, posture, périmètre, baseline, exception documentée, mesure compensatoire, threat-informed defense, defense in depth, blast radius, MTTD/MTTR, taux de couverture.</p>
+          <p><b>COMEX :</b> exposition résiduelle, trajectoire de maturité, ROI sécurité, coût de l'inaction, dette sécurité, arbitrage, livrables, jalons, KPI rouge/orange/vert.</p>
+          <p><b>Audit :</b> SoA, contrôles A.X, preuves, PDCA, conformité opérationnelle, gap analysis, non-conformité majeure/mineure, plan d'action, owner, recurrence test.</p>
+        </div>
+        <div class="intro-card">
+          <h3><i class="fas fa-list-check"></i> Check-list veille J-1 entretien</h3>
+          <ul>
+            <li>🔔 Lire derniers CERT-FR + CISA KEV (3 derniers jours)</li>
+            <li>🔎 Vérifier patch Tuesday du mois</li>
+            <li>📖 Relire Annexe A ISO 27002:2022 (codes A.5→A.8)</li>
+            <li>📊 Mémoriser 5 KPI clés avec valeurs cibles</li>
+            <li>🎯 Préparer 3 questions intelligentes pour le recruteur</li>
+            <li>📄 Imprimer CV + fiche de poste annotée</li>
+            <li>🔊 Répéter le pitch 90s à voix haute (3 fois)</li>
+          </ul>
+        </div>
+        <div class="intro-card">
+          <h3><i class="fas fa-bullseye"></i> Phrases d'or à placer</h3>
+          <ul>
+            <li>« Je ne refuse jamais une exception, je l'<b>encadre</b>. »</li>
+            <li>« On ne mesure pas ce qu'on ne sait pas inventorier — d'où ma priorité sur la CMDB. »</li>
+            <li>« Le hardening sans industrialisation, c'est de la dette. »</li>
+            <li>« Ma boussole : KEV CISA, EPSS, exposition externe, criticité métier. »</li>
+            <li>« Une bonne baseline est <b>auditable, automatisable et amendable</b>. »</li>
+            <li>« Je n'oppose jamais sécurité et production — j'arbitre avec preuves. »</li>
+            <li>« Mon livrable mensuel : 1 page COMEX, lisible en 3 minutes, actionnable. »</li>
+          </ul>
+        </div>
+        <div class="intro-card" style="background: linear-gradient(135deg, rgba(16,185,129,.12) 0%, rgba(34,211,238,.12) 100%); border-color: rgba(16,185,129,.3);">
+          <h3 style="color:#34d399;"><i class="fas fa-check-double"></i> Le mot de la fin (à placer en clôture)</h3>
+          <p>« Ce poste est exactement ce que j'ai construit ces 5 dernières années — mais à une échelle plus structurante. Vous me confiez la baseline d'un Groupe : je vous livre une roadmap chiffrée à 90 jours, une gouvernance opérationnelle à 6 mois, et un dispositif industriel à 12 mois. Et je le mesure devant le COMEX, chaque mois. »</p>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <script src="assets/js/app.js"></script>
+  <script>
+    function toggleQuestion(card){ card.classList.toggle('expanded'); }
+    function filterCategory(cat, btn){
+      document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+      btn.classList.add('active');
+      document.querySelectorAll('.question-card').forEach(c => {
+        c.style.display = (cat === 'all' || c.dataset.category === cat) ? 'block' : 'none';
+      });
+    }
+    function filterQuestions(q){
+      const s = q.toLowerCase();
+      document.querySelectorAll('.question-card').forEach(c => {
+        c.style.display = c.textContent.toLowerCase().includes(s) ? 'block' : 'none';
+      });
+    }
+    function expandAll(){ document.querySelectorAll('.question-card').forEach(c => c.classList.add('expanded')); }
+    function collapseAll(){ document.querySelectorAll('.question-card').forEach(c => c.classList.remove('expanded')); }
+
+    /* ============================================================
+       GLOSSAIRE INTERACTIF — Survol = définition prête à dire en entretien
+       ============================================================ */
+    const GLOSSARY = {
+      // Concepts cœur du poste
+      "Baseline": "Référentiel de configuration sécurisée appliqué uniformément à un ensemble de systèmes (OS, middleware, cloud). Construite à partir de CIS Benchmarks + guides ANSSI, déclinée par profil (poste, serveur, prod, dev), versionnée, auditable, automatisable via GPO/Ansible/Intune et amendable via un comité.",
+      "Hardening": "Durcissement : ensemble de mesures qui réduisent la surface d'attaque d'un système (désactivation services, comptes, ports, chiffrement, journalisation, MFA, moindre privilège). Mesuré par un score de conformité vs baseline.",
+      "Référentiel": "Document normatif Groupe qui définit le QUOI : règles de sécurité, baselines, exigences. Sert de base aux audits internes et aux exceptions formelles.",
+      "Exception": "Dérogation formelle à la baseline, datée, justifiée (impact métier), validée par le RSSI, avec mesure compensatoire et date de revue. Tracée dans un registre.",
+      "Dérogation": "Synonyme d'exception : écart toléré temporairement à une règle de sécurité, sous conditions.",
+      "Mesure compensatoire": "Contrôle alternatif appliqué quand on ne peut pas respecter une règle (ex : segmentation réseau + monitoring renforcé à la place d'un patch impossible).",
+      "Posture": "État global de sécurité d'un périmètre à un instant T, exprimé par un score (% de conformité baseline, % CVE critiques résolues, MTTR).",
+      "Surface d'attaque": "Ensemble des points d'entrée exploitables par un attaquant (ports, services, comptes, API, dépendances). Le hardening la réduit.",
+      "Défense en profondeur": "Empilement de contrôles indépendants (réseau, OS, appli, identité, données) : si une couche tombe, les autres tiennent.",
+      "Moindre privilège": "Principe : chaque compte/processus a uniquement les droits strictement nécessaires à sa fonction. Base de l'AD tiering et du PAM.",
+      "Zero Trust": "Modèle : ne jamais faire confiance par défaut, vérifier en permanence. Repose sur l'identité forte (MFA), la micro-segmentation, le contrôle continu.",
+
+      // Standards & normes
+      "ANSSI": "Agence nationale de la sécurité des systèmes d'information (FR). Publie guides de hardening (Windows, Linux, AD, SSH), recommandations PSSI, qualifications SecNumCloud.",
+      "CIS": "Center for Internet Security. Publie les CIS Benchmarks : référentiels de hardening les plus utilisés au monde, déclinés par produit, avec deux niveaux (L1 entreprise / L2 haute sécurité).",
+      "CIS Benchmarks": "Guides de configuration sécurisée par produit (Windows, Linux, AWS, Docker...). Niveau 1 = exigences raisonnables sans casser la prod. Niveau 2 = haute sécurité, plus restrictif.",
+      "NIST": "National Institute of Standards and Technology (US). Publie le NIST CSF (framework de cybersécurité) et la série SP 800 (53 = contrôles, 40 = patch management, 61 = réponse incident).",
+      "NIST CSF": "Cybersecurity Framework du NIST : 5 fonctions (Identify, Protect, Detect, Respond, Recover) qui structurent une démarche de cybersécurité.",
+      "SP 800-53": "Catalogue NIST de plus de 1000 contrôles de sécurité, référence pour bâtir un programme de sécurité complet.",
+      "SP 800-40": "Guide NIST sur le patch management : processus, priorisation, métriques.",
+      "ISO 27001": "Norme internationale qui définit les exigences d'un SMSI (Système de Management de la Sécurité de l'Information). Certifiable.",
+      "ISO 27002": "Code de bonnes pratiques associé à ISO 27001 : 93 contrôles (version 2022) groupés en 4 thèmes (Organisationnel, Personnes, Physique, Technologique).",
+      "ISO 27005": "Norme sur la gestion des risques de sécurité de l'information. Complémentaire à EBIOS RM.",
+      "SMSI": "Système de Management de la Sécurité de l'Information : organisation, processus et documentation pour piloter la sécurité dans la durée (ISO 27001).",
+      "EBIOS RM": "Méthode française d'analyse de risque (ANSSI) : 5 ateliers, scénarios stratégiques + opérationnels, sources de risque, parties prenantes.",
+      "MITRE ATT&CK": "Base de connaissances mondiale des tactiques et techniques d'attaquants réels. Sert à mapper la détection (SOC) et à prioriser le hardening.",
+      "ITIL": "Référentiel de gestion des services IT. Version 4. Cadre les processus Change, Incident, Problem, Release, Configuration. Indispensable pour le hardening en prod.",
+      "ITIL v4": "Dernière version d'ITIL : 34 pratiques, approche Service Value System, intégration DevOps/Agile.",
+      "ENISA": "Agence européenne pour la cybersécurité. Publie guides, threat landscapes annuels, recommandations cloud.",
+      "OWASP": "Open Web Application Security Project. Référentiel pour la sécurité applicative : Top 10 (web, API, mobile), ASVS, SAMM.",
+      "ISAE 3402": "Norme d'audit international qui certifie les contrôles d'un prestataire (type II = sur durée). Demandé aux hébergeurs/SaaS par les clients régulés.",
+      "IEC 62443": "Famille de normes pour la cybersécurité des systèmes industriels (OT/ICS).",
+      "SecNumCloud": "Qualification ANSSI pour les offres cloud souveraines (hébergement données sensibles).",
+      "NIS2": "Directive européenne 2022 qui élargit les obligations cyber aux entités essentielles et importantes (santé, énergie, transports, numérique...). Sanctions jusqu'à 2% du CA.",
+      "DORA": "Digital Operational Resilience Act (UE, 2025) : impose résilience cyber au secteur financier, gestion des prestataires TIC critiques.",
+      "RGPD": "Règlement européen de protection des données personnelles. Article 32 = obligation de sécurité technique et organisationnelle.",
+      "PSSI": "Politique de Sécurité des Systèmes d'Information : document cadre Groupe qui formalise la stratégie sécurité, validé COMEX.",
+
+      // Vulnérabilités / patching
+      "CVE": "Common Vulnerabilities and Exposures : identifiant unique mondial d'une vulnérabilité publique (ex : CVE-2024-1234).",
+      "CVSS": "Common Vulnerability Scoring System : score de 0 à 10 qui mesure la sévérité technique d'une CVE. v3.1 / v4. Critique ≥ 9, Élevé 7-8.9.",
+      "EPSS": "Exploit Prediction Scoring System : probabilité (0-100%) qu'une CVE soit exploitée dans les 30 jours. Complète le CVSS pour prioriser.",
+      "KEV": "Known Exploited Vulnerabilities catalog (CISA) : liste officielle des CVE activement exploitées. BOD 22-01 impose le patch sous délai court.",
+      "KEV CISA": "Catalogue CISA des vulnérabilités activement exploitées dans la nature. Référence n°1 pour la priorisation du patching.",
+      "Patch Tuesday": "2e mardi du mois : publication mensuelle des correctifs Microsoft. Structure le cycle de patch Windows.",
+      "SLA": "Service Level Agreement : engagement de délai (ex : patcher une CVE critique sous 7 jours). Mesuré et reporté.",
+      "MTTR": "Mean Time To Remediate : délai moyen entre détection d'une vulnérabilité et sa correction. KPI clé du patching.",
+      "MTTD": "Mean Time To Detect : délai moyen entre l'occurrence d'un incident et sa détection par le SOC.",
+      "Zero-day": "Vulnérabilité non encore corrigée par l'éditeur, parfois exploitée avant publication. Traitement via mesures de mitigation.",
+
+      // Identité / accès
+      "AD": "Active Directory : annuaire Microsoft qui gère les comptes, groupes, postes et droits dans un domaine Windows. Cible N°1 des attaquants.",
+      "Active Directory": "Annuaire Microsoft de gestion des identités et des droits dans un environnement Windows.",
+      "GPO": "Group Policy Object : objet de stratégie de groupe Active Directory qui pousse une configuration uniforme (sécurité, registre, scripts) sur des postes ou serveurs ciblés.",
+      "GPO Sec": "GPO dédiée aux paramètres de sécurité (mots de passe, audit, droits utilisateur, pare-feu, chiffrement).",
+      "AD tiering": "Modèle Microsoft à 3 niveaux (Tier 0/1/2) qui isole les comptes admin selon la criticité des ressources, pour éviter le pivot d'attaquant.",
+      "LAPS": "Local Administrator Password Solution (Microsoft) : mot de passe local administrateur unique et tournant par poste, stocké dans AD.",
+      "MFA": "Multi-Factor Authentication : authentification à plusieurs facteurs (mot de passe + OTP, FIDO2...). Obligatoire pour comptes à privilèges et accès externes.",
+      "PAM": "Privileged Access Management : solution qui sécurise les comptes à privilèges (coffre-fort, rotation, session recording, juste-à-temps).",
+      "IAM": "Identity and Access Management : gestion centralisée des identités, des accès, du cycle de vie des comptes.",
+      "PKI": "Public Key Infrastructure : infrastructure de gestion des certificats numériques (autorité de certification, révocation).",
+      "FIDO2": "Standard d'authentification forte sans mot de passe (clés physiques YubiKey, TouchID).",
+      "SSO": "Single Sign-On : authentification unique pour accéder à plusieurs applications.",
+      "JIT": "Just-In-Time access : élévation de privilèges temporaire, à la demande, validée et tracée. Composant clé du PAM moderne.",
+
+      // SOC / détection / incident
+      "SOC": "Security Operations Center : équipe et plateforme de détection et de réponse 24/7 aux incidents de sécurité.",
+      "CSIRT": "Computer Security Incident Response Team : équipe spécialisée dans la réponse aux incidents avérés.",
+      "SIEM": "Security Information and Event Management : plateforme de collecte, corrélation et analyse des logs sécurité (Splunk, Sentinel, LogPoint...).",
+      "SOAR": "Security Orchestration, Automation and Response : automatise les playbooks de réponse (enrichissement, blocage, ticket).",
+      "EDR": "Endpoint Detection and Response : agent sur poste/serveur qui détecte les comportements malveillants et permet la remédiation (HarfangLab, CrowdStrike, SentinelOne).",
+      "XDR": "Extended Detection and Response : extension de l'EDR à d'autres télémetries (réseau, cloud, identité, email).",
+      "MDR": "Managed Detection and Response : SOC externalisé qui surveille et répond pour le compte du client.",
+      "UEBA": "User and Entity Behavior Analytics : analyse comportementale des utilisateurs et entités pour détecter les anomalies.",
+      "IOC": "Indicator of Compromise : élément technique (hash, IP, domaine) signalant une compromission probable.",
+      "IOA": "Indicator of Attack : comportement ou séquence d'actions caractéristique d'une attaque en cours.",
+      "TTP": "Tactics, Techniques and Procedures : modes opératoires des attaquants, codifiés par MITRE ATT&CK.",
+      "Sigma": "Format de règle de détection SIEM-agnostique. Convertible en requêtes Splunk, Sentinel, Elastic.",
+      "YARA": "Format de règle de détection de malwares par patterns dans les fichiers ou la mémoire.",
+      "Threat hunting": "Recherche proactive de menaces dans l'environnement, sans alerte préalable, basée sur hypothèses et TTP.",
+      "Playbook": "Procédure formalisée de réponse à un type d'incident (phishing, ransomware...), automatisable via SOAR.",
+      "RTO": "Recovery Time Objective : durée maximale d'interruption acceptable d'un service.",
+      "RPO": "Recovery Point Objective : perte maximale de données acceptable (mesurée en temps).",
+
+      // Réseau / appli / cloud
+      "WAF": "Web Application Firewall : pare-feu applicatif qui filtre les attaques web (SQLi, XSS, OWASP Top 10).",
+      "IDS": "Intrusion Detection System : sonde qui détecte les attaques sur le réseau (Suricata, Snort).",
+      "IPS": "Intrusion Prevention System : IDS qui bloque activement.",
+      "VPN": "Virtual Private Network : tunnel chiffré d'accès distant. Tend à être remplacé par ZTNA.",
+      "ZTNA": "Zero Trust Network Access : accès applicatif granulaire basé sur identité et contexte, sans exposer le réseau interne.",
+      "CASB": "Cloud Access Security Broker : passerelle qui sécurise l'usage des applications SaaS (visibilité, DLP, contrôle).",
+      "DLP": "Data Loss Prevention : technologie qui détecte et bloque l'exfiltration de données sensibles.",
+      "TLS": "Transport Layer Security : protocole de chiffrement des communications (HTTPS). Versions recommandées 1.2/1.3.",
+      "mTLS": "Mutual TLS : authentification mutuelle client/serveur par certificat.",
+      "SSH": "Secure Shell : protocole d'accès distant chiffré. Hardening = clés, désactivation root, ports non standard, fail2ban.",
+      "Segmentation": "Découpage du réseau en zones isolées (VLAN, micro-segmentation) pour limiter la propagation latérale.",
+      "Bastion": "Hôte d'accès unique et contrôlé pour atteindre les serveurs sensibles. Logué, MFA, session recording.",
+      "Sysmon": "Outil Microsoft de journalisation système avancée (création process, connexions, modifications registre). Indispensable pour la détection.",
+      "AppLocker": "Solution Microsoft de contrôle des applications autorisées (whitelisting) sur Windows.",
+      "SELinux": "Module de sécurité Linux à contrôle d'accès obligatoire (MAC). Mode enforcing recommandé.",
+      "AppArmor": "Module de sécurité Linux par profils d'application (alternative à SELinux, défaut Ubuntu).",
+      "fail2ban": "Outil Linux qui bannit les IP après échecs d'authentification répétés (anti brute-force).",
+      "auditd": "Démon Linux d'audit système, source principale pour le SIEM côté Linux.",
+
+      // DevSecOps / industrialisation
+      "DevSecOps": "Intégration de la sécurité dans la chaîne DevOps : tests automatisés, scan IaC, SBOM, contrôle pré-production.",
+      "CI/CD": "Continuous Integration / Continuous Deployment : automatisation du build, test et déploiement applicatif. Pipeline à instrumenter de contrôles sécurité.",
+      "IaC": "Infrastructure as Code : description de l'infra en fichiers (Terraform, Ansible, CloudFormation). Permet d'industrialiser le hardening.",
+      "SBOM": "Software Bill of Materials : inventaire des composants logiciels d'une appli (dépendances, versions). Imposé par US Exec Order et NIS2.",
+      "SAST": "Static Application Security Testing : analyse du code source pour détecter les vulnérabilités.",
+      "DAST": "Dynamic Application Security Testing : tests d'attaque sur l'appli en cours d'exécution.",
+      "SCA": "Software Composition Analysis : scan des dépendances tierces pour détecter les CVE connues.",
+      "Ansible": "Outil d'automatisation IT (configuration, déploiement) en mode agentless via SSH. Référence pour pousser des baselines Linux.",
+      "AWX": "Interface web open-source pour Ansible (équivalent communautaire d'Ansible Tower).",
+      "Terraform": "Outil d'IaC pour provisionner du cloud (AWS, Azure, GCP) de façon déclarative.",
+      "Intune": "Solution Microsoft de gestion des postes et mobiles (MDM/MAM), pousse baselines et conformité.",
+      "Kubernetes": "Orchestrateur de containers. Hardening = CIS Kubernetes Benchmark, RBAC, NetworkPolicies, Pod Security Standards.",
+      "K8s": "Abréviation de Kubernetes.",
+
+      // Gouvernance / pilotage
+      "RSSI": "Responsable de la Sécurité des Systèmes d'Information. Pilote la stratégie sécurité Groupe, rend compte au COMEX.",
+      "COMEX": "Comité exécutif. Instance de direction à qui le RSSI rend compte mensuellement de la posture sécurité.",
+      "CODIR": "Comité de direction. Instance opérationnelle (souvent sous le COMEX).",
+      "DSI": "Direction des Systèmes d'Information. Sponsor IT du programme de hardening.",
+      "DPO": "Data Protection Officer : délégué à la protection des données (RGPD).",
+      "KPI": "Key Performance Indicator : indicateur de performance mesurable (ex : % postes conformes baseline, MTTR patch critique, % MFA admins).",
+      "KRI": "Key Risk Indicator : indicateur de risque (ex : nombre de CVE critiques non patchées > 30 jours).",
+      "OKR": "Objectives and Key Results : méthode de pilotage par objectifs et résultats clés.",
+      "CMDB": "Configuration Management Database : référentiel des actifs IT et de leurs relations. Base essentielle pour cibler le hardening.",
+      "CAB": "Change Advisory Board : comité ITIL qui valide les changements à risque avant mise en production.",
+      "RACI": "Matrice de responsabilités : Responsible / Accountable / Consulted / Informed. Structure les rôles d'un projet.",
+      "Run": "Activités d'exploitation récurrentes (maintenir en condition opérationnelle).",
+      "Build": "Activités de projet / construction (mise en place initiale).",
+      "Roadmap": "Feuille de route chronologique des actions (0-3 mois, 3-12 mois, 12-24 mois...).",
+
+      // Conformité / audit
+      "Audit": "Évaluation indépendante de la conformité à un référentiel. Interne ou externe (commissaire aux comptes, client).",
+      "Conformité": "État de respect d'un référentiel à un instant T. Mesuré en %.",
+      "Référentiel client": "Exigences spécifiques imposées par un client dans son contrat (souvent sectoriel : bancaire, défense, santé).",
+      "Plan d'action": "Liste de mesures correctives suite à audit, avec porteur, échéance, criticité.",
+      "Plan de remédiation": "Plan d'actions pour combler les écarts identifiés par un audit ou un scan."
+    };
+
+    function wrapGlossary() {
+      const root = document.querySelector('main');
+      if (!root) return;
+      // tri par longueur décroissante pour matcher "Active Directory" avant "AD"
+      const terms = Object.keys(GLOSSARY).sort((a,b) => b.length - a.length);
+      // construction regex : whole-word, sensible à la casse pour les acronymes en majuscules
+      const escape = s => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      // groupe : (?<![\\w/]) ... (?![\\w/]) pour éviter de couper des mots
+      const patterns = terms.map(t => {
+        const isAcronym = /^[A-Z0-9&\/.\-]+$/.test(t) || t === t.toUpperCase();
+        return { term: t, re: new RegExp('(?<![\\w/-])(' + escape(t) + ')(?![\\w/-])', isAcronym ? 'g' : 'gi') };
+      });
+
+      const SKIP_TAGS = new Set(['SCRIPT','STYLE','CODE','PRE','TEXTAREA','INPUT','BUTTON','SELECT','OPTION']);
+      const seenPerNode = new WeakMap(); // limite à 1 occurrence par terme par parent pour éviter le bruit
+
+      function walk(node) {
+        if (!node) return;
+        if (node.nodeType === 3) {
+          const text = node.nodeValue;
+          if (!text || !text.trim()) return;
+          const parent = node.parentNode;
+          if (!parent || parent.classList?.contains('term') || parent.closest?.('.no-glossary')) return;
+
+          const alreadyInThisParent = seenPerNode.get(parent) || new Set();
+
+          // 1) trouver le premier match de chaque terme encore disponible dans ce parent
+          const candidates = [];
+          for (const { term, re } of patterns) {
+            if (alreadyInThisParent.has(term)) continue;
+            re.lastIndex = 0;
+            const m = re.exec(text);
+            if (m) candidates.push({ term, index: m.index, length: m[0].length, label: m[0] });
+          }
+          if (!candidates.length) return;
+
+          // 2) sélection gloutonne non chevauchante, par ordre d'apparition
+          candidates.sort((a, b) => a.index - b.index || b.length - a.length);
+          const selected = [];
+          let cursor = 0;
+          for (const c of candidates) {
+            if (c.index < cursor) continue;
+            if (alreadyInThisParent.has(c.term)) continue;
+            selected.push(c);
+            alreadyInThisParent.add(c.term);
+            cursor = c.index + c.length;
+          }
+          seenPerNode.set(parent, alreadyInThisParent);
+          if (!selected.length) return;
+
+          // 3) reconstruction propre via DocumentFragment (pas d'innerHTML)
+          const frag = document.createDocumentFragment();
+          let pos = 0;
+          for (const c of selected) {
+            if (c.index > pos) frag.appendChild(document.createTextNode(text.slice(pos, c.index)));
+            const span = document.createElement('span');
+            span.className = 'term';
+            span.setAttribute('data-def', GLOSSARY[c.term]);
+            span.textContent = c.label;
+            frag.appendChild(span);
+            pos = c.index + c.length;
+          }
+          if (pos < text.length) frag.appendChild(document.createTextNode(text.slice(pos)));
+          node.replaceWith(frag);
+          return;
+        }
+        if (node.nodeType !== 1) return;
+        if (SKIP_TAGS.has(node.tagName)) return;
+        if (node.classList?.contains('term') || node.classList?.contains('no-glossary')) return;
+        // copie statique car on modifie le DOM en cours de parcours
+        const children = Array.from(node.childNodes);
+        for (const c of children) walk(c);
+      }
+      walk(root);
+
+      // ajuste les tooltips qui débordent à droite/gauche de l'écran
+      requestAnimationFrame(() => {
+        document.querySelectorAll('.term').forEach(t => {
+          const r = t.getBoundingClientRect();
+          if (r.left < 200) t.classList.add('tip-right');
+          else if (window.innerWidth - r.right < 200) t.classList.add('tip-left');
+        });
+      });
+    }
+    document.addEventListener('DOMContentLoaded', wrapGlossary);
+  </script>
+  <script src="assets/js/pwa-install.js"></script>
+</body>
+</html>

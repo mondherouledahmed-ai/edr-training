@@ -1,6 +1,6 @@
 /* SecOps Academy — Service Worker
    Stratégie : cache-first pour assets statiques, network-first pour HTML (fallback cache si offline). */
-const CACHE = 'secops-v3';
+const CACHE = 'secops-v6';
 const CORE = [
   './',
   'dashboard.html',
@@ -20,6 +20,7 @@ const CORE = [
   'apache.html',
   'star.html',
   'interview.html',
+  'hardening-interview.html',
   'assets/css/app.css',
   'assets/js/app.js',
   'assets/js/star.js',

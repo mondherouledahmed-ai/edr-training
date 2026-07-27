@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Gouvernance & Conformité — ISO 27001 & ISAE 3402</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/app.css">
+  <style>
+    /* Harmonisation design avec soc-l1-l2.html */
+    .intro-card{background:linear-gradient(135deg,rgba(0,212,255,.1),rgba(168,85,247,.1));border:1px solid var(--border);border-radius:20px;padding:28px;margin-bottom:32px}
+    .intro-card h3{color:var(--accent);margin-bottom:14px;font-size:20px;display:flex;align-items:center;gap:10px}
+    .intro-card p{color:var(--text-secondary);line-height:1.8;margin-bottom:10px}
+    .intro-card strong{color:var(--text-primary)}
+    .section-header{display:flex;align-items:center;gap:16px;margin:40px 0 20px;padding-bottom:12px;border-bottom:1px solid var(--border)}
+    .section-icon{width:48px;height:48px;background:var(--gradient);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;color:#0f0f23;box-shadow:0 4px 20px rgba(0,212,255,.3)}
+    .section-title{font-size:24px;font-weight:800;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    .section-subtitle{color:var(--text-secondary);font-size:13px;margin-top:2px}
+    .component-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:18px;margin:18px 0}
+    .component-card{background:var(--bg-card);border:1px solid var(--border);border-radius:14px;padding:20px;transition:all .3s}
+    .component-card:hover{transform:translateY(-3px);border-color:var(--border-hover);box-shadow:var(--shadow-glow)}
+    .component-card h4{color:var(--accent);margin-bottom:10px;display:flex;align-items:center;gap:10px;font-size:16px}
+    .component-card p{color:var(--text-secondary);font-size:13px;line-height:1.6;margin-bottom:10px}
+    .component-card ul{list-style:none;padding:0;margin:0}
+    .component-card li{color:var(--text-secondary);padding:4px 0;font-size:13px;display:flex;gap:8px}
+    .component-card li::before{content:'•';color:var(--accent)}
+    .question-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:16px;margin-bottom:24px}
+    .question-card{background:var(--bg-card);backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:14px;padding:20px;cursor:pointer;transition:all .3s;position:relative;overflow:hidden}
+    .question-card::before{content:'';position:absolute;top:0;left:0;width:4px;height:100%;background:var(--gradient);opacity:0;transition:opacity .3s}
+    .question-card:hover{transform:translateY(-3px);border-color:var(--border-hover);box-shadow:var(--shadow-glow)}
+    .question-card:hover::before{opacity:1}
+    .question-card.expanded{grid-column:1/-1}
+    .q-num{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;background:var(--gradient);color:#0f0f23;border-radius:8px;font-weight:800;font-size:11px;margin-right:10px}
+    .q-tag{font-size:10px;padding:3px 8px;border-radius:6px;background:rgba(168,85,247,.15);color:#c084fc;text-transform:uppercase;font-weight:700;margin-left:auto}
+    .question-title{font-weight:700;color:var(--text-primary);font-size:14.5px;display:flex;align-items:center;margin-bottom:10px;line-height:1.4}
+    .question-answer{color:var(--text-secondary);font-size:13.5px;line-height:1.7;display:none;padding-top:12px;border-top:1px dashed var(--border);margin-top:8px}
+    .question-card.expanded .question-answer{display:block}
+    .intro-card[style], .section-header[style]{background:none!important}
+  </style>
+  <meta name="theme-color" content="#6366f1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="SecOps">
+  <link rel="apple-touch-icon" href="assets/icons/icon-192.png">
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="logo">
+          <i class="fas fa-shield-alt"></i>
+          <div>
+            <div>SecOps Academy</div>
+            <div class="tagline">Formation SOC/EDR/SOAR</div>
+          </div>
+        </div>
+      </div>
+      <nav class="sidebar-nav">
+        <div class="nav-section">
+          <div class="nav-section-title">Dashboard</div>
+          <a class="nav-item" href="dashboard.html"><i class="fas fa-home"></i><span>Accueil</span></a>
+          <a class="nav-item" href="progress.html"><i class="fas fa-chart-line"></i><span>Progression</span></a>
+          <a class="nav-item" href="revision.html"><i class="fas fa-gamepad"></i><span>Hub Révision</span><span class="nav-badge">XP</span></a>
+        </div>
+        <div class="nav-section">
+          <div class="nav-section-title">Formation</div>
+          <a class="nav-item" href="soc-l1-l2.html"><i class="fas fa-shield-virus"></i><span>SOC L1 & L2</span></a>
+          <a class="nav-item" href="soc-alerts.html"><i class="fas fa-bell"></i><span>Alertes SOC</span></a>
+          <a class="nav-item" href="soc-qa.html"><i class="fas fa-question-circle"></i><span>Q&A SOC</span></a>
+          <a class="nav-item" href="edr.html"><i class="fas fa-laptop"></i><span>EDR Investigation</span></a>
+          <a class="nav-item" href="soar.html"><i class="fas fa-robot"></i><span>SOAR Playbooks</span></a>
+          <a class="nav-item" href="pam.html"><i class="fas fa-key"></i><span>PAM</span></a>
+          <a class="nav-item" href="pentest.html"><i class="fas fa-user-secret"></i><span>Pentest Senior</span></a>
+        </div>
+        <div class="nav-section">
+          <div class="nav-section-title">Outils & Techniques</div>
+          <a class="nav-item" href="splunk.html"><i class="fas fa-search"></i><span>Splunk SPL</span></a>
+          <a class="nav-item" href="events.html"><i class="fas fa-list"></i><span>Windows Events</span></a>
+          <a class="nav-item" href="linux.html"><i class="fab fa-linux"></i><span>Hardening Linux</span></a>
+          <a class="nav-item" href="apache.html"><i class="fas fa-server"></i><span>Apache & YAML</span></a>
+        </div>
+        <div class="nav-section">
+          <div class="nav-section-title">Entretiens</div>
+          <a class="nav-item" href="star.html"><i class="fas fa-star"></i><span>Méthode STAR</span></a>
+          <a class="nav-item" href="interview.html"><i class="fas fa-microphone"></i><span>Simulation</span></a>
+          <a class="nav-item" href="soc-interview.html"><i class="fas fa-user-tie"></i><span>Questions SOC</span></a>
+        </div>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="user-card">
+          <div class="user-avatar">AN</div>
+          <div>
+            <div class="user-name">Analyste SOC</div>
+            <div class="user-role">L1 → L2</div>
+          </div>
+        </div>
+      </div>
+    </aside>
+    <main class="main">
+      <nav class="navbar">
+        <div class="search-container">
+          <i class="fas fa-search search-icon"></i>
+          <input type="text" class="search-input" id="search" placeholder="Rechercher dans la page ISO 27001 / ISAE 3402..." />
+        </div>
+        <div class="navbar-actions">
+          <button class="icon-btn" onclick="toggleTheme()" title="Changer le thème"><i class="fas fa-moon"></i></button>
+          <button class="icon-btn" title="Notifications"><i class="fas fa-bell"></i><span class="badge-dot"></span></button>
+        </div>
+      </nav>
+      <div class="content">
+        <div class="page-header">
+          <h1 class="page-title">ISO 27001 & ISAE 3402 — Gouvernance & Conformité <span style="font-size:24px">📋</span></h1>
+          <p class="page-subtitle">Tout ce qu'il faut savoir sur la gouvernance, la conformité, les audits et les normes ISO/ISAE pour briller en entretien sécurité.</p>
+        </div>
+        <!-- Introduction -->
+        <div class="intro-card">
+          <h3><i class="fas fa-scale-balanced"></i> Gouvernance, Risques & Conformité (GRC)</h3>
+          <p>La <strong>gouvernance</strong> définit les règles, responsabilités et processus pour piloter la sécurité. La <strong>conformité</strong> garantit le respect des normes (ISO, ISAE, RGPD). Le <strong>GRC</strong> est central pour les audits, la gestion des risques et la confiance des clients.</p>
+        </div>
+        <!-- Section ISO 27001 -->
+        <div class="section-header">
+          <div class="section-icon"><i class="fas fa-certificate"></i></div>
+          <div>
+            <div class="section-title">ISO 27001 — Système de Management de la Sécurité de l'Information (SMSI)</div>
+            <div class="section-subtitle">La norme de référence mondiale pour la sécurité des SI.</div>
+          </div>
+        </div>
+        <div class="component-grid">
+          <div class="component-card">
+            <h4><i class="fas fa-book"></i> Définition & Objectifs</h4>
+            <ul>
+              <li>Norme internationale (ISO/IEC 27001) pour établir, mettre en œuvre, maintenir et améliorer un <strong>Système de Management de la Sécurité de l'Information (SMSI)</strong>.</li>
+              <li>Objectif : garantir la <strong>confidentialité, intégrité, disponibilité</strong> des informations.</li>
+              <li>Basée sur l’approche <strong>risque</strong> et l’amélioration continue (PDCA).</li>
+            </ul>
+          </div>
+          <div class="component-card">
+            <h4><i class="fas fa-list-check"></i> Exigences principales</h4>
+            <ul>
+              <li>Contexte de l’organisation, leadership, planification, support, fonctionnement, évaluation des performances, amélioration.</li>
+              <li>Analyse de risques, traitement des risques, déclaration d’applicabilité (SoA).</li>
+              <li>Politiques, procédures, contrôle d’accès, gestion des incidents, continuité, audits internes.</li>
+            </ul>
+          </div>
+          <div class="component-card">
+            <h4><i class="fas fa-diagram-project"></i> Processus clés</h4>
+            <ul>
+              <li>Identification et évaluation des risques (EBIOS, ISO 27005).</li>
+              <li>Définition des politiques et procédures sécurité.</li>
+              <li>Gestion des incidents, sensibilisation, revue de direction.</li>
+              <li>Audit interne, actions correctives, amélioration continue.</li>
+            </ul>
+          </div>
+          <div class="component-card">
+            <h4><i class="fas fa-user-shield"></i> Rôle de l’analyste sécurité</h4>
+            <ul>
+              <li>Participer à la rédaction et la mise à jour des politiques/procédures.</li>
+              <li>Contrôler l’application des règles (internes & sous-traitants).</li>
+              <li>Contribuer aux audits (collecte de preuves, réponses aux auditeurs).</li>
+              <li>Suivi des plans d’actions et des indicateurs sécurité.</li>
+            </ul>
+          </div>
+        </div>
+        <!-- Section ISAE 3402 -->
+        <div class="section-header">
+          <div class="section-icon"><i class="fas fa-file-signature"></i></div>
+          <div>
+            <div class="section-title">ISAE 3402 — Contrôle interne chez les prestataires</div>
+            <div class="section-subtitle">La norme d’audit pour les fournisseurs de services (outsourcing, cloud, infogérance).</div>
+          </div>
+        </div>
+        <div class="component-grid">
+          <div class="component-card">
+            <h4><i class="fas fa-book"></i> Définition & Objectifs</h4>
+            <ul>
+              <li>Norme internationale d’audit (ISAE 3402) pour évaluer l’efficacité des <strong>contrôles internes</strong> chez les prestataires de services.</li>
+              <li>Objectif : rassurer les clients sur la maîtrise des risques liés à l’externalisation.</li>
+              <li>Deux types de rapports : <strong>Type I</strong> (existence des contrôles), <strong>Type II</strong> (efficacité sur la durée).</li>
+            </ul>
+          </div>
+          <div class="component-card">
+            <h4><i class="fas fa-list-check"></i> Exigences principales</h4>
+            <ul>
+              <li>Documentation des processus et contrôles internes.</li>
+              <li>Suivi des incidents, gestion des accès, continuité d’activité.</li>
+              <li>Preuves d’application des contrôles (logs, tickets, rapports).</li>
+              <li>Implication de la direction et des équipes opérationnelles.</li>
+            </ul>
+          </div>
+          <div class="component-card">
+            <h4><i class="fas fa-diagram-project"></i> Processus d’audit</h4>
+            <ul>
+              <li>Planification de l’audit, collecte des preuves, entretiens avec les équipes.</li>
+              <li>Tests de conformité, analyse des écarts, recommandations.</li>
+              <li>Rédaction du rapport ISAE 3402 (Type I ou II).</li>
+            </ul>
+          </div>
+          <div class="component-card">
+            <h4><i class="fas fa-user-shield"></i> Rôle de l’analyste sécurité</h4>
+            <ul>
+              <li>Préparer les preuves (logs, tickets, procédures).</li>
+              <li>Participer aux entretiens d’audit.</li>
+              <li>Mettre à jour la documentation sécurité.</li>
+              <li>Suivre les plans d’actions post-audit.</li>
+            </ul>
+          </div>
+        </div>
+        <!-- Questions d'entretien -->
+        <div class="section-header">
+          <div class="section-icon"><i class="fas fa-comments-question-check"></i></div>
+          <div>
+            <div class="section-title">Questions fréquentes en entretien</div>
+            <div class="section-subtitle">Préparez-vous à répondre avec des exemples concrets.</div>
+          </div>
+        </div>
+        <div class="question-grid">
+          <div class="question-card" onclick="this.classList.toggle('expanded')">
+            <div class="question-title"><span class="q-num">1</span>Qu’est-ce qu’un SMSI ?<span class="q-tag">ISO 27001</span></div>
+            <div class="question-answer">Un <strong>Système de Management de la Sécurité de l’Information</strong> (SMSI) est un ensemble de politiques, procédures et contrôles visant à protéger l’information d’une organisation selon l’approche risque et l’amélioration continue.</div>
+          </div>
+          <div class="question-card" onclick="this.classList.toggle('expanded')">
+            <div class="question-title"><span class="q-num">2</span>Différence entre ISO 27001 et ISAE 3402 ?<span class="q-tag">Normes</span></div>
+            <div class="question-answer">ISO 27001 porte sur la gestion globale de la sécurité de l’information (SMSI), tandis que ISAE 3402 évalue l’efficacité des contrôles internes chez les prestataires de services (focus outsourcing/cloud).</div>
+          </div>
+          <div class="question-card" onclick="this.classList.toggle('expanded')">
+            <div class="question-title"><span class="q-num">3</span>Qu’est-ce qu’un plan d’action post-audit ?<span class="q-tag">Audit</span></div>
+            <div class="question-answer">C’est la liste des actions correctives à mettre en œuvre suite à un audit (ISO ou ISAE) pour corriger les écarts identifiés et améliorer la conformité.</div>
+          </div>
+          <div class="question-card" onclick="this.classList.toggle('expanded')">
+            <div class="question-title"><span class="q-num">4</span>Exemples de preuves à fournir à un auditeur ?<span class="q-tag">Preuves</span></div>
+            <div class="question-answer">Logs d’accès, tickets d’incident, procédures écrites, rapports d’audit précédents, preuves de sensibilisation, plans de continuité, comptes-rendus de comités sécurité.</div>
+          </div>
+          <div class="question-card" onclick="this.classList.toggle('expanded')">
+            <div class="question-title"><span class="q-num">5</span>Comment gérer la conformité des sous-traitants ?<span class="q-tag">Tiers</span></div>
+            <div class="question-answer">Vérifier les clauses sécurité dans les contrats, exiger des audits ou certifications, contrôler l’application des politiques, suivre les plans d’actions, organiser des revues régulières.</div>
+          </div>
+          <div class="question-card" onclick="this.classList.toggle('expanded')">
+            <div class="question-title"><span class="q-num">6</span>Cycle PDCA — c’est quoi ?<span class="q-tag">ISO 27001</span></div>
+            <div class="question-answer">Plan (planifier), Do (mettre en œuvre), Check (contrôler), Act (améliorer) : le cycle d’amélioration continue au cœur d’ISO 27001.</div>
+          </div>
+          <div class="question-card" onclick="this.classList.toggle('expanded')">
+            <div class="question-title"><span class="q-num">7</span>Que faire en cas de non-conformité détectée ?<span class="q-tag">Audit</span></div>
+            <div class="question-answer">Documenter l’écart, analyser la cause, définir une action corrective, suivre sa mise en œuvre, vérifier l’efficacité lors du prochain audit.</div>
+          </div>
+          <div class="question-card" onclick="this.classList.toggle('expanded')">
+            <div class="question-title"><span class="q-num">8</span>Quels sont les rôles du RSSI ?<span class="q-tag">Gouvernance</span></div>
+            <div class="question-answer">Définir la politique sécurité, piloter le SMSI, coordonner les audits, sensibiliser, gérer les incidents majeurs, rapporter à la direction, suivre la conformité réglementaire.</div>
+          </div>
+        </div>
+        <!-- Liens utiles -->
+        <div class="intro-card" style="margin-top:24px;background:linear-gradient(135deg,rgba(168,85,247,.1),rgba(34,211,238,.1))">
+          <h3><i class="fas fa-link"></i> Liens & ressources utiles</h3>
+          <ul>
+            <li><a href="https://www.iso.org/fr/isoiec-27001-information-security.html" target="_blank">ISO/IEC 27001 — Site officiel</a></li>
+            <li><a href="https://www.isae3402.com/" target="_blank">ISAE 3402 — Explications & FAQ</a></li>
+            <li><a href="https://www.ssi.gouv.fr/" target="_blank">ANSSI — Référentiels sécurité</a></li>
+            <li><a href="https://www.cnil.fr/" target="_blank">CNIL — Conformité RGPD</a></li>
+            <li><a href="https://www.itgovernance.co.uk/iso27001" target="_blank">IT Governance — Guides ISO 27001</a></li>
+          </ul>
+        </div>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

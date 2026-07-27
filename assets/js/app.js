@@ -1,3 +1,47 @@
+// Page Navigation
+function showPage(pageId, el) {
+  // Hide all pages
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  // Special: ISO/ISAE page (load HTML dynamically)
+  if (pageId === 'iso-isae') {
+    const target = document.getElementById('page-iso-isae');
+    if (target && !target.dataset.loaded) {
+      fetch('iso-isae.html')
+        .then(r => r.text())
+        .then(html => {
+          // Extract only the .content div from iso-isae.html
+          const temp = document.createElement('div');
+          temp.innerHTML = html;
+          let content = temp.querySelector('.content');
+          target.innerHTML = '';
+          if (content) target.appendChild(content.cloneNode(true));
+          target.dataset.loaded = '1';
+        });
+    }
+    if (target) target.classList.add('active');
+  } else {
+    // Show target page
+    const target = document.getElementById('page-' + pageId);
+    if (target) target.classList.add('active');
+    // If STAR page, render notes
+    if (pageId === 'star') {
+      try { renderSTARNotes(); } catch (e) {}
+    }
+  }
+  // Update active nav item
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  if (el && el.classList && el.classList.contains('nav-item')) {
+    el.classList.add('active');
+  } else {
+    const match = Array.from(document.querySelectorAll('.nav-item')).find(n => {
+      const on = n.getAttribute('onclick') || '';
+      return on.includes("showPage('" + pageId + "'");
+    });
+    if (match) match.classList.add('active');
+  }
+  // Persist last visited page
+  try { localStorage.setItem('active-page', pageId); } catch (e) {}
+}
 // Theme Toggle
 function toggleTheme() {
   const html = document.documentElement;

@@ -619,6 +619,16 @@
         
         <div class="nav-section">
           <div class="nav-section-title">Formation</div>
+          <div class="nav-item" onclick="showPage('soc-l1-l2', this)">
+            <i class="fas fa-shield-virus"></i>
+            <span>SOC L1 & L2</span>
+            <span class="nav-badge">NEW</span>
+          </div>
+          <div class="nav-item" onclick="showPage('iso-isae', this)">
+            <i class="fas fa-certificate"></i>
+            <span>ISO 27001 & ISAE 3402</span>
+            <span class="nav-badge">GRC</span>
+          </div>
           <div class="nav-item" onclick="showPage('soc-alerts', this)">
             <i class="fas fa-bell"></i>
             <span>Alertes SOC</span>
@@ -673,6 +683,11 @@
             <i class="fas fa-microphone"></i>
             <span>Simulation</span>
           </div>
+          <div class="nav-item" onclick="showPage('iso-isae', this)">
+            <i class="fas fa-certificate"></i>
+            <span>ISO 27001 & ISAE 3402</span>
+            <span class="nav-badge">GRC</span>
+          </div>
         </div>
       </nav>
       
@@ -710,6 +725,8 @@
       </nav>
       
       <!-- Content Area -->
+      <!-- ISO/ISAE Page (chargée dynamiquement) -->
+      <div id="page-iso-isae" class="page"></div>
       <div class="content">
         <!-- Dashboard Page -->
         <div id="page-dashboard" class="page active">
